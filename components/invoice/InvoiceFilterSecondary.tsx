@@ -1,64 +1,3 @@
-// "use client";
-// import { useState } from "react";
-
-// import { Button } from "@/components/ui/button";
-// import { Badge } from "@/components/ui/badge";
-
-// const filterButtons = [
-//   {
-//     id: "unpaid" as const,
-//     label: "Unpaid",
-//     count: 1,
-//     // count: invoices.filter(inv => inv.status === 'unpaid').length,
-//   },
-//   {
-//     id: "draft" as const,
-//     label: "Draft",
-//     count: 1,
-//     // count: invoices.filter(inv => inv.status === 'draft').length,
-//   },
-//   {
-//     id: "all" as const,
-//     label: "All invoices",
-//     count: null, // No badge for "All"
-//   },
-// ];
-
-// export default function InvoiceFilterSecondary() {
-//   <div className="flex items-center gap-3 mb-6">
-//     <Button
-//       variant="outline"
-//       className="bg-blue-50 text-blue-700 border-blue-200 rounded-full hover:bg-blue-100"
-//     >
-//       Unpaid
-//       <Badge
-//         variant="secondary"
-//         className="ml-2 bg-blue-600 text-white rounded-full px-2 py-0.5"
-//       >
-//         1
-//       </Badge>
-//     </Button>
-//     <Button
-//       variant="outline"
-//       className="bg-blue-50 text-blue-700 border-blue-200 rounded-full hover:bg-blue-100"
-//     >
-//       Draft
-//       <Badge
-//         variant="secondary"
-//         className="ml-2 bg-blue-600 text-white rounded-full px-2 py-0.5"
-//       >
-//         1
-//       </Badge>
-//     </Button>
-//     <Button
-//       variant="ghost"
-//       className="text-gray-700 hover:bg-gray-100"
-//     >
-//       All invoices
-//     </Button>
-//   </div>;
-// }
-
 "use client";
 import { useState } from "react";
 
@@ -69,7 +8,7 @@ const filterButtons = [
   {
     id: "unpaid" as const,
     label: "Unpaid",
-    count: 1,
+    count: 0,
   },
   {
     id: "draft" as const,
