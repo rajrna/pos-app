@@ -3,8 +3,9 @@ import {
   Geist,
   Geist_Mono,
 } from "next/font/google";
-import "./globals.css";
-
+import "@/app/globals.css";
+import Sidebar from "@/components/layout/Sidebar";
+import Navbar from "@/components/layout/Navbar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -16,10 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: {
-    template: "%s - Rebuzz",
-    default: "Rebuzz POS",
-  },
+  title: "Invoices",
   description: "Track your sales",
 };
 
@@ -33,7 +31,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="fixed top-0 left-0 right-0 z-50 h-(--navbar-height)">
+          <Navbar />
+        </div>
+
+        <div className="fixed top-(--navbar-height) left-0 bottom-0 w-(--sidebar-width) z-40">
+          <Sidebar />
+        </div>
+
+        <main className="pt-(--navbar-height) pl-(--sidebar-width)">
+          {children}
+        </main>
       </body>
     </html>
   );
