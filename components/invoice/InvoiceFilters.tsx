@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { DatePicker } from "../ui/pop-calendar";
 // import { Calendar } from "../ui/calendar";
 export default function InvoiceFilters() {
   return (
@@ -61,28 +62,11 @@ export default function InvoiceFilters() {
         </Select>
 
         <div className="relative flex-1 max-w-50">
-          <Input
-            type="text"
-            placeholder="From"
-            className="bg-white pr-10"
-          />
-          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <DatePicker text={"From"} />
         </div>
 
         <div className="relative flex-1 max-w-50">
-          <Input
-            type="text"
-            placeholder="To"
-            className="bg-white pr-10"
-          />
-          <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          {/* <Calendar
-            mode="single"
-            // selected={date}
-            // onSelect={setDate}
-            className="rounded-lg border"
-            captionLayout="dropdown"
-          /> */}
+          <DatePicker text={"To"} />
         </div>
 
         <div className="relative flex-1 max-w-75">

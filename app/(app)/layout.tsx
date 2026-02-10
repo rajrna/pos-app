@@ -27,22 +27,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div className="fixed top-0 left-0 right-0 z-50 h-(--navbar-height)">
-          <Navbar />
-        </div>
+    <body
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    >
+      <div className="fixed top-0 left-0 right-0 z-50 h-(--navbar-height)">
+        <Navbar />
+      </div>
 
-        <div className="fixed top-(--navbar-height) left-0 bottom-0 w-(--sidebar-width) z-40">
-          <Sidebar />
-        </div>
+      <div className="fixed top-(--navbar-height) left-0 bottom-0 w-(--sidebar-width) z-40">
+        <Sidebar />
+      </div>
 
-        <main className="pt-(--navbar-height) pl-(--sidebar-width)">
-          {children}
-        </main>
-      </body>
-    </html>
+      <main className="pt-(--navbar-height) pl-(--sidebar-width)">
+        {children}
+      </main>
+    </body>
   );
 }
