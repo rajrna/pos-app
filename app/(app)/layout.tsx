@@ -6,6 +6,7 @@ import {
 import "@/app/globals.css";
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
+import { QueryProvider } from "@/providers/QueryProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <body
+    <div
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <div className="fixed top-0 left-0 right-0 z-50 h-(--navbar-height)">
@@ -39,8 +40,8 @@ export default function RootLayout({
       </div>
 
       <main className="pt-(--navbar-height) pl-(--sidebar-width)">
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </main>
-    </body>
+    </div>
   );
 }
