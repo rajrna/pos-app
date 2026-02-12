@@ -12,61 +12,48 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteCustomer } from "@/services/apiCustomer";
-import toast from "react-hot-toast";
 
-export default function CustomerRow({
-  customer,
-}) {
+// import toast from "react-hot-toast";
+
+export default function ProductRow({ product }) {
   const {
-    id: customerId,
+    image,
+    id: productId,
     name,
-    email,
-    phone,
-    savedCards,
-    balance,
-    overdue,
-  } = customer;
+    price,
+    category,
+  } = product;
 
   const queryClient = useQueryClient();
-  const { isPending: isDeleting, mutate } =
-    useMutation({
-      mutationFn: (id) => deleteCustomer(id),
-      onSuccess: () => {
-        toast.success("Cabin deleted");
-        queryClient.invalidateQueries({
-          queryKey: ["customer"],
-        });
-      },
-      onError: (err) => toast.error(err.message),
-    });
+  //   const { isPending: isDeleting, mutate } =
+  //     useMutation({
+  //       mutationFn: (id) => deleteCustomer(id),
+  //       onSuccess: () => {
+  //         toast.success("Cabin deleted");
+  //         queryClient.invalidateQueries({
+  //           queryKey: ["customer"],
+  //         });
+  //       },
+  //       onError: (err) => toast.error(err.message),
+  //     });
   return (
     <TableRow
-      key={customerId}
+      key={productId}
       className="border-b last:border-0"
     >
+      <TableCell>{image || "T-T"}</TableCell>
       <TableCell className="font-medium text-gray-900">
-        {name}
+        {name || "-"}
       </TableCell>
       <TableCell className="text-gray-700">
-        {email || "—"}
+        {category || "—"}
       </TableCell>
-      <TableCell className="text-gray-700">
-        {phone || "—"}
-      </TableCell>
-      <TableCell className="text-gray-700">
-        {savedCards || "—"}
-      </TableCell>
+
       <TableCell>
         <div className="flex flex-col">
           <span className="font-semibold text-gray-900">
-            {formatCurrency(balance)}
+            {formatCurrency(price)}
           </span>
-          {overdue > 0 && (
-            <span className="text-sm text-red-600">
-              {formatCurrency(overdue)} overdue
-            </span>
-          )}
         </div>
       </TableCell>
       <TableCell>
@@ -87,12 +74,10 @@ export default function CustomerRow({
             <DropdownMenuItem>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              Create invoice
-            </DropdownMenuItem>
+
             <DropdownMenuItem className="text-red-600">
               <button
-                onClick={() => mutate(customerId)}
+                onClick={() => mutate(productId)}
                 // disabled={}
               >
                 Delete

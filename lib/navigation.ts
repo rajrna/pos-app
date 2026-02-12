@@ -47,10 +47,6 @@ export const navigationConfig: NavigationItem[] =
           href: "/payments-setup",
         },
         {
-          label: "Recurring Invoices",
-          href: "/recurring-invoices",
-        },
-        {
           label: "Checkouts",
           href: "/checkouts",
         },
@@ -61,6 +57,10 @@ export const navigationConfig: NavigationItem[] =
         {
           label: "Customers",
           href: "/customers",
+        },
+        {
+          label: "Products",
+          href: "/products",
         },
       ],
     },

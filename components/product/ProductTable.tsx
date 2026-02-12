@@ -12,25 +12,29 @@ import {
   Search,
 } from "lucide-react";
 
-import CustomerRow from "./CustomerRow";
+import ProductRow from "./ProductRow";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
 import { useState } from "react";
-export default function UserTable() {
+
+import { fetchProducts } from "@/services/apiProduct";
+
+export default function ProductTable() {
   const [searchQuery, setSearchQuery] =
     useState("");
+
   const {
     isLoading,
-    data: customers = [],
+    data: products = [],
     error,
   } = useQuery({
-    queryKey: ["customer"],
-    queryFn: fetchCustomers,
+    queryKey: ["product"],
+    queryFn: fetchProducts,
   });
 
   if (isLoading) return <p>Loading</p>;
 
-  const customerNum = customers.length;
+  const customerNum = products.length;
   console.log(customerNum);
 
   return (
@@ -58,14 +62,15 @@ export default function UserTable() {
           </Badge>
           <span className="text-gray-600">
             {customerNum === 1
-              ? "customer found"
-              : "customers found"}
+              ? "products found"
+              : "products found"}
           </span>
         </div>
       </div>
       <Table>
         <TableHeader>
           <TableRow className="bg-white border-b">
+            <TableHead>Product</TableHead>
             <TableHead className="font-semibold text-gray-900">
               <div className="flex items-center gap-1">
                 Name
@@ -73,28 +78,28 @@ export default function UserTable() {
               </div>
             </TableHead>
             <TableHead className="font-semibold text-gray-900">
-              Email
+              Category
             </TableHead>
             <TableHead className="font-semibold text-gray-900">
-              Phone
+              Price
             </TableHead>
-            <TableHead className="font-semibold text-gray-900">
+            {/* <TableHead className="font-semibold text-gray-900">
               <div className="flex items-center gap-1">
                 Saved cards
-                {/* <HelpCircle className="h-4 w-4 text-gray-400" /> */}
+                
               </div>
-            </TableHead>
-            <TableHead className="font-semibold text-gray-900">
+            </TableHead> */}
+            {/* <TableHead className="font-semibold text-gray-900">
               Balance | Overdue
-            </TableHead>
-            <TableHead className="w-12"></TableHead>
+            </TableHead> */}
+            {/* <TableHead className="w-12"></TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {customers.map((customer) => (
-            <CustomerRow
-              key={customer.id}
-              customer={customer}
+          {products.map((product) => (
+            <ProductRow
+              key={product.id}
+              product={product}
             />
           ))}
         </TableBody>

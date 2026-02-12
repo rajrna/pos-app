@@ -1,13 +1,13 @@
 import supabase from "./supabase";
 
-export async function fetchCustomers() {
+export async function fetchProducts() {
   const { data, error } = await supabase
-    .from("customers")
+    .from("products")
     .select("*");
   console.log(data);
   if (error) {
     throw new Error(
-      "Customers could not be loaded",
+      "Products could not be loaded",
     );
   }
 

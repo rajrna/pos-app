@@ -1,3 +1,4 @@
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +9,13 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { TableRow, TableCell } from "../ui/table";
-export default function InvoiceRow() {
+export default function InvoiceRow({ invoice }) {
+  const {
+    id: invoiceId,
+    created_at,
+    status,
+    amount,
+  } = invoice;
   return (
     <TableRow>
       <TableCell>
@@ -16,20 +23,21 @@ export default function InvoiceRow() {
           variant="secondary"
           className="bg-gray-200 text-gray-700 hover:bg-gray-200"
         >
-          Draft
+          {status}
         </Badge>
       </TableCell>
       <TableCell className="text-gray-900">
-        2026-02-04
+        {/* 2026-02-04 */}
+        {created_at}
       </TableCell>
       <TableCell className="text-gray-900">
-        2
+        {invoiceId}
       </TableCell>
       <TableCell className="text-gray-900">
         Ek
       </TableCell>
       <TableCell className="text-gray-900 font-medium">
-        $100.00
+        $ {amount}
       </TableCell>
       <TableCell>
         <DropdownMenu>

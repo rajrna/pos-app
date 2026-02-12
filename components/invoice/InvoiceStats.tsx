@@ -9,7 +9,7 @@ export default function InvoiceStats() {
         {/* Overdue */}
         <div>
           <p className="text-sm text-gray-600 mb-1">
-            Overdue
+            Today&#39;s Sales
           </p>
           <p className="text-3xl font-semibold text-gray-900">
             $88.00
@@ -22,7 +22,7 @@ export default function InvoiceStats() {
         {/* Due within next 30 days */}
         <div>
           <p className="text-sm text-gray-600 mb-1">
-            Due within next 30 days
+            Cash in hand
           </p>
           <p className="text-3xl font-semibold text-gray-900">
             $0.00
@@ -35,12 +35,13 @@ export default function InvoiceStats() {
         {/* Average time to get paid */}
         <div>
           <p className="text-sm text-gray-600 mb-1">
-            Average time to get paid
+            Order count
           </p>
           <p className="text-3xl font-semibold text-gray-900">
-            0
+            5
             <span className="text-base font-normal text-gray-500 ml-1">
-              days
+              {/* {count > 1 ? "orders" : "order"} */}
+              orders
             </span>
           </p>
         </div>

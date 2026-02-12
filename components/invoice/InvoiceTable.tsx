@@ -1,3 +1,4 @@
+"use client";
 import {
   Select,
   SelectContent,
@@ -14,10 +15,20 @@ import InvoiceTableHeader from "./InvoiceTableHeader";
 import InvoiceRow from "./InvoiceRow";
 import Pagination from "./Pagination";
 import InvoiceFilterSecondary from "./InvoiceFilterSecondary";
-
+import { useQuery } from "@tanstack/react-query";
+import { fetchInvoices } from "@/services/apiInvoice";
 const invoicePerPageValues = [10, 25, 50, 100];
 
 export default function InvoiceTable() {
+  const {
+    isLoading,
+    data: invoices = [],
+    error,
+  } = useQuery({
+    queryKey: ["invoice"],
+    queryFn: fetchInvoices,
+  });
+
   return (
     <>
       <InvoiceFilterSecondary />
@@ -27,7 +38,13 @@ export default function InvoiceTable() {
         <Table>
           <InvoiceTableHeader />
           <TableBody>
-            <InvoiceRow />
+            {invoices.map((invoice) => (
+              <InvoiceRow
+                key={invoice.id}
+                invoice={invoice}
+              />
+            ))}
+            <InvoiceRow invoice={invoices} />
           </TableBody>
         </Table>
       </div>
