@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { TableRow, TableCell } from "../ui/table";
 import { Invoice } from "@/types/invoice";
+import { getDefaultClassNames } from "react-day-picker";
 
 interface InvoiceRowProps {
   invoice: Invoice;
@@ -29,7 +30,7 @@ export default function InvoiceRow({
       <TableCell>
         <Badge
           variant="secondary"
-          className="bg-gray-200 text-gray-700 hover:bg-gray-200"
+          className="bg-gray-200 text-gray-700 hover:bg-gray-200 "
         >
           {status}
         </Badge>

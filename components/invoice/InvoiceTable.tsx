@@ -44,7 +44,6 @@ export default function InvoiceTable() {
                 invoice={invoice}
               />
             ))}
-            <InvoiceRow invoice={invoices} />
           </TableBody>
         </Table>
       </div>
