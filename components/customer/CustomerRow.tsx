@@ -12,12 +12,19 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { deleteCustomer } from "@/services/apiCustomer";
+
 import toast from "react-hot-toast";
+
+import { Customer } from "@/types/customer";
+import { useDeleteCustomer } from "@/hooks/useCustomers";
+
+interface CustomerRowProps {
+  customer: Customer;
+}
 
 export default function CustomerRow({
   customer,
-}) {
+}: CustomerRowProps) {
   const {
     id: customerId,
     name,
@@ -28,18 +35,29 @@ export default function CustomerRow({
     overdue,
   } = customer;
 
-  const queryClient = useQueryClient();
-  const { isPending: isDeleting, mutate } =
-    useMutation({
-      mutationFn: (id) => deleteCustomer(id),
-      onSuccess: () => {
-        toast.success("Cabin deleted");
-        queryClient.invalidateQueries({
-          queryKey: ["customer"],
-        });
-      },
-      onError: (err) => toast.error(err.message),
-    });
+  const deleteCustomerMutation =
+    useDeleteCustomer();
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${name}"?`,
+      )
+    ) {
+      deleteCustomerMutation.mutate(customerId, {
+        onSuccess: () => {
+          toast.success(
+            `Customer "${name}" deleted successfully`,
+          );
+        },
+        onError: (error: Error) => {
+          toast.error(
+            `Failed to delete customer: ${error.message}`,
+          );
+        },
+      });
+    }
+  };
   return (
     <TableRow
       key={customerId}
@@ -90,13 +108,16 @@ export default function CustomerRow({
             <DropdownMenuItem>
               Create invoice
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              <button
-                onClick={() => mutate(customerId)}
-                // disabled={}
-              >
-                Delete
-              </button>
+            <DropdownMenuItem
+              className="text-red-600"
+              onClick={handleDelete}
+              disabled={
+                deleteCustomerMutation.isPending
+              }
+            >
+              {deleteCustomerMutation.isPending
+                ? "Deleting..."
+                : "Delete"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

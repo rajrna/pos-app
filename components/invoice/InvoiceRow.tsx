@@ -9,7 +9,15 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { TableRow, TableCell } from "../ui/table";
-export default function InvoiceRow({ invoice }) {
+import { Invoice } from "@/types/invoice";
+
+interface InvoiceRowProps {
+  invoice: Invoice;
+}
+
+export default function InvoiceRow({
+  invoice,
+}: InvoiceRowProps) {
   const {
     id: invoiceId,
     created_at,

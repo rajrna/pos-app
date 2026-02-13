@@ -1,5 +1,5 @@
-import { fetchCustomers } from "@/services/apiCustomer";
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -15,27 +15,38 @@ import {
 import ProductRow from "./ProductRow";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
-import { useState } from "react";
 
 import { fetchProducts } from "@/services/apiProduct";
+import { customerKeys } from "@/hooks/useCustomers";
 
 export default function ProductTable() {
   const [searchQuery, setSearchQuery] =
     useState("");
+  const [debouncedQuery, setDebouncedQuery] =
+    useState("");
 
-  const {
-    isLoading,
-    data: products = [],
-    error,
-  } = useQuery({
-    queryKey: ["product"],
-    queryFn: fetchProducts,
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const { isLoading, data, error } = useQuery({
+    queryKey: customerKeys.list(debouncedQuery),
+    queryFn: () => fetchProducts(debouncedQuery),
   });
 
-  if (isLoading) return <p>Loading</p>;
+  const products = data?.products || [];
+  const total = data?.total || 0;
 
-  const customerNum = products.length;
-  console.log(customerNum);
+  if (isLoading)
+    return (
+      <div className="text-center py-12 text-gray-500">
+        Loading products...
+      </div>
+    );
 
   return (
     <>
@@ -58,10 +69,10 @@ export default function ProductTable() {
             variant="outline"
             className="rounded-full bg-blue-50 text-blue-700 border-blue-200 px-3 py-1.5 text-base font-normal"
           >
-            {customerNum}
+            {total}
           </Badge>
           <span className="text-gray-600">
-            {customerNum === 1
+            {total === 1
               ? "products found"
               : "products found"}
           </span>

@@ -13,9 +13,17 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
+import { Product } from "@/types/product";
+import { useDeleteProduct } from "@/hooks/useProducts";
 
-export default function ProductRow({ product }) {
+interface ProductRowProps {
+  product: Product;
+}
+
+export default function ProductRow({
+  product,
+}: ProductRowProps) {
   const {
     image,
     id: productId,
@@ -24,18 +32,29 @@ export default function ProductRow({ product }) {
     category,
   } = product;
 
-  const queryClient = useQueryClient();
-  //   const { isPending: isDeleting, mutate } =
-  //     useMutation({
-  //       mutationFn: (id) => deleteCustomer(id),
-  //       onSuccess: () => {
-  //         toast.success("Cabin deleted");
-  //         queryClient.invalidateQueries({
-  //           queryKey: ["customer"],
-  //         });
-  //       },
-  //       onError: (err) => toast.error(err.message),
-  //     });
+  const deleteProductMutation =
+    useDeleteProduct();
+
+  const handleDelete = () => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${name}"?`,
+      )
+    ) {
+      deleteProductMutation.mutate(productId, {
+        onSuccess: () => {
+          toast.success(
+            `Product "${name}" deleted successfully`,
+          );
+        },
+        onError: (error: Error) => {
+          toast.error(
+            `Failed to delete customer: ${error.message}`,
+          );
+        },
+      });
+    }
+  };
   return (
     <TableRow
       key={productId}
@@ -75,13 +94,16 @@ export default function ProductRow({ product }) {
               Edit
             </DropdownMenuItem>
 
-            <DropdownMenuItem className="text-red-600">
-              <button
-                onClick={() => mutate(productId)}
-                // disabled={}
-              >
-                Delete
-              </button>
+            <DropdownMenuItem
+              className="text-red-600"
+              onClick={handleDelete}
+              disabled={
+                deleteProductMutation.isPending
+              }
+            >
+              {deleteProductMutation.isPending
+                ? "Deleting product..."
+                : "Delete"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

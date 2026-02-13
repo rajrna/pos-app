@@ -15,6 +15,11 @@ const customerSchema = z.object({
   name: z
     .string()
     .min(1, "Customer name is required"),
+  email: z
+    .email("Invalid email")
+    .optional()
+    .or(z.literal("")),
+  phone: z.string().optional(),
 });
 
 type CustomerFormData = z.infer<
@@ -33,6 +38,8 @@ export default function Page() {
     resolver: zodResolver(customerSchema),
     defaultValues: {
       name: "",
+      email: "",
+      phone: "",
     },
   });
   const onSubmit = async (
@@ -43,6 +50,9 @@ export default function Page() {
       await createCustomerMutation.mutateAsync(
         data,
       );
+      toast.success(
+        "Customer created successfully!",
+      );
 
       // Success! Navigate back to customers page
     } catch (error) {
@@ -50,7 +60,7 @@ export default function Page() {
         "Failed to create customer:",
         error,
       );
-      toast(
+      toast.error(
         "Failed to create customer. Please try again.",
       );
     }
@@ -92,13 +102,14 @@ export default function Page() {
             <div className="col-span-2">
               <Input
                 id="name"
+                {...register("name")}
                 className={
                   errors.name
                     ? "border-red-500"
                     : ""
                 }
-                {...register("name")}
                 placeholder="Customer name"
+                disabled={isSubmitting}
               />
               {errors.name && (
                 <p className="text-sm text-red-500 mt-1">
@@ -115,7 +126,18 @@ export default function Page() {
               Email
             </Label>
             <div className="col-span-2">
-              <Input placeholder="user@email.com" />
+              <Input
+                id="email"
+                type="email"
+                {...register("email")}
+                className={
+                  errors.email
+                    ? "border-red-500"
+                    : ""
+                }
+                placeholder="user@email.com"
+                disabled={isSubmitting}
+              />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 items-start pb-1">
@@ -126,7 +148,13 @@ export default function Page() {
               Phones
             </Label>
             <div className="col-span-2">
-              <Input placeholder="+977 ..." />
+              <Input
+                id="phone"
+                type="tel"
+                {...register("phone")}
+                placeholder="+977 ..."
+                disabled={isSubmitting}
+              />
             </div>
           </div>
         </div>
@@ -144,7 +172,9 @@ export default function Page() {
             className="bg-blue-600 hover:bg-blue-700"
             disabled={isSubmitting}
           >
-            Create customer
+            {isSubmitting
+              ? "Creating."
+              : "Create customer"}
           </Button>
         </div>
       </form>

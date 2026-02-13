@@ -27,15 +27,15 @@ export const customerKeys = {
     [...customerKeys.details(), id] as const,
 };
 // Queries
-// export function useCustomers(
-//   searchQuery?: string,
-// ) {
-//   return useQuery({
-//     queryKey: customerKeys.list(searchQuery),
-//     queryFn: () => fetchCustomers(searchQuery),
-//     staleTime: 30 * 1000, // 30 seconds
-//   });
-// }
+export function useCustomers(
+  searchQuery?: string,
+) {
+  return useQuery({
+    queryKey: customerKeys.list(searchQuery),
+    queryFn: () => fetchCustomers(searchQuery),
+    staleTime: 30 * 1000, // 30 seconds
+  });
+}
 
 // export function useCustomer(id: string) {
 //   return useQuery({

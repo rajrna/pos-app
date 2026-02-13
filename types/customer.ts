@@ -1,20 +1,16 @@
 export interface Customer {
   id: string;
   name: string;
-  firstName?: string;
-  lastName?: string;
   email?: string;
   phone?: string;
   balance: number;
   overdue: number;
-  savedCards?: number;
+  savedCards?: string | number;
   createdAt: string;
   updatedAt: string;
 }
 export interface CreateCustomerInput {
   name: string;
-  firstName?: string;
-  lastName?: string;
   email?: string;
   phone?: string;
 }
