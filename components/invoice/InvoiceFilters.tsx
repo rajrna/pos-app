@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import { Calendar } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,8 +9,11 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { DatePicker } from "../ui/pop-calendar";
+import { useInvoiceStore } from "@/stores/invoiceStore";
 // import { Calendar } from "../ui/calendar";
 export default function InvoiceFilters() {
+  const { filters, updateFilter } =
+    useInvoiceStore();
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-4">
@@ -41,12 +43,20 @@ export default function InvoiceFilters() {
           </SelectContent>
         </Select>
 
-        <Select defaultValue="all-statuses">
+        <Select
+          value={filters.status}
+          onValueChange={(value) =>
+            updateFilter("status", value)
+          }
+        >
           <SelectTrigger className="w-50 bg-white">
-            <SelectValue placeholder="All statuses" />
+            <SelectValue
+              placeholder="All statuses"
+              defaultValue="all"
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-statuses">
+            <SelectItem value="all">
               All statuses
             </SelectItem>
             <SelectItem value="draft">
@@ -74,6 +84,13 @@ export default function InvoiceFilters() {
             type="text"
             placeholder="Enter invoice #"
             className="bg-white pr-10"
+            value={filters.searchTerm}
+            onChange={(e) =>
+              updateFilter(
+                "searchTerm",
+                e.target.value,
+              )
+            }
           />
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
         </div>

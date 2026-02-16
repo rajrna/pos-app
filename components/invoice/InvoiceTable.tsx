@@ -15,11 +15,13 @@ import InvoiceTableHeader from "./InvoiceTableHeader";
 import InvoiceRow from "./InvoiceRow";
 import Pagination from "./Pagination";
 import InvoiceFilterSecondary from "./InvoiceFilterSecondary";
-import { InvoiceTableProps } from "@/types/invoice";
+import { useInvoiceStore } from "@/stores/invoiceStore";
 
-export default function InvoiceTable({
-  invoices,
-}: InvoiceTableProps) {
+export default function InvoiceTable() {
+  const getFilteredInvoices = useInvoiceStore(
+    (state) => state.getFilteredInvoices,
+  );
+  const filteredInvoices = getFilteredInvoices();
   return (
     <>
       <InvoiceFilterSecondary />
@@ -29,7 +31,7 @@ export default function InvoiceTable({
         <Table>
           <InvoiceTableHeader />
           <TableBody>
-            {invoices.map((invoice) => (
+            {filteredInvoices.map((invoice) => (
               <InvoiceRow
                 key={invoice.invoice_id}
                 invoice={invoice}

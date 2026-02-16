@@ -10,7 +10,13 @@ export default function InvoiceTableHeader() {
     <TableHeader>
       <TableRow className="bg-gray-50">
         <TableHead className="font-semibold text-gray-900">
-          Status
+          Invoice id
+        </TableHead>
+        <TableHead className="font-semibold text-gray-900">
+          Customer name
+        </TableHead>
+        <TableHead className="font-semibold text-gray-900">
+          Amount
         </TableHead>
         <TableHead className="font-semibold text-gray-900">
           <div className="flex items-center gap-1">
@@ -19,14 +25,9 @@ export default function InvoiceTableHeader() {
           </div>
         </TableHead>
         <TableHead className="font-semibold text-gray-900">
-          Number
+          Status
         </TableHead>
-        <TableHead className="font-semibold text-gray-900">
-          Customer
-        </TableHead>
-        <TableHead className="font-semibold text-gray-900">
-          Amount due
-        </TableHead>
+
         <TableHead className="font-semibold text-gray-900">
           Actions
         </TableHead>

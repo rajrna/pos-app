@@ -2,10 +2,16 @@ import { RefreshCw } from "lucide-react";
 
 // import AlertCard from "./AlertCard";
 import { InvoiceStatsProps } from "@/types/invoice";
+import { useInvoiceStore } from "@/stores/invoiceStore";
 
 export default function InvoiceStats({
   invoices,
 }: InvoiceStatsProps) {
+  const getFilteredInvoices = useInvoiceStore(
+    (state) => state.getFilteredInvoices,
+  );
+  const filteredInvoices = getFilteredInvoices();
+
   const isToday = (dateString: string) => {
     const date = new Date(dateString);
     const today = new Date();

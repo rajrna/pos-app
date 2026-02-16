@@ -6,6 +6,7 @@ interface Filters {
   status: string;
   dateRange: string;
   searchTerm: string;
+  customer: string;
 }
 
 interface InvoiceStore {
@@ -27,6 +28,7 @@ export const useInvoiceStore =
       status: "all",
       dateRange: "all",
       searchTerm: "",
+      customer: "all-customers",
     },
 
     setInvoices: (invoices) => set({ invoices }),

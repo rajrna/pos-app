@@ -23,17 +23,6 @@ export default function InvoiceRow({
   } = invoice;
   return (
     <TableRow>
-      <TableCell>
-        <Badge
-          variant="secondary"
-          className="bg-gray-200 text-gray-700 hover:bg-gray-200 "
-        >
-          {status}
-        </Badge>
-      </TableCell>
-      <TableCell className="text-gray-900">
-        {formatDatetime(created_at)}
-      </TableCell>
       <TableCell className="text-gray-900">
         {invoiceId}
       </TableCell>
@@ -42,6 +31,18 @@ export default function InvoiceRow({
       </TableCell>
       <TableCell className="text-gray-900 font-medium">
         $ {amount}
+      </TableCell>
+
+      <TableCell className="text-gray-900">
+        {formatDatetime(created_at)}
+      </TableCell>
+      <TableCell>
+        <Badge
+          variant="secondary"
+          className="bg-gray-200 text-gray-700 hover:bg-gray-200 "
+        >
+          {status}
+        </Badge>
       </TableCell>
       <TableCell>
         <DropdownMenu>
