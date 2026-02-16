@@ -8,18 +8,10 @@ import {
 } from "../ui/dropdown-menu";
 import { TableCell, TableRow } from "../ui/table";
 import { formatCurrency } from "@/utils/helper";
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
-import { Product } from "@/types/product";
+import { ProductRowProps } from "@/types/product";
 import { useDeleteProduct } from "@/hooks/useProducts";
-
-interface ProductRowProps {
-  product: Product;
-}
 
 export default function ProductRow({
   product,

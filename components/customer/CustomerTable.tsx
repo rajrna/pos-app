@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+
+import {
+  ChevronDown,
+  Search,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -7,17 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import {
-  ChevronDown,
-  Search,
-} from "lucide-react";
-
-import CustomerRow from "./CustomerRow";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
+import CustomerRow from "./CustomerRow";
 import { customerKeys } from "@/hooks/useCustomers";
 import { fetchCustomers } from "@/services/apiCustomer";
-import { custom } from "zod";
 
 export default function CustomerTable() {
   const [searchQuery, setSearchQuery] =

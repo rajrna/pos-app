@@ -1,8 +1,29 @@
 import { RefreshCw } from "lucide-react";
 
 // import AlertCard from "./AlertCard";
+import { InvoiceStatsProps } from "@/types/invoice";
 
-export default function InvoiceStats() {
+export default function InvoiceStats({
+  invoices,
+}: InvoiceStatsProps) {
+  const isToday = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    return (
+      date.toDateString() === today.toDateString()
+    );
+  };
+
+  const todayInvoices = invoices.filter(
+    (invoice) => isToday(invoice.created_at),
+  );
+  const totalSalesAmount = todayInvoices.reduce(
+    (sum: number, invoice) =>
+      sum + invoice.amount,
+    0,
+  );
+  const numberOfSales = todayInvoices.length;
+
   return (
     <div className="bg-white rounded-lg border shadow-sm p-6 mb-8">
       <div className="grid grid-cols-4 gap-8 mb-6">
@@ -12,7 +33,7 @@ export default function InvoiceStats() {
             Today&#39;s Sales
           </p>
           <p className="text-3xl font-semibold text-gray-900">
-            $88.00
+            ${totalSalesAmount}
             <span className="text-base font-normal text-gray-500 ml-1">
               USD
             </span>
@@ -38,7 +59,7 @@ export default function InvoiceStats() {
             Order count
           </p>
           <p className="text-3xl font-semibold text-gray-900">
-            5
+            {numberOfSales}
             <span className="text-base font-normal text-gray-500 ml-1">
               {/* {count > 1 ? "orders" : "order"} */}
               orders

@@ -1,5 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+import {
+  ChevronDown,
+  Search,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -7,15 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import {
-  ChevronDown,
-  Search,
-} from "lucide-react";
-
-import ProductRow from "./ProductRow";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
-
+import ProductRow from "./ProductRow";
 import { fetchProducts } from "@/services/apiProduct";
 import { customerKeys } from "@/hooks/useCustomers";
 

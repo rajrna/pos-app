@@ -14,3 +14,11 @@ export interface CreateCustomerInput {
   email?: string;
   phone?: string;
 }
+
+export interface CustomerTableProps {
+  customers: Customer[];
+}
+
+export interface CustomerRowProps {
+  customer: Customer;
+}

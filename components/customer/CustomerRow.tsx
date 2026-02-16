@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -7,20 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { TableCell, TableRow } from "../ui/table";
+
 import { formatCurrency } from "@/utils/helper";
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-
-import toast from "react-hot-toast";
-
-import { Customer } from "@/types/customer";
+import { CustomerRowProps } from "@/types/customer";
 import { useDeleteCustomer } from "@/hooks/useCustomers";
-
-interface CustomerRowProps {
-  customer: Customer;
-}
 
 export default function CustomerRow({
   customer,

@@ -12,3 +12,7 @@ export interface CreateProductInput {
   price: number;
   category: string;
 }
+
+export interface ProductRowProps {
+  product: Product;
+}

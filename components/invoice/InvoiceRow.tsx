@@ -9,18 +9,14 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { TableRow, TableCell } from "../ui/table";
-import { Invoice } from "@/types/invoice";
-import { getDefaultClassNames } from "react-day-picker";
-
-interface InvoiceRowProps {
-  invoice: Invoice;
-}
+import { formatDatetime } from "@/utils/helper";
+import { InvoiceRowProps } from "@/types/invoice";
 
 export default function InvoiceRow({
   invoice,
 }: InvoiceRowProps) {
   const {
-    id: invoiceId,
+    invoice_id: invoiceId,
     created_at,
     status,
     amount,
@@ -36,8 +32,7 @@ export default function InvoiceRow({
         </Badge>
       </TableCell>
       <TableCell className="text-gray-900">
-        {/* 2026-02-04 */}
-        {created_at}
+        {formatDatetime(created_at)}
       </TableCell>
       <TableCell className="text-gray-900">
         {invoiceId}
@@ -66,7 +61,7 @@ export default function InvoiceRow({
             <DropdownMenuItem>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem className="bg-red-400 text-gray-100 hover:bg-red-500">
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
