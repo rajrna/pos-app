@@ -4,8 +4,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import type { Product } from "@/types/product";
-
 import {
   fetchProducts,
   deleteProduct,
@@ -19,7 +17,8 @@ export const productKeys = {
   list: (searchQuery?: string) =>
     [
       ...productKeys.lists(),
-      { searchQuery },
+      // { searchQuery },
+      searchQuery || "",
     ] as const,
   details: () =>
     [...productKeys.all, "detail"] as const,

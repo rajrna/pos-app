@@ -38,9 +38,9 @@ export default function InvoiceStats({
           <p className="text-sm text-gray-600 mb-1">
             Today&#39;s Sales
           </p>
-          <p className="text-3xl font-semibold text-gray-900">
+          <p className="md:text-3xl text-2xl font-semibold text-gray-900">
             ${totalSalesAmount}
-            <span className="text-base font-normal text-gray-500 ml-1">
+            <span className="md:text-base text-[12px]  font-normal text-gray-500 ml-1">
               USD
             </span>
           </p>
@@ -51,9 +51,9 @@ export default function InvoiceStats({
           <p className="text-sm text-gray-600 mb-1">
             Cash in hand
           </p>
-          <p className="text-3xl font-semibold text-gray-900">
+          <p className="md:text-3xl text-2xl font-semibold text-gray-900">
             $0.00
-            <span className="text-base font-normal text-gray-500 ml-1">
+            <span className="md:text-base text-[12px]  font-normal text-gray-500 ml-1">
               USD
             </span>
           </p>
@@ -64,9 +64,9 @@ export default function InvoiceStats({
           <p className="text-sm text-gray-600 mb-1">
             Order count
           </p>
-          <p className="text-3xl font-semibold text-gray-900">
+          <p className="md:text-3xl text-2xl font-semibold text-gray-900">
             {numberOfSales}
-            <span className="text-base font-normal text-gray-500 ml-1">
+            <span className="md:text-base text-[12px] font-normal text-gray-500 ml-1">
               {/* {count > 1 ? "orders" : "order"} */}
               orders
             </span>
@@ -78,7 +78,7 @@ export default function InvoiceStats({
           <p className="text-sm text-gray-600 mb-1">
             Upcoming payout
           </p>
-          <p className="text-3xl font-semibold text-gray-900 underline decoration-dotted underline-offset-4">
+          <p className="md:text-3xl text-2xl font-semibold text-gray-900 underline decoration-dotted underline-offset-4">
             None
           </p>
         </div>

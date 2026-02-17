@@ -4,8 +4,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import type { Customer } from "@/types/customer";
-
 import {
   fetchCustomers,
   createCustomer,
@@ -19,7 +17,8 @@ export const customerKeys = {
   list: (searchQuery?: string) =>
     [
       ...customerKeys.lists(),
-      { searchQuery },
+      // { searchQuery },
+      searchQuery || "",
     ] as const,
   details: () =>
     [...customerKeys.all, "detail"] as const,
@@ -33,7 +32,7 @@ export function useCustomers(
   return useQuery({
     queryKey: customerKeys.list(searchQuery),
     queryFn: () => fetchCustomers(searchQuery),
-    staleTime: 30 * 1000, // 30 seconds
+    staleTime: 10 * 1000, // 30 seconds
   });
 }
 

@@ -109,7 +109,7 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
   /* For navbar and sidebar */
   --navbar-height: 57px;
-  --sidebar-width: 240px;
+  --sidebar-width: 224px;
 }
 
 .dark {

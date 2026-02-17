@@ -34,6 +34,22 @@ export async function fetchAllCustomers() {
   return data;
 }
 
+export async function fetchCustomersList(): Promise<
+  Customer[]
+> {
+  const { data, error } = await supabase
+    .from("customers")
+    .select("id, name")
+    .order("name", { ascending: true });
+
+  if (error)
+    throw new Error(
+      "Customers could not be loaded",
+    );
+
+  return data ? data.map(transformCustomer) : [];
+}
+
 export async function fetchCustomers(
   searchQuery?: string,
 ): Promise<{

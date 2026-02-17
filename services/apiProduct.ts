@@ -52,6 +52,22 @@ export async function fetchProducts(
   }
 }
 
+export async function fetchProductsList(): Promise<
+  Product[]
+> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, name, price")
+    .order("name", { ascending: true });
+
+  if (error)
+    throw new Error(
+      "Products could not be loaded",
+    );
+
+  return data ? data.map(transformProduct) : [];
+}
+
 export async function deleteProduct(id: string) {
   const { data, error } = await supabase
     .from("products")

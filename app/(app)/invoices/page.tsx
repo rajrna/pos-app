@@ -27,7 +27,12 @@ export default function Page() {
     }
   }, [invoices, setInvoices]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center ">
+        Loading...
+      </div>
+    );
   if (error)
     return <div>Error loading invoices</div>;
 

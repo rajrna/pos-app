@@ -31,7 +31,7 @@ export default function RootLayout({
     <div
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <div className="fixed top-0 left-0 right-0 z-50 h-(--navbar-height)">
+      <div className="fixed top-0 left-0 right-0 z-50 md:h-(--navbar-height)">
         <Navbar />
       </div>
 
