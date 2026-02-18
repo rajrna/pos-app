@@ -1,7 +1,4 @@
 import { Fragment } from "react";
-import { Product } from "@/types/product";
-import { TableCell, TableRow } from "../ui/table";
-import { Input } from "../ui/input";
 import {
   Trash2,
   CirclePlus,
@@ -15,24 +12,11 @@ import {
   SelectValue,
 } from "../ui/select";
 
-// interface InvoiceItemsSelectorProps {
-//   products: Product[];
-// }
+import { InvoiceItem } from "@/types/invoice";
+import { InvoiceItemsSelectorProps } from "@/types/invoice";
 
-interface InvoiceItemsSelectorProps {
-  products: Product[];
-  items: InvoiceItem[];
-  onItemsChange: (items: InvoiceItem[]) => void;
-}
-
-interface InvoiceItem {
-  id: string;
-  productId: string;
-  name: string;
-  description: string;
-  quantity: number;
-  price: number;
-}
+import { TableCell, TableRow } from "../ui/table";
+import { Input } from "../ui/input";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -47,12 +31,6 @@ export default function InvoiceItemsSelector({
   items,
   onItemsChange,
 }: InvoiceItemsSelectorProps) {
-  //   const [items, setItems] = useState<
-  //     InvoiceItem[]
-  //   >([
-  //     { id: crypto.randomUUID(), ...DEFAULT_ITEM },
-  //   ]);
-
   const addItem = () => {
     onItemsChange([
       ...items,
@@ -113,7 +91,6 @@ export default function InvoiceItemsSelector({
             key={item.id}
             className="border-b-0"
           >
-            {/* Drag Handle */}
             <TableCell className="w-6 px-1">
               <GripVertical className="h-4 w-4 text-gray-400 cursor-grab" />
             </TableCell>
@@ -133,7 +110,6 @@ export default function InvoiceItemsSelector({
                 className="border-gray-300"
                 list={`products-${item.id}`}
               />
-              {/* Datalist for product suggestions */}
               <datalist
                 id={`products-${item.id}`}
               >
@@ -270,7 +246,7 @@ export default function InvoiceItemsSelector({
         <TableCell colSpan={7}>
           <button
             onClick={addItem}
-            className="flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors py-1"
+            className="flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors px-13 py-1"
           >
             <CirclePlus className="h-4 w-4" />
             Add an item

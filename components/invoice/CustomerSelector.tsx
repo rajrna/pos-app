@@ -2,6 +2,8 @@ import { Customer } from "@/types/customer";
 
 interface CustomerSelectorProps {
   customers: Customer[];
+  onCustomerSelect: (customerId: string) => void;
+  onCreateNew?: () => void;
 }
 
 import { useState } from "react";
@@ -24,13 +26,9 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-interface CustomerSelectorProps {
-  customers: Customer[];
-  onCreateNew?: () => void;
-}
-
 export default function CustomerSelector({
   customers,
+  onCustomerSelect,
   onCreateNew,
 }: CustomerSelectorProps) {
   const [open, setOpen] = useState(false);
@@ -81,6 +79,7 @@ export default function CustomerSelector({
                     setSelectedCustomerId(
                       customer.id,
                     );
+                    onCustomerSelect(customer.id);
                     setOpen(false);
                   }}
                 >

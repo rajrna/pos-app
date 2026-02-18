@@ -1,65 +1,66 @@
 "use client";
 
+import Link from "next/link";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateCustomer } from "@/hooks/useCustomers";
-import * as z from "zod";
-import toast from "react-hot-toast";
+import { useCreateProduct } from "@/hooks/useProducts";
 
-const customerSchema = z.object({
+const productSchema = z.object({
   name: z
     .string()
-    .min(1, "Customer name is required"),
-  email: z
-    .email("Invalid email")
-    .optional()
-    .or(z.literal("")),
-  phone: z.string().optional(),
+    .min(1, "Product name is required"),
+  price: z
+    .number()
+    .min(1, "Product price is required"),
+  description: z.string().optional(),
+  category: z.string().optional(),
+  image: z.string().optional(),
 });
 
-type CustomerFormData = z.infer<
-  typeof customerSchema
+type ProductFormData = z.infer<
+  typeof productSchema
 >;
 
 export default function Page() {
-  const createCustomerMutation =
-    useCreateCustomer();
+  const createProductMutation =
+    useCreateProduct();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CustomerFormData>({
-    resolver: zodResolver(customerSchema),
+  } = useForm<ProductFormData>({
+    resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
-      email: "",
-      phone: "",
+      price: 0,
+      description: "",
     },
   });
   const onSubmit = async (
-    data: CustomerFormData,
+    data: ProductFormData,
   ) => {
     try {
-      // Save to Supabase
-      await createCustomerMutation.mutateAsync(
+      await createProductMutation.mutateAsync(
         data,
       );
       toast.success(
-        "Customer created successfully!",
+        "Product created successfully!",
       );
     } catch (error) {
       console.error(
-        "Failed to create customer.",
+        "Failed to create product.",
         error,
       );
       toast.error(
-        "Failed to create customer. Please try again.",
+        "Failed to create product. Please try again.",
       );
     }
   };
@@ -69,15 +70,15 @@ export default function Page() {
       {/* Header */}
       <div className="mb-8">
         <Link
-          href="/customers"
+          href="/products"
           className="mb-4 -ml-2"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Customers
+          Back to Products
         </Link>
 
         <h1 className="text-4xl font-bold text-gray-900">
-          New customer
+          New product
         </h1>
       </div>
 
@@ -92,7 +93,7 @@ export default function Page() {
               htmlFor="name"
               className="text-right pt-3 text-gray-700"
             >
-              Customer
+              Product
               <span className="text-red-500">
                 *
               </span>
@@ -106,7 +107,7 @@ export default function Page() {
                     ? "border-red-500"
                     : ""
                 }
-                placeholder="Customer name"
+                placeholder="Product name"
                 disabled={isSubmitting}
               />
               {errors.name && (
@@ -121,36 +122,36 @@ export default function Page() {
               htmlFor="email"
               className="text-right pt-3 text-gray-700"
             >
-              Email
+              Price
             </Label>
             <div className="col-span-2">
               <Input
-                id="email"
-                type="email"
-                {...register("email")}
+                id="price"
+                type="number"
+                {...register("price")}
                 className={
-                  errors.email
+                  errors.price
                     ? "border-red-500"
                     : ""
                 }
-                placeholder="user@email.com"
+                placeholder="$$$"
                 disabled={isSubmitting}
               />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 items-start pb-1">
             <Label
-              htmlFor="phone"
+              htmlFor="description"
               className="text-right pt-3 text-gray-700"
             >
-              Phones
+              Description
             </Label>
             <div className="col-span-2">
               <Input
-                id="phone"
-                type="tel"
-                {...register("phone")}
-                placeholder="+977 ..."
+                id="description"
+                type="string"
+                {...register("description")}
+                placeholder="Describe the product"
                 disabled={isSubmitting}
               />
             </div>
@@ -160,7 +161,7 @@ export default function Page() {
         {/* Action Buttons */}
         <div className="max-w-4xl mt-6 flex justify-end gap-3">
           <Link
-            href="/customers"
+            href="/products"
             className="bg-red-500 hover:bg-red-600 rounded px-2 text-gray-100 py-1"
           >
             Cancel
@@ -172,7 +173,7 @@ export default function Page() {
           >
             {isSubmitting
               ? "Creating."
-              : "Create customer"}
+              : "Create product"}
           </Button>
         </div>
       </form>

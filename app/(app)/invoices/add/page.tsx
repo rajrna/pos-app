@@ -1,7 +1,7 @@
 "use client";
-import CustomerSelector from "@/components/invoice/CustomerSelector";
-import InvoiceDiscount from "@/components/invoice/InvoiceDiscount";
-import InvoiceItemsSelector from "@/components/invoice/InvoiceItemsSelector";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,22 +9,20 @@ import { DatePicker } from "@/components/ui/pop-calendar";
 import {
   Table,
   TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "@/components/ui/table";
-import { useCustomersList } from "@/hooks/useCustomersList";
-import { useProductsList } from "@/hooks/useProductsList";
-import { useState } from "react";
 
-interface InvoiceItem {
-  id: string;
-  productId: string;
-  name: string;
-  description: string;
-  quantity: number;
-  price: number;
-}
+import CustomerSelector from "@/components/invoice/CustomerSelector";
+import InvoiceDiscount from "@/components/invoice/InvoiceDiscount";
+import InvoiceItemsSelector from "@/components/invoice/InvoiceItemsSelector";
+import AddInvoiceHeader from "@/components/invoice/AddInvoiceHeader";
+
+import { useCustomersList } from "@/hooks/useCustomersList";
+import { useCreateInvoice } from "@/hooks/useInvoices";
+import { useProductsList } from "@/hooks/useProductsList";
+
+import { CreateInvoiceInput } from "@/types/invoice";
+import { InvoiceItem } from "@/types/invoice";
+import { Discount } from "@/types/invoice";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -33,12 +31,6 @@ const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   quantity: 1,
   price: 0,
 };
-interface Discount {
-  id: string;
-  description: string;
-  value: number;
-  type: "fixed" | "percentage";
-}
 
 export default function Page() {
   const {
@@ -49,18 +41,25 @@ export default function Page() {
     data: products = [],
     isLoading: loadingProducts,
   } = useProductsList();
+  const createInvoiceMutation =
+    useCreateInvoice();
+
+  const [
+    selectedCustomerId,
+    setSelectedCustomerId,
+  ] = useState<string | null>(null);
+  const [invoiceNumber, setInvoiceNumber] =
+    useState("");
+  const [poNumber, setPoNumber] = useState("");
+  const [invoiceDate, setInvoiceDate] =
+    useState<Date>(new Date());
+  const [notes, setNotes] = useState("");
 
   const [items, setItems] = useState<
     InvoiceItem[]
   >([
     { id: crypto.randomUUID(), ...DEFAULT_ITEM },
   ]);
-
-  const subtotal = items.reduce(
-    (sum, item) =>
-      sum + item.quantity * item.price,
-    0,
-  );
 
   const [discounts, setDiscounts] = useState<
     Discount[]
@@ -72,7 +71,14 @@ export default function Page() {
       type: "fixed",
     },
   ]);
+
   const [currency, setCurrency] = useState("usd");
+
+  const subtotal = items.reduce(
+    (sum, item) =>
+      sum + item.quantity * item.price,
+    0,
+  );
 
   const updateDiscount = (
     id: string,
@@ -88,10 +94,74 @@ export default function Page() {
     );
   };
 
+  const totalDiscount = discounts.reduce(
+    (sum, d) => {
+      if (d.type === "percentage") {
+        return sum + (subtotal * d.value) / 100;
+      }
+      return sum + d.value;
+    },
+    0,
+  );
+
+  const total = subtotal - totalDiscount;
+
   const removeDiscount = (id: string) => {
     setDiscounts((prev) =>
       prev.filter((d) => d.id !== id),
     );
+  };
+
+  const handleSave = () => {
+    // Validation
+    if (!selectedCustomerId) {
+      toast.error("Please select a customer");
+      return;
+    }
+
+    if (!invoiceNumber) {
+      toast.error(
+        "Please enter an invoice number",
+      );
+      return;
+    }
+
+    if (
+      items.length === 0 ||
+      items.every((item) => !item.name)
+    ) {
+      toast.error("Please add at least one item");
+      return;
+    }
+
+    // Prepare data
+    const invoiceData: CreateInvoiceInput = {
+      customer_id: selectedCustomerId,
+      invoice_number: invoiceNumber,
+      po_number: poNumber || undefined,
+      invoice_date: invoiceDate.toISOString(),
+      items: items
+        .filter((item) => item.name) // Only include items with names
+        .map((item) => ({
+          product_id: item.productId,
+          name: item.name,
+          description: item.description,
+          quantity: item.quantity,
+          unit_price: item.price,
+          total: item.quantity * item.price,
+        })),
+      discount_description:
+        discounts[0]?.description,
+      discount_value: discounts[0]?.value,
+      discount_type: discounts[0]?.type,
+      subtotal,
+      total,
+      currency,
+      notes: notes || undefined,
+      status: "Draft",
+    };
+
+    createInvoiceMutation.mutate(invoiceData);
   };
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -100,8 +170,16 @@ export default function Page() {
           New Invoice
         </h1>
         <div className="flex items-center gap-3">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-            Save and Continue
+          <Button
+            onClick={handleSave}
+            disabled={
+              createInvoiceMutation.isPending
+            }
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl"
+          >
+            {createInvoiceMutation.isPending
+              ? "Saving..."
+              : "Save and Continue"}
           </Button>
         </div>
       </div>
@@ -117,6 +195,9 @@ export default function Page() {
         <div className="flex justify-between">
           <CustomerSelector
             customers={customers}
+            onCustomerSelect={
+              setSelectedCustomerId
+            }
           />
           <form>
             <div className="grid grid-cols-3 gap-4 items-start bp-1">
@@ -128,6 +209,12 @@ export default function Page() {
                   className="border-blue-200"
                   id="invoicenum"
                   placeholder="0"
+                  value={invoiceNumber}
+                  onChange={(e) =>
+                    setInvoiceNumber(
+                      e.target.value,
+                    )
+                  }
                 />
               </div>
             </div>
@@ -141,6 +228,10 @@ export default function Page() {
                 <Input
                   id="ponum"
                   className="border-blue-200"
+                  value={poNumber}
+                  onChange={(e) =>
+                    setPoNumber(e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -151,7 +242,11 @@ export default function Page() {
                 Invoice Date
               </Label>
               <div className="col-span-2 py-3 px-3">
-                <DatePicker text={""} />
+                <DatePicker
+                  text={""}
+                  // date={invoiceDate}
+                  // onDateChange={setInvoiceDate}
+                />
               </div>
             </div>
           </form>
@@ -159,31 +254,8 @@ export default function Page() {
         {/* {order columns} */}
         <div className="mt-5">
           <Table>
-            <TableHeader>
-              <TableRow className="bg-gray-200 border-b ">
-                <TableHead className="w-6" />
-                <TableHead className="font-semibold text-gray-900">
-                  Items
-                </TableHead>
-                <TableHead className="text-gray-600">
-                  Description
-                </TableHead>
-                <TableHead className="text-gray-600 text-right">
-                  Quantity
-                </TableHead>
-                <TableHead className="text-gray-600 text-right">
-                  Price
-                </TableHead>
-                <TableHead className="text-gray-600 text-right">
-                  Amount
-                </TableHead>
-                <TableHead className="w-8" />
-              </TableRow>
-            </TableHeader>
+            <AddInvoiceHeader />
             <TableBody>
-              {/* <InvoiceItemsSelector
-                products={products}
-              /> */}
               <InvoiceItemsSelector
                 products={products}
                 items={items}
@@ -208,6 +280,10 @@ export default function Page() {
             className="focus:outline-none p-2"
             placeholder="Enter notes or terms of service"
             type="text"
+            value={notes}
+            onChange={(e) =>
+              setNotes(e.target.value)
+            }
           />
         </div>
       </div>

@@ -8,9 +8,10 @@ export interface Product {
 
 export interface CreateProductInput {
   name: string;
-  image: string;
+  image?: string;
   price: number;
-  category: string;
+  category?: string;
+  description?: string;
 }
 
 export interface ProductRowProps {
