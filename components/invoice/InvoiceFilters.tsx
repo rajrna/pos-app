@@ -1,3 +1,4 @@
+"use client";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,10 +11,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { DatePicker } from "../ui/pop-calendar";
 import { useInvoiceStore } from "@/stores/invoiceStore";
+// import { useCustomersList } from "@/hooks/useCustomersList";
+// import CustomerSelector from "./CustomerSelector";
+// import { useState } from "react";
 // import { Calendar } from "../ui/calendar";
 export default function InvoiceFilters() {
   const { filters, updateFilter } =
     useInvoiceStore();
+
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-4">
@@ -29,7 +34,13 @@ export default function InvoiceFilters() {
       </div>
 
       <div className="flex items-center gap-3 mb-6">
-        <Select defaultValue="all-customers">
+        <Select
+          defaultValue="all-customers"
+          // value="filters.customer"
+          onValueChange={(value) =>
+            updateFilter("customer", value)
+          }
+        >
           <SelectTrigger className="w-70 bg-white">
             <SelectValue placeholder="All customers" />
           </SelectTrigger>
@@ -42,6 +53,10 @@ export default function InvoiceFilters() {
             </SelectItem>
           </SelectContent>
         </Select>
+        {/* <CustomerSelector
+          customers={customers}
+          onCustomerSelect={setSelectedCustomerId}
+        /> */}
 
         <Select
           value={filters.status}

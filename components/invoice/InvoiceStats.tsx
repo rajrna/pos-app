@@ -93,7 +93,7 @@ export default function InvoiceStats({
           </button>
         </div>
 
-        {/* <AlertCard /> */}
+        {/* <AlertCard />  Removed for now*/}
       </div>
     </div>
   );

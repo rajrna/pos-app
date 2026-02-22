@@ -7,6 +7,7 @@ import InvoiceFilters from "@/components/invoice/InvoiceFilters";
 import InvoiceTable from "@/components/invoice/InvoiceTable";
 import { fetchInvoices } from "@/services/apiInvoice";
 import { useInvoiceStore } from "@/stores/invoiceStore";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Page() {
   const { setInvoices } = useInvoiceStore();
@@ -29,8 +30,8 @@ export default function Page() {
 
   if (isLoading)
     return (
-      <div className="flex items-center ">
-        Loading...
+      <div className="flex items-center justify-center min-h-screen ">
+        <Spinner className="size-8" />
       </div>
     );
   if (error)

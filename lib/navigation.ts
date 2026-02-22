@@ -27,10 +27,16 @@ export type NavigationItem =
 export const navigationConfig: NavigationItem[] =
   [
     {
-      type: "single",
+      type: "section",
       label: "Dashboard",
-      href: "/dashboard",
       icon: Gauge,
+      items: [
+        { label: "Overview", href: "/dashboard" },
+        {
+          label: "Sales & Revenues",
+          href: "/dashboard/revenue",
+        },
+      ],
     },
     {
       type: "section",
