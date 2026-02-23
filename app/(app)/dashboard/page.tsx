@@ -1,22 +1,32 @@
-import StatBox from "@/components/dashboard/StatBox";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+import {
+  BanknoteArrowUp,
+  CreditCard,
+  DollarSign,
+  Flame,
+  LayoutDashboard,
+  Package,
+  ShoppingBag,
+} from "lucide-react";
+
 import {
   Select,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  BanknoteArrowUp,
-  DollarSign,
-  Flame,
-  LayoutDashboard,
-} from "lucide-react";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+import SalesLocationChart from "@/components/dashboard/SalesLocationChart";
+import StatBox from "@/components/dashboard/StatBox";
+import WinningStatBox from "@/components/dashboard/WinningStatBox";
+import WeeklyRevenueChart from "@/components/dashboard/WeeklyRevenueChart";
+import HourlySalesTrend from "@/components/dashboard/HourlySalesChart";
 
 export default function Page() {
   return (
-    <div className="  w-295 px-2">
-      <div className="flex justify-between items-center w-290 px-3 py-2">
+    <div className="  w-full px-4">
+      <div className="flex justify-between items-center w-full  py-2">
         <div className="py-4">
           {/* for header text */}
           <h1 className="font-bold text-2xl">
@@ -24,10 +34,10 @@ export default function Page() {
           </h1>
           <p>
             Welcome back, Ek. What is happening
-            with Rebuzz pos
+            with Rebuzz POS
           </p>
         </div>
-        <div>
+        <div className="mx-3">
           {/* for header buttons */}
           <Button>
             <Link href="/invoices/add">
@@ -53,7 +63,9 @@ export default function Page() {
           </Button>
         </div>
         <div className="flex justify-between items-center gap-1">
-          <p>FILTER BY:</p>
+          <p className="text-gray-400">
+            FILTER BY:
+          </p>
           <Select>
             <SelectTrigger>
               <SelectValue placeholder="Last week" />
@@ -62,30 +74,42 @@ export default function Page() {
         </div>
       </div>
 
-      {/* actual contents */}
+      {/* ACTUAL CONTENTS */}
       <div>
-        <div className="flex items-center justify-center">
+        <div className="flex flex-wrap items-center justify-center mt-2 gap-2">
           <StatBox
             statTitle="Total Sales"
             amount={999999}
             percent={12}
+            icon={DollarSign}
           />
           <StatBox
             statTitle="Total Orders"
             amount={1234}
             percent={10}
+            icon={ShoppingBag}
           />
           <StatBox
             statTitle="Total Orders"
             amount={1234}
             percent={10}
+            icon={Package}
           />
           <StatBox
             statTitle="Total Orders"
             amount={1234}
             percent={10}
+            icon={CreditCard}
           />
         </div>
+
+        <WinningStatBox />
+        {/* CHARTS */}
+        <div className="flex flex-wrap items-stretch gap-4 px-4">
+          <WeeklyRevenueChart />
+          <SalesLocationChart />
+        </div>
+        <HourlySalesTrend />
       </div>
     </div>
   );
