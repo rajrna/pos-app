@@ -39,7 +39,6 @@ const data: HourlyData[] = [
 const formatYAxis = (value: number): string =>
   `$${value}`;
 
-// ✅ Explicit interface instead of TooltipProps<ValueType, NameType>
 interface CustomTooltipProps {
   active?: boolean;
   label?: string;
@@ -71,8 +70,8 @@ const CustomTooltip = ({
 
 export default function HourlySalesTrend() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full mt-4">
-      {/* Header */}
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition duration-300 p-6 w-full mt-4">
+      {/* HEADER */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">
           Hourly Sales Trend
@@ -83,7 +82,7 @@ export default function HourlySalesTrend() {
         </p>
       </div>
 
-      {/* Chart */}
+      {/* CHART */}
       <ResponsiveContainer
         width="100%"
         height={300}

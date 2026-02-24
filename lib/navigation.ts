@@ -1,11 +1,8 @@
 import {
-  LayoutDashboard,
   CreditCard,
   ShoppingCart,
   Receipt,
   Gauge,
-  Calculator,
-  Building2,
   LucideIcon,
   Building,
 } from "lucide-react";
@@ -33,8 +30,8 @@ export const navigationConfig: NavigationItem[] =
       items: [
         { label: "Overview", href: "/dashboard" },
         {
-          label: "Sales & Revenues",
-          href: "/dashboard/revenue",
+          label: "Customers",
+          href: "/dashboard/customers",
         },
       ],
     },
@@ -43,23 +40,23 @@ export const navigationConfig: NavigationItem[] =
       label: "Sales & Payments",
       icon: CreditCard,
       items: [
-        {
-          label: "Estimates",
-          href: "/estimates",
-        },
+        // {
+        //   label: "Estimates",
+        //   href: "/estimates",
+        // },
         { label: "Invoices", href: "/invoices" },
-        {
-          label: "Recurring Invoices",
-          href: "/recurring-invoices",
-        },
-        {
-          label: "Checkouts",
-          href: "/checkouts",
-        },
-        {
-          label: "Customer Statements",
-          href: "/customer-statements",
-        },
+        // {
+        //   label: "Recurring Invoices",
+        //   href: "/recurring-invoices",
+        // },
+        // {
+        //   label: "Checkouts",
+        //   href: "/checkouts",
+        // },
+        // {
+        //   label: "Customer Statements",
+        //   href: "/customer-statements",
+        // },
         {
           label: "Customers",
           href: "/customers",

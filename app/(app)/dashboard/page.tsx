@@ -22,24 +22,26 @@ import StatBox from "@/components/dashboard/StatBox";
 import WinningStatBox from "@/components/dashboard/WinningStatBox";
 import WeeklyRevenueChart from "@/components/dashboard/WeeklyRevenueChart";
 import HourlySalesTrend from "@/components/dashboard/HourlySalesChart";
+import TopItems from "@/components/dashboard/TopItems";
+import RecentTransactions from "@/components/dashboard/RecentTransactions";
 
 export default function Page() {
   return (
     <div className="  w-full px-4">
       <div className="flex justify-between items-center w-full  py-2">
         <div className="py-4">
-          {/* for header text */}
+          {/* FOR HEADER TEXT */}
           <h1 className="font-bold text-2xl">
             Dashboard Overview
           </h1>
-          <p>
-            Welcome back, Ek. What is happening
-            with Rebuzz POS
+          <p className="text-gray-600">
+            Welcome back, Ek. Here&apos;s
+            what&apos;s happening with Rebuzz POS
           </p>
         </div>
         <div className="mx-3">
-          {/* for header buttons */}
-          <Button>
+          {/* FOR HEADER BUTTONS*/}
+          <Button className="bg-blue-500 hover:bg-blue-600">
             <Link href="/invoices/add">
               Create order
             </Link>
@@ -76,40 +78,48 @@ export default function Page() {
 
       {/* ACTUAL CONTENTS */}
       <div>
-        <div className="flex flex-wrap items-center justify-center mt-2 gap-2">
+        <div className="flex flex-wrap items-center justify-center my-4 gap-2">
           <StatBox
             statTitle="Total Sales"
             amount={999999}
             percent={12}
             icon={DollarSign}
+            iconColor={"text-blue-500"}
           />
           <StatBox
             statTitle="Total Orders"
             amount={1234}
             percent={10}
             icon={ShoppingBag}
+            iconColor={"text-purple-500"}
           />
           <StatBox
             statTitle="Total Orders"
             amount={1234}
             percent={10}
             icon={Package}
+            iconColor={"text-red-500"}
           />
           <StatBox
             statTitle="Total Orders"
             amount={1234}
             percent={10}
             icon={CreditCard}
+            iconColor={"text-green-500"}
           />
         </div>
 
         <WinningStatBox />
         {/* CHARTS */}
-        <div className="flex flex-wrap items-stretch gap-4 px-4">
+        <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
           <WeeklyRevenueChart />
           <SalesLocationChart />
         </div>
         <HourlySalesTrend />
+        <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
+          <TopItems />
+          <RecentTransactions />
+        </div>
       </div>
     </div>
   );

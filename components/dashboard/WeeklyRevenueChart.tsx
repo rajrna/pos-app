@@ -38,9 +38,6 @@ const BAR_COLOR_PEAK = "#2563eb";
 const formatYAxis = (value: number): string =>
   `$${value / 1000}k`;
 
-// ✅ Fix 3: shape prop expects a function, not a JSX element.
-// Also access `day` via index lookup instead of casting props,
-// since BarShapeProps doesn't include custom data keys directly.
 const CustomBar = (props: BarShapeProps) => {
   const barData = data[props.index ?? 0];
   const isPeak = barData?.day === PEAK_DAY;
@@ -57,8 +54,6 @@ const CustomBar = (props: BarShapeProps) => {
   );
 };
 
-// ✅ Fix 1 & 2: Use explicit interface with Payload type
-// instead of TooltipProps, which doesn't expose `payload` or `label` reliably.
 interface CustomTooltipProps {
   active?: boolean;
   label?: string;
@@ -90,7 +85,7 @@ const CustomTooltip = ({
 
 export default function WeeklyRevenueChart() {
   return (
-    <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+    <div className="flex-2 min-w-95 bg-white rounded-2xl  border border-gray-100 p-8 shadow-md hover:shadow-lg transition duration-300">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900">
@@ -101,7 +96,7 @@ export default function WeeklyRevenueChart() {
         </p>
       </div>
 
-      {/* Chart */}
+      {/* CHART */}
       <ResponsiveContainer
         width="100%"
         height={280}
@@ -146,7 +141,6 @@ export default function WeeklyRevenueChart() {
               fill: "rgba(59,130,246,0.05)",
             }}
           />
-          {/* ✅ Fix 3: Pass shape as a function reference, not a JSX element */}
           <Bar
             dataKey="revenue"
             shape={CustomBar}

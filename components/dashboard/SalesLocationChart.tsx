@@ -67,7 +67,7 @@ const CustomTooltip = ({
 
 export default function SalesLocationChart() {
   return (
-    <div className="flex-1 min-w-70 bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+    <div className="flex-1 min-w-70 bg-white rounded-2xl border border-gray-100  p-8 shadow-md hover:shadow-lg transition duration-300">
       {/* Header */}
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900">
@@ -111,14 +111,14 @@ export default function SalesLocationChart() {
         </ResponsiveContainer>
       </div>
 
-      {/* Legend */}
+      {/* LEGEND */}
       <div className="mt-2 space-y-3 px-2">
         {data.map((entry) => (
           <div
             key={entry.name}
             className="flex items-center justify-between"
           >
-            {/* Left: dot + label */}
+            {/* LEFT: dot + label */}
             <div className="flex items-center gap-2">
               <span
                 className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -131,7 +131,7 @@ export default function SalesLocationChart() {
               </span>
             </div>
 
-            {/* Center: progress bar */}
+            {/* CENTER: progress bar */}
             <div className="flex-1 mx-4">
               <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
                 <div
@@ -145,7 +145,7 @@ export default function SalesLocationChart() {
               </div>
             </div>
 
-            {/* Right: percentage */}
+            {/* RIGHT: percentage */}
             <span className="text-sm font-semibold text-gray-700 w-10 text-right">
               {entry.value}%
             </span>
