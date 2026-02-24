@@ -1,0 +1,134 @@
+"use client";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+import type {
+  NameType,
+  Payload,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
+
+interface SegmentData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+const data: SegmentData[] = [
+  {
+    name: "Repeat",
+    value: 1020,
+    color: "#60a5fa",
+  },
+  { name: "New", value: 400, color: "#34d399" },
+];
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Payload<ValueType, NameType>[];
+}
+
+const CustomTooltip = ({
+  active,
+  payload,
+}: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const entry = payload[0]
+      .payload as SegmentData;
+    return (
+      <div className="bg-white rounded-xl px-4 py-2 shadow-lg border border-gray-100">
+        <p className="text-gray-500 text-xs">
+          {entry.name}
+        </p>
+        <p
+          className="font-bold text-sm"
+          style={{ color: entry.color }}
+        >
+          {entry.value.toLocaleString()}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export default function CustomerSegmentationChart() {
+  const total = data.reduce(
+    (sum, d) => sum + d.value,
+    0,
+  );
+
+  return (
+    <div className="flex-1 w-80 min-w-70 bg-white rounded-2xl border border-gray-100 shadow-md p-6 ">
+      {/* Header */}
+      <div className="mb-2">
+        <h2 className="text-lg font-bold text-gray-900">
+          Customer Segmentation
+        </h2>
+        <p className="text-sm text-gray-400 mt-0.5">
+          New vs Repeat customer distribution
+        </p>
+      </div>
+
+      {/* Donut Chart */}
+      <div className="flex items-center justify-center py-4">
+        <ResponsiveContainer
+          width="100%"
+          height={220}
+        >
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={75}
+              outerRadius={105}
+              paddingAngle={3}
+              dataKey="value"
+              startAngle={90}
+              endAngle={-270}
+            >
+              {data.map((entry) => (
+                <Cell
+                  key={entry.name}
+                  fill={entry.color}
+                  stroke="none"
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              content={<CustomTooltip />}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-6 mt-1">
+        {data.map((entry) => (
+          <div
+            key={entry.name}
+            className="flex items-center gap-2"
+          >
+            <span
+              className="w-3 h-3 rounded-full shrink-0"
+              style={{
+                backgroundColor: entry.color,
+              }}
+            />
+            <span className="text-sm text-gray-600">
+              {entry.name}:{" "}
+              <span className="font-bold text-gray-900">
+                {entry.value.toLocaleString()}
+              </span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

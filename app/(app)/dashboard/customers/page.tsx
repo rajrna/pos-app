@@ -1,4 +1,6 @@
+import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
 import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
+import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
 import { Button } from "@/components/ui/button";
 import {
   Award,
@@ -25,7 +27,7 @@ export default function Page() {
         </div>
         <div className="mx-3">
           {/* FOR HEADER BUTTONS*/}
-          <Button className="bg-blue-500">
+          <Button className="bg-blue-500 hover:bg-blue-600">
             <UserPlus />
             <Link href="/customers/add">
               New Customer
@@ -65,6 +67,10 @@ export default function Page() {
             iconColor={"text-orange-500"}
             bgColor={"orange"}
           />
+        </div>
+        <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
+          <CustomerSegmentationChart />
+          <LoyaltyTierChart />
         </div>
       </div>
     </div>

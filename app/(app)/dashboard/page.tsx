@@ -1,13 +1,13 @@
 import Link from "next/link";
 
 import {
-  BanknoteArrowUp,
   CreditCard,
   DollarSign,
   Flame,
   LayoutDashboard,
   Package,
   ShoppingBag,
+  TrendingUp,
 } from "lucide-react";
 
 import {
@@ -56,7 +56,7 @@ export default function Page() {
             Overview
           </Button>
           <Button>
-            <BanknoteArrowUp />
+            <TrendingUp />
             Growth Tracker
           </Button>
           <Button>
