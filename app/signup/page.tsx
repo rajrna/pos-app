@@ -52,7 +52,7 @@ export default function Page() {
           {/* Email Field */}
           <div>
             <label
-              className="block text-sm font-bold mb-2"
+              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="email"
             >
               Email
@@ -81,7 +81,7 @@ export default function Page() {
           {/* Password Field */}
           <div>
             <label
-              className="block text-sm font-bold mb-2"
+              className="block text-sm text-gray-700 font-bold mb-2"
               htmlFor="password"
             >
               Password

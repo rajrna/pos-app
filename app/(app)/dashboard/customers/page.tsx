@@ -27,7 +27,7 @@ export default function Page() {
         </div>
         <div className="mx-3">
           {/* FOR HEADER BUTTONS*/}
-          <Button className="bg-blue-500 hover:bg-blue-600">
+          <Button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 text-white rounded-2xl">
             <UserPlus />
             <Link href="/customers/add">
               New Customer
