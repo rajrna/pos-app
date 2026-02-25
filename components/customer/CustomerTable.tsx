@@ -17,6 +17,7 @@ import { Badge } from "../ui/badge";
 import CustomerRow from "./CustomerRow";
 import { customerKeys } from "@/hooks/useCustomers";
 import { fetchCustomers } from "@/services/apiCustomer";
+import { Spinner } from "../ui/spinner";
 
 export default function CustomerTable() {
   const [searchQuery, setSearchQuery] =
@@ -41,8 +42,8 @@ export default function CustomerTable() {
   const total = data?.total || 0;
   if (isLoading)
     return (
-      <div className="text-center py-12 text-gray-500">
-        Loading customers...
+      <div className="flex items-center justify-center mt-40">
+        <Spinner className="size-8" />
       </div>
     );
 

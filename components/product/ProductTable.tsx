@@ -17,6 +17,7 @@ import { Badge } from "../ui/badge";
 import ProductRow from "./ProductRow";
 import { fetchProducts } from "@/services/apiProduct";
 import { customerKeys } from "@/hooks/useCustomers";
+import { Spinner } from "../ui/spinner";
 
 export default function ProductTable() {
   const [searchQuery, setSearchQuery] =
@@ -42,8 +43,8 @@ export default function ProductTable() {
 
   if (isLoading)
     return (
-      <div className="text-center py-12 text-gray-500">
-        Loading products...
+      <div className="flex items-center justify-center mt-40 ">
+        <Spinner className="size-8" />
       </div>
     );
 

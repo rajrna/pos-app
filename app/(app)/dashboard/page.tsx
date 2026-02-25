@@ -6,7 +6,6 @@ import {
   Flame,
   LayoutDashboard,
   Package,
-  Plus,
   ShoppingBag,
   TrendingUp,
 } from "lucide-react";
