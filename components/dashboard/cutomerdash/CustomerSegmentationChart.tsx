@@ -12,28 +12,19 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-interface LocationData {
+interface SegmentData {
   name: string;
   value: number;
   color: string;
 }
 
-const data: LocationData[] = [
+const data: SegmentData[] = [
   {
-    name: "Downtown",
-    value: 45,
+    name: "Repeat",
+    value: 1020,
     color: "#60a5fa",
   },
-  {
-    name: "Westside",
-    value: 25,
-    color: "#a78bfa",
-  },
-  {
-    name: "Suburbs",
-    value: 30,
-    color: "#ec4899",
-  },
+  { name: "New", value: 400, color: "#34d399" },
 ];
 
 interface CustomTooltipProps {
@@ -47,7 +38,7 @@ const CustomTooltip = ({
 }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const entry = payload[0]
-      .payload as LocationData;
+      .payload as SegmentData;
     return (
       <div className="bg-white rounded-xl px-4 py-2 shadow-lg border border-gray-100">
         <p className="text-gray-500 text-xs">
@@ -57,7 +48,7 @@ const CustomTooltip = ({
           className="font-bold text-sm"
           style={{ color: entry.color }}
         >
-          {entry.value}%
+          {entry.value.toLocaleString()}
         </p>
       </div>
     );
@@ -65,21 +56,26 @@ const CustomTooltip = ({
   return null;
 };
 
-export default function SalesLocationChart() {
+export default function CustomerSegmentationChart() {
+  const total = data.reduce(
+    (sum, d) => sum + d.value,
+    0,
+  );
+
   return (
-    <div className="flex-1 min-w-70 bg-white rounded-2xl border border-gray-100  p-8 shadow-md hover:shadow-lg transition duration-300">
+    <div className="flex-1 w-80 min-w-70 bg-white rounded-2xl border border-gray-100 shadow-md p-6 ">
       {/* Header */}
-      <div className="mb-4">
+      <div className="mb-2">
         <h2 className="text-lg font-bold text-gray-900">
-          Sales by Location
+          Customer Segmentation
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">
-          Revenue share across branches
+          New vs Repeat customer distribution
         </p>
       </div>
 
       {/* Donut Chart */}
-      <div className="flex items-center justify-center py-2">
+      <div className="flex items-center justify-center py-4">
         <ResponsiveContainer
           width="100%"
           height={220}
@@ -89,8 +85,8 @@ export default function SalesLocationChart() {
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={70}
-              outerRadius={100}
+              innerRadius={75}
+              outerRadius={105}
               paddingAngle={3}
               dataKey="value"
               startAngle={90}
@@ -111,43 +107,24 @@ export default function SalesLocationChart() {
         </ResponsiveContainer>
       </div>
 
-      {/* LEGEND */}
-      <div className="mt-2 space-y-3 px-2">
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-6 mt-1">
         {data.map((entry) => (
           <div
             key={entry.name}
-            className="flex items-center justify-between"
+            className="flex items-center gap-2"
           >
-            {/* LEFT: dot + label */}
-            <div className="flex items-center gap-2">
-              <span
-                className="w-2.5 h-2.5 rounded-full shrink-0"
-                style={{
-                  backgroundColor: entry.color,
-                }}
-              />
-              <span className="text-sm text-gray-700">
-                {entry.name}
+            <span
+              className="w-3 h-3 rounded-full shrink-0"
+              style={{
+                backgroundColor: entry.color,
+              }}
+            />
+            <span className="text-sm text-gray-600">
+              {entry.name}:{" "}
+              <span className="font-bold text-gray-900">
+                {entry.value.toLocaleString()}
               </span>
-            </div>
-
-            {/* CENTER: progress bar */}
-            <div className="flex-1 mx-4">
-              <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${entry.value}%`,
-                    backgroundColor: entry.color,
-                    opacity: 0.6,
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* RIGHT: percentage */}
-            <span className="text-sm font-semibold text-gray-700 w-10 text-right">
-              {entry.value}%
             </span>
           </div>
         ))}

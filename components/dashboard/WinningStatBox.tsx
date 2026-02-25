@@ -8,7 +8,7 @@ export default function WinningStatBox() {
   return (
     <div className="flex items-center flex-wrap justify-center mt-2  gap-4">
       {/* TOP SELLING PRODUCTS */}
-      <div className="w-96 border px-6 py-4 bg-blue-700 rounded-lg">
+      <div className="w-96 px-6 py-4 bg-blue-700 shadow-md shadow-blue-800 rounded-lg">
         <span className="text-[14px] text-gray-300">
           TOP SELLING PRODUCT
         </span>
@@ -25,7 +25,7 @@ export default function WinningStatBox() {
         </div>
       </div>
       {/* PEAK HOURS */}
-      <div className="w-94 border px-6 py-4 bg-purple-500 rounded-lg">
+      <div className="w-94 shadow-md shadow-purple-600 px-6 py-4 bg-purple-500 rounded-lg">
         <span className="text-[14px] text-gray-300">
           PEAK HOUR
         </span>
@@ -42,7 +42,7 @@ export default function WinningStatBox() {
         </div>
       </div>
       {/* BEST DAY */}
-      <div className="w-94 border px-6 py-4 bg-green-700 rounded-lg">
+      <div className="w-94  px-6 py-4 bg-green-700 shadow-green-800 shadow-md rounded-lg">
         <span className="text-[14px] text-gray-300">
           BEST DAY OF THE WEEK
         </span>
