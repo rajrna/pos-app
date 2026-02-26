@@ -1,29 +1,55 @@
 "use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 type SignupFormValues = {
+  fullName: string;
   email: string;
+  phone: string;
   password: string;
+  cpass: string;
+  redeemCode?: string;
 };
+
+function getPasswordHints(
+  password: string,
+): string[] {
+  const hints: string[] = [];
+  if (!/[A-Z]/.test(password))
+    hints.push("a capital letter");
+  if (!/[0-9]/.test(password))
+    hints.push("a number");
+  return hints;
+}
 
 export default function Page() {
   const [showPassword, setShowPassword] =
     useState(false);
+  const [
+    showConfirmPassword,
+    setShowConfirmPassword,
+  ] = useState(false);
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignupFormValues>();
+
+  const passwordValue = watch("password", "");
+  const passwordHints = getPasswordHints(
+    passwordValue,
+  );
 
   const onSubmit = (data: SignupFormValues) => {
     console.log(data);
   };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 font-sans ">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 font-sans">
       {/* Logo Section */}
       <div className="my-8 flex items-center gap-2">
         <span className="text-2xl text-blue-900 font-bold tracking-tight">
@@ -32,7 +58,7 @@ export default function Page() {
       </div>
 
       {/* Header */}
-      <div className="text-center max-w-md mb-10">
+      <div className="text-center max-w-md mb-4">
         <h1 className="text-[32px] font-bold leading-tight mb-4">
           Check out Rebuzz — it&apos;s free!
         </h1>
@@ -46,10 +72,33 @@ export default function Page() {
       {/* Form Container */}
       <div className="w-full max-w-100">
         <form
-          className="space-y-6"
+          className="space-y-2"
           onSubmit={handleSubmit(onSubmit)}
         >
-          {/* Email Field */}
+          {/* Full Name */}
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="fullName"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              {...register("fullName", {
+                required: "Name is required",
+              })}
+            />
+            {errors.fullName && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.fullName.message}
+              </p>
+            )}
+          </div>
+
+          {/* Email */}
           <div>
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -78,7 +127,36 @@ export default function Page() {
             )}
           </div>
 
-          {/* Password Field */}
+          {/* Phone Number */}
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="phone"
+            >
+              Phone Number
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              {...register("phone", {
+                required:
+                  "Phone number is required",
+                pattern: {
+                  value: /^[0-9+\-\s()]{7,15}$/,
+                  message:
+                    "Enter a valid phone number",
+                },
+              })}
+            />
+            {errors.phone && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password */}
           <div>
             <label
               className="block text-sm text-gray-700 font-bold mb-2"
@@ -119,19 +197,96 @@ export default function Page() {
               <p className="mt-2 text-sm text-red-500">
                 {errors.password.message}
               </p>
+            ) : passwordValue.length >= 8 &&
+              passwordHints.length > 0 ? (
+              <p className="mt-2 text-[14px] text-amber-600">
+                Your password is valid, but adding{" "}
+                {passwordHints.join(" and ")}{" "}
+                would make it stronger.
+              </p>
             ) : (
               <p className="mt-2 text-[14px] text-gray-600">
                 At least 8 characters, but longer
                 is better.
               </p>
             )}
-            <Link
-              href="/login"
-              className="text-blue-800 font-semibold py-2"
-            >
-              Already have an account
-            </Link>
           </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label
+              className="block text-sm text-gray-700 font-bold mb-2"
+              htmlFor="cpass"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                id="cpass"
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                className="w-full px-2 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                {...register("cpass", {
+                  required:
+                    "Please confirm your password",
+                  validate: (value) =>
+                    value === passwordValue ||
+                    "Passwords do not match",
+                })}
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    (prev) => !prev,
+                  )
+                }
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 text-sm font-bold hover:underline"
+              >
+                {showConfirmPassword
+                  ? "Hide"
+                  : "Show"}
+              </button>
+            </div>
+            {errors.cpass ? (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.cpass.message}
+              </p>
+            ) : (
+              <p className="mt-1 text-[14px] text-gray-600">
+                Must match your password.
+              </p>
+            )}
+          </div>
+
+          {/* Redeem Code (optional) */}
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="redeemCode"
+            >
+              Redeem Code{" "}
+              <span className="text-gray-400 font-normal">
+                (optional)
+              </span>
+            </label>
+            <input
+              type="text"
+              id="redeemCode"
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              {...register("redeemCode")}
+            />
+          </div>
+
+          <Link
+            href="/login"
+            className="block text-blue-800 font-semibold py-1 text-sm"
+          >
+            Already have an account?
+          </Link>
 
           {/* Primary CTA */}
           <Button
@@ -157,22 +312,9 @@ export default function Page() {
         {/* Social Logins */}
         <div className="space-y-3">
           <Button className="w-full flex items-center justify-center gap-3 border border-gray-900 py-5 rounded-full hover:bg-blue-200 hover:text-blue-800 hover:border-blue-900 bg-gray-50 text-gray-700 transition-colors text-[16px] font-semibold">
-            {/* <Image
-              width={10}
-              src={}
-              alt="Google"
-              className="w-5 h-5"
-            /> */}
             Sign up with Google
           </Button>
-
           <Button className="w-full flex items-center justify-center gap-3 border border-gray-900 bg-gray-900 text-gray-100 py-5 rounded-full hover:bg-blue-200 hover:text-blue-800 hover:border-blue-900 transition-colors font-semibold text-[16px]">
-            {/* <svg
-              className="w-5 h-5 fill-current"
-              viewBox="0 0 24 24"
-            >
-              <path d="M17.05 20.28c-.96 0-2.04-.68-3.02-.68-1 0-1.92.65-2.88.65-2.5 0-5.18-2.6-5.18-6.14 0-3.66 2.38-5.7 4.54-5.7.98 0 1.76.54 2.53.54s1.66-.58 2.76-.58c1.1 0 2.2.48 3 1.54-2.18 1.15-1.84 3.96.43 4.9-1.04 1.5-2.4 3.1-3.65 3.1-.4 0-.8-.13-1.14-.13-.34 0-.74.13-1.13.13zM12.03 7.25c-.13-2.23 1.73-4.13 3.6-4.25.2 2.36-2 4.38-3.6 4.25z" />
-            </svg> */}
             Sign up with Apple
           </Button>
         </div>
