@@ -111,7 +111,7 @@ export default function InvoiceDiscount({
                     Number(e.target.value),
                   )
                 }
-                className="w-24 text-right border-blue-400"
+                className="w-24 text-right border"
               />
               <Select
                 value={discount.type}
