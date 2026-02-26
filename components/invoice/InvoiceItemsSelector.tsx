@@ -106,7 +106,7 @@ export default function InvoiceItemsSelector({
                     e.target.value,
                   )
                 }
-                placeholder="ProductName"
+                placeholder="Product Name"
                 className="border-gray-300"
                 list={`products-${item.id}`}
               />
