@@ -15,7 +15,7 @@ export default function Page() {
         </div>
         <div className="flex items-center justify-center gap-4">
           <Button className="border-0 hover:bg-gray-100 hover:text-blue-600 bg-gray-100 px-8 py-6   text-blue-900 text-[16px] font-semibold">
-            <Link href="/dashboard">Log in</Link>
+            <Link href="/login">Log in</Link>
           </Button>
 
           <Button className="bg-blue-600 hover:bg-blue-700 px-8 py-6 text-[16px] font-semibold rounded-3xl ">

@@ -3,6 +3,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { registerUser } from "@/services/apiRegister";
+import { useRouter } from "next/navigation";
+import Divider from "@/components/forms/Divider";
 
 type SignupFormValues = {
   fullName: string;
@@ -24,7 +27,17 @@ function getPasswordHints(
   return hints;
 }
 
+// need to ask for clarification later
+
+const BUSINESS_SLUG =
+  process.env.NEXT_PUBLIC_BUSINESS_SLUG ?? "java";
 export default function Page() {
+  const [serverError, setServerError] = useState<
+    string | null
+  >(null);
+  const [isLoading, setIsLoading] =
+    useState(false);
+
   const [showPassword, setShowPassword] =
     useState(false);
   const [
@@ -39,13 +52,41 @@ export default function Page() {
     formState: { errors },
   } = useForm<SignupFormValues>();
 
+  const router = useRouter();
   const passwordValue = watch("password", "");
   const passwordHints = getPasswordHints(
     passwordValue,
   );
 
-  const onSubmit = (data: SignupFormValues) => {
-    console.log(data);
+  const onSubmit = async (
+    data: SignupFormValues,
+  ) => {
+    setServerError(null);
+    setIsLoading(true);
+
+    const result = await registerUser(
+      BUSINESS_SLUG,
+      {
+        name: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
+        confirm_password: data.cpass,
+      },
+    );
+
+    setIsLoading(false);
+
+    if (!result.success) {
+      setServerError(result.error);
+      return;
+    }
+
+    sessionStorage.setItem(
+      "pendingVerifyEmail",
+      data.email,
+    );
+    router.push("/signup/verify");
   };
 
   return (
@@ -289,25 +330,23 @@ export default function Page() {
           </Link>
 
           {/* Primary CTA */}
+          {serverError && (
+            <p className="text-sm text-red-500 text-center">
+              {serverError}
+            </p>
+          )}
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 text-[16px] rounded-full transition-colors duration-200"
           >
-            Get started
+            {isLoading
+              ? "Creating account..."
+              : "Get started"}
           </Button>
         </form>
 
-        {/* Divider */}
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-gray-200"></span>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-gray-600">
-              or
-            </span>
-          </div>
-        </div>
+        <Divider />
 
         {/* Social Logins */}
         <div className="space-y-3">

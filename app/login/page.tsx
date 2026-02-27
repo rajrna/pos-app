@@ -1,0 +1,195 @@
+"use client";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Divider from "@/components/forms/Divider";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { loginUser } from "@/services/apiLogin";
+
+const BUSINESS_SLUG =
+  process.env.NEXT_PUBLIC_BUSINESS_SLUG ?? "java";
+
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
+export default function Page() {
+  const [showPassword, setShowPassword] =
+    useState(false);
+  const [serverError, setServerError] = useState<
+    string | null
+  >(null);
+  const [isLoading, setIsLoading] =
+    useState(false);
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>();
+
+  const onSubmit = async (
+    data: LoginFormValues,
+  ) => {
+    setServerError(null);
+    setIsLoading(true);
+
+    const result = await loginUser(
+      BUSINESS_SLUG,
+      {
+        email_or_phone: data.email,
+        password: data.password,
+        deviceToken: "",
+      },
+    );
+
+    setIsLoading(false);
+
+    if (!result.success) {
+      setServerError(result.error);
+      return;
+    }
+
+    router.push("/dashboard");
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 font-sans">
+      {/* Logo Section */}
+      <div className="my-8 flex items-center gap-2">
+        <span className="text-2xl text-blue-900 font-bold tracking-tight">
+          <Link href="/">Rebuzz</Link>
+        </span>
+      </div>
+
+      {/* Header */}
+      <div className="text-center max-w-md mb-4">
+        <h1 className="text-[32px] font-bold leading-tight mb-4">
+          Log back into your account.
+        </h1>
+        <p className="text-gray-600 text-[20px] leading-relaxed">
+          Welcome back, <br />
+          Your customers are waiting for you.
+        </p>
+      </div>
+
+      {/* Form Container */}
+      <div className="w-full max-w-100">
+        <form
+          className="space-y-2"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value:
+                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message:
+                    "Enter a valid email address",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label
+              className="block text-sm text-gray-700 font-bold mb-2"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                className="w-full px-2 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                {...register("password", {
+                  required:
+                    "Password is required",
+                })}
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowPassword((prev) => !prev)
+                }
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 text-sm font-bold hover:underline"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.password.message}
+              </p>
+            )}
+            <Link
+              href="/forgot-password"
+              className="py-4 text-sm text-gray-600 hover:text-blue-600"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+
+          {serverError && (
+            <p className="text-sm text-red-500 text-center">
+              {serverError}
+            </p>
+          )}
+
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 text-[16px] rounded-full transition-colors duration-200 disabled:opacity-60"
+          >
+            {isLoading
+              ? "Logging in..."
+              : "Log In"}
+          </Button>
+
+          <Divider />
+
+          <Button
+            type="button"
+            onClick={() => router.push("/signup")}
+            className="w-full border border-gray-300 bg-gray-50 text-gray-700 hover:bg-blue-200 hover:text-blue-800 hover:border-blue-900 font-bold py-5 text-[16px] rounded-full transition-colors duration-200"
+          >
+            Create a New Account
+          </Button>
+        </form>
+
+        {/* Remove later */}
+        <div className="p-4 flex items-center justify-center text-red-600">
+          <Link href="/dashboard">
+            For development only
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
