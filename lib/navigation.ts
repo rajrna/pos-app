@@ -33,6 +33,10 @@ export const navigationConfig: NavigationItem[] =
           label: "Customers",
           href: "/dashboard/customers",
         },
+        {
+          label: "Staffs",
+          href: "/dashboard/staff",
+        },
       ],
     },
     {
