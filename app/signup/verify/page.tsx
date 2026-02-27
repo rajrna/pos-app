@@ -1,4 +1,4 @@
-import VerifyForm from "@/components/dashboard/signup/VerifyForm";
+import VerifyForm from "@/components/signup/VerifyForm";
 import { Suspense } from "react";
 
 export default function Page() {
