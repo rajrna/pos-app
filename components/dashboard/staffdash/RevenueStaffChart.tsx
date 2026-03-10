@@ -16,43 +16,21 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-interface DataPoint {
-  day: string;
+interface StaffRevenue {
+  name: string;
   revenue: number;
 }
 
-const data: DataPoint[] = [
-  { day: "Mon", revenue: 13000 },
-  { day: "Tue", revenue: 12000 },
-  { day: "Wed", revenue: 15500 },
-  { day: "Thu", revenue: 12500 },
-  { day: "Fri", revenue: 17000 },
-  { day: "Sat", revenue: 22000 },
-  { day: "Sun", revenue: 18000 },
+const data: StaffRevenue[] = [
+  { name: "Emma", revenue: 5900 },
+  { name: "Liam", revenue: 5000 },
+  { name: "Sophia", revenue: 4600 },
+  { name: "James", revenue: 4000 },
+  { name: "Aisha", revenue: 6100 },
 ];
 
-const PEAK_DAY = "Sat";
-const BAR_COLOR_DEFAULT = "#60a5fa";
-const BAR_COLOR_PEAK = "#2563eb";
-
 const formatYAxis = (value: number): string =>
-  `$${value / 1000}k`;
-
-const CustomBar = (props: BarShapeProps) => {
-  const barData = data[props.index ?? 0];
-  const isPeak = barData?.day === PEAK_DAY;
-  return (
-    <Rectangle
-      {...props}
-      fill={
-        isPeak
-          ? BAR_COLOR_PEAK
-          : BAR_COLOR_DEFAULT
-      }
-      radius={[4, 4, 0, 0]}
-    />
-  );
-};
+  `$${(value / 1000).toFixed(1)}k`;
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -71,7 +49,7 @@ const CustomTooltip = ({
         <p className="text-gray-400 text-xs mb-1">
           {label}
         </p>
-        <p className="text-blue-500 font-bold text-base">
+        <p className="text-blue-500 font-bold text-sm">
           $
           {(
             payload[0].value as number
@@ -83,30 +61,38 @@ const CustomTooltip = ({
   return null;
 };
 
-export default function WeeklyRevenueChart() {
+const CustomBar = (props: BarShapeProps) => (
+  <Rectangle
+    {...props}
+    radius={[6, 6, 0, 0]}
+    fill="#60a5fa"
+  />
+);
+
+export default function RevenueStaffChart() {
   return (
-    <div className="flex-2 min-w-95 bg-white rounded-2xl  border border-gray-100 p-8 shadow-md hover:shadow-lg transition duration-300">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 min-w-150">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900">
-          Daily Sales Trend
+        <h2 className="text-lg font-bold text-gray-900">
+          Revenue per Staff
         </h2>
-        <p className="text-sm text-gray-400 mt-1">
-          Revenue performance – current week
+        <p className="text-sm text-gray-400 mt-0.5">
+          Individual contribution to total revenue
         </p>
       </div>
 
-      {/* CHART */}
+      {/* Chart */}
       <ResponsiveContainer
         width="100%"
-        height={280}
+        height={200}
       >
         <BarChart
           data={data}
           margin={{
-            top: 10,
-            right: 0,
-            left: 10,
+            top: 0,
+            right: 20,
+            left: 20,
             bottom: 0,
           }}
           barCategoryGap="15%"
@@ -115,15 +101,18 @@ export default function WeeklyRevenueChart() {
             vertical={false}
             stroke="#f3f4f6"
           />
+
           <XAxis
-            dataKey="day"
+            dataKey="name"
             axisLine={false}
             tickLine={false}
             tick={{
               fill: "#9ca3af",
               fontSize: 13,
             }}
+            dy={10}
           />
+
           <YAxis
             tickFormatter={formatYAxis}
             axisLine={false}
@@ -132,15 +121,18 @@ export default function WeeklyRevenueChart() {
               fill: "#9ca3af",
               fontSize: 12,
             }}
-            ticks={[0, 6000, 11000, 17000, 22000]}
-            domain={[0, 24000]}
+            ticks={[0, 2000, 4000, 6000, 8000]}
+            domain={[0, 8500]}
+            width={60}
           />
+
           <Tooltip
             content={<CustomTooltip />}
             cursor={{
-              fill: "rgba(59,130,246,0.05)",
+              fill: "rgba(96,165,250,0.05)",
             }}
           />
+
           <Bar
             dataKey="revenue"
             shape={CustomBar}

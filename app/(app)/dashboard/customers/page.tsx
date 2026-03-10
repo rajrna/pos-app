@@ -1,6 +1,7 @@
 import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
 import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
 import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
+import TopCustomer from "@/components/dashboard/cutomerdash/TopCustomer";
 import { Button } from "@/components/ui/button";
 import {
   Award,
@@ -72,6 +73,18 @@ export default function Page() {
           <CustomerSegmentationChart />
           <LoyaltyTierChart />
         </div>
+        <TopCustomer
+          topCustomers={[
+            {
+              rank: 1,
+              name: "Uncle",
+              numVisits: 10,
+              totalSpent: 50,
+              loyaltyTier: "Gold",
+              loyaltyPoints: 50,
+            },
+          ]}
+        />
       </div>
     </div>
   );
