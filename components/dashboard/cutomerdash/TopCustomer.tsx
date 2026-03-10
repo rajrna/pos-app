@@ -71,24 +71,6 @@ export default function TopCustomer({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {/* <TableRow>
-            <TableCell className="text-gray-700">
-              1
-            </TableCell>
-            <TableCell className="font-semibold">
-              Alex Johnson
-            </TableCell>
-            <TableCell>45</TableCell>
-            <TableCell className="font-semibold">
-              $1145
-            </TableCell>
-            <TableCell>
-              <p className="w-12 flex items-center justify-center bg-yellow-200 text-yellow-900 rounded-lg px-1">
-                Gold
-              </p>
-            </TableCell>
-            <TableCell>450</TableCell>
-          </TableRow> */}
           {topCustomers.map((customer) => {
             const styles =
               tierStyles[customer.loyaltyTier];
