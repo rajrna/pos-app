@@ -120,7 +120,31 @@ export default function Page() {
         <HourlySalesTrend />
         <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
           <TopItems />
-          <RecentTransactions />
+          <RecentTransactions
+            transactions={[
+              {
+                id: "ORD-421",
+                timestamp: "2 min ago",
+                customer: "Alex Johnson",
+                amount: "$28.50",
+                status: "completed",
+              },
+              {
+                id: "ORD-420",
+                timestamp: "15 min ago",
+                customer: "Maria Garcia",
+                amount: "$14.00",
+                status: "pending",
+              },
+              {
+                id: "ORD-419",
+                timestamp: "1 hr ago",
+                customer: "James Lee",
+                amount: "$52.75",
+                status: "failed",
+              },
+            ]}
+          />
         </div>
       </div>
     </div>

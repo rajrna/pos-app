@@ -1,9 +1,18 @@
-import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
-import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
+import RevenueStaffChart from "@/components/dashboard/staffdash/RevenueStaffChart";
+import ShiftAnalysisReport from "@/components/dashboard/staffdash/ShiftAnalysisReport";
+import StaffOrdersChart from "@/components/dashboard/staffdash/StaffOrdersChart";
 import StaffStatBox from "@/components/dashboard/staffdash/StaffStatBox";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import Link from "next/link";
+
+// async function getShifts(): Promise<Shift[]> {
+//   const res = await fetch("https://api", {
+//     next: { revalidate: 3600 }
+//   });
+//   if (!res.ok) throw new Error("Failed to fetch shifts");
+//   return res.json();
+// }
 
 export default function Page() {
   return (
@@ -85,8 +94,36 @@ export default function Page() {
           />
         </div>
         <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
-          <CustomerSegmentationChart />
-          <LoyaltyTierChart />
+          <StaffOrdersChart />
+        </div>
+
+        <div className="flex flex-wrap items-stretch gap-8 px-4 my-4">
+          <ShiftAnalysisReport
+            shifts={[
+              {
+                label: "Morning (7–1pm)",
+                orders: 680,
+                avgTime: "4.2m",
+                revenue: "$1600",
+                staff: 3,
+              },
+              {
+                label: "Afternoon (1–5pm)",
+                orders: 520,
+                avgTime: "3.8m",
+                revenue: "$1200",
+                staff: 2,
+              },
+              {
+                label: "Evening (5–9pm)",
+                orders: 310,
+                avgTime: "5.1m",
+                revenue: "$900",
+                staff: 2,
+              },
+            ]}
+          />
+          <RevenueStaffChart />
         </div>
       </div>
     </div>
