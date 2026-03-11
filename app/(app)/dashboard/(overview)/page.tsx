@@ -40,35 +40,6 @@ export default function Page() {
           {stats.map(({ key, ...stat }) => (
             <StatBox key={key} {...stat} />
           ))}
-
-          {/* <StatBox
-            statTitle="Total Sales"
-            amount={999999}
-            percent={12}
-            icon={DollarSign}
-            iconColor="text-blue-500"
-          />
-          <StatBox
-            statTitle="Total Orders"
-            amount={1234}
-            percent={10}
-            icon={ShoppingBag}
-            iconColor="text-purple-500"
-          />
-          <StatBox
-            statTitle="Total Orders"
-            amount={1234}
-            percent={10}
-            icon={Package}
-            iconColor="text-red-500"
-          />
-          <StatBox
-            statTitle="Total Orders"
-            amount={1234}
-            percent={10}
-            icon={CreditCard}
-            iconColor="text-green-500"
-          /> */}
         </div>
 
         <WinningStatBox />

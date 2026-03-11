@@ -1,8 +1,5 @@
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  LucideIcon,
-} from "lucide-react";
+import { getPercentColor } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 
 interface StatBoxProps {
   label: string;
@@ -19,13 +16,15 @@ export default function StatBox({
   icon: Icon,
   iconColor,
 }: StatBoxProps) {
-  const isPositive = percent >= 0;
-  const color = isPositive
-    ? "text-green-400"
-    : "text-red-400";
-  const ArrowIcon = isPositive
-    ? ArrowUpRight
-    : ArrowDownRight;
+  // const isPositive = percent >= 0;
+  // const color = isPositive
+  //   ? "text-green-400"
+  //   : "text-red-400";
+  // const ArrowIcon = isPositive
+  //   ? ArrowUpRight
+  //   : ArrowDownRight;
+  const { text, ArrowIcon } =
+    getPercentColor(percent);
   return (
     <div className="border w-72 px-6 py-6  rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <div className="flex justify-between items-end ">
@@ -47,12 +46,10 @@ export default function StatBox({
           /> */}
           <ArrowIcon
             size={16}
-            className={`${color} mt-1`}
+            className={`${text} mt-1`}
           />
 
-          <span className={color}>
-            {percent}%
-          </span>
+          <span className={text}>{percent}%</span>
           <span className="text-gray-500">
             {" from last month"}
           </span>

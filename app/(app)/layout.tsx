@@ -7,6 +7,8 @@ import "@/app/globals.css";
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { SidebarProvider } from "@/providers/SiderbarProvider";
+import MainContent from "@/components/layout/MainContent";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -35,13 +37,17 @@ export default function RootLayout({
         <Navbar />
       </div>
 
-      <div className="fixed top-(--navbar-height) left-0 bottom-0 w-(--sidebar-width) z-40">
-        <Sidebar />
-      </div>
+      <SidebarProvider>
+        <div className="fixed top-(--navbar-height) left-0 bottom-0  z-40">
+          <Sidebar />
+        </div>
 
-      <main className="pt-(--navbar-height) pl-(--sidebar-width)">
-        <QueryProvider>{children}</QueryProvider>
-      </main>
+        <MainContent>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </MainContent>
+      </SidebarProvider>
     </div>
   );
 }

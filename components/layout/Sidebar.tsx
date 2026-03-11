@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Plus } from "lucide-react";
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  Plus,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { navigationConfig } from "@/lib/navigation";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
+import { cn } from "@/lib/utils";
+import { useSidebar } from "@/providers/SiderbarProvider";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { isCollapsed, toggle } = useSidebar();
+
   const activeSectionFromUrl =
     navigationConfig.find(
       (item) =>
@@ -20,12 +28,11 @@ export default function Sidebar() {
     );
 
   const [openSectionLabel, setOpenSectionLabel] =
-    useState<string | null>(() => {
-      return activeSectionFromUrl?.type ===
-        "section"
+    useState<string | null>(() =>
+      activeSectionFromUrl?.type === "section"
         ? activeSectionFromUrl.label
-        : null;
-    });
+        : null,
+    );
 
   const handleToggle = (label: string) => {
     setOpenSectionLabel((prev) =>
@@ -34,17 +41,37 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-56 border-r bg-background h-screen flex flex-col">
-      <div className="py-2 px-1">
+    <aside
+      className={cn(
+        "border-r bg-background h-screen flex flex-col transition-all duration-300",
+        isCollapsed ? "w-12" : "w-56",
+      )}
+    >
+      <div className="py-2 px-1 flex items-center justify-between gap-1">
+        {!isCollapsed && (
+          <Button
+            className="flex-1 bg-white text-blue-500 text-[14px] font-semibold hover:bg-blue-100"
+            size="sm"
+          >
+            <Plus className="w-2 h-2 mr-1 font-bold" />
+            Create new
+          </Button>
+        )}
         <Button
-          className="w-35 bg-white text-blue-500 text-[14px] font-semibold hover:bg-blue-100 "
-          size="sm"
+          variant="ghost"
+          size="icon"
+          className="shrink-0 h-8 w-8 text-blue-500 hover:text-blue-400"
+          onClick={toggle}
         >
-          <Plus className="w-2 h-2 mr-1 font-bold" />
-          Create new
+          {isCollapsed ? (
+            <PanelLeftOpen className="h-4 w-4" />
+          ) : (
+            <PanelLeftClose className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
+      {/* {!isCollapsed && ( */}
       <nav className="flex-1 overflow-y-auto p-2">
         <div className="space-y-1">
           {navigationConfig.map((item) => {
@@ -60,6 +87,7 @@ export default function Sidebar() {
               <SidebarItem
                 key={item.href}
                 {...item}
+                isCollapsed={isCollapsed}
               />
             ) : (
               <SidebarSection
@@ -71,11 +99,13 @@ export default function Sidebar() {
                 onToggle={() =>
                   handleToggle(item.label)
                 }
+                isCollapsed={isCollapsed}
               />
             );
           })}
         </div>
       </nav>
+      {/* )} */}
     </aside>
   );
 }

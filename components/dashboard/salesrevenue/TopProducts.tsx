@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getPercentColor } from "@/lib/utils";
 
 type TopProduct = {
   name: string;
@@ -42,6 +43,9 @@ export default function TopProducts({
         </TableHeader>
         <TableBody>
           {topProducts.map((product) => {
+            const { badge } = getPercentColor(
+              product.percent,
+            );
             return (
               <TableRow key={product.name}>
                 <TableCell className="font-semibold">
@@ -51,11 +55,11 @@ export default function TopProducts({
                   {product.category}
                 </TableCell>
                 <TableCell className="font-semibold">
-                  {product.revenue}
+                  $ {product.revenue}
                 </TableCell>
                 <TableCell>
                   <p
-                    className={`w-12 flex items-center justify-center rounded-lg px-1`}
+                    className={`w-12 flex items-center justify-center rounded-lg ${badge} px-1`}
                   >
                     {product.percent}%
                   </p>

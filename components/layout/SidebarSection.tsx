@@ -15,6 +15,7 @@ interface SidebarSectionProps {
   items: { label: string; href: string }[];
   isOpen: boolean;
   onToggle: () => void;
+  isCollapsed?: boolean;
 }
 
 export default function SidebarSection({
@@ -23,6 +24,7 @@ export default function SidebarSection({
   items,
   isOpen,
   onToggle,
+  isCollapsed,
 }: SidebarSectionProps) {
   const pathname = usePathname();
   const isAnyActive = items.some(
@@ -39,20 +41,33 @@ export default function SidebarSection({
           isAnyActive &&
             !isOpen &&
             "bg-blue-50 text-blue-600",
+          isCollapsed && "justify-center px-2",
         )}
       >
         <Icon className="w-4 h-4 shrink-0" />
-        <span className="flex-1 text-left">
+        {!isCollapsed && ( // wrap label + chevron
+          <>
+            <span className="flex-1 text-left">
+              {label}
+            </span>
+            {isOpen ? (
+              <ChevronDown className="w-4 h-4 shrink-0" />
+            ) : (
+              <ChevronRight className="w-4 h-4 shrink-0" />
+            )}
+          </>
+        )}
+        {/* <span className="flex-1 text-left">
           {label}
         </span>
         {isOpen ? (
           <ChevronDown className="w-4 h-4 shrink-0" />
         ) : (
           <ChevronRight className="w-4 h-4 shrink-0" />
-        )}
+        )} */}
       </button>
 
-      {isOpen && (
+      {isOpen && !isCollapsed && (
         <div className="ml-7 mt-1 space-y-1">
           {items.map((item) => {
             const isActive =

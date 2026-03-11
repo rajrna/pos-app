@@ -8,12 +8,14 @@ interface SidebarItemProps {
   label: string;
   href: string;
   icon: LucideIcon;
+  isCollapsed?: boolean;
 }
 
 export default function SidebarItem({
   label,
   href,
   icon: Icon,
+  isCollapsed,
 }: SidebarItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -26,10 +28,12 @@ export default function SidebarItem({
         "hover:bg-accent hover:text-accent-foreground",
         isActive &&
           "bg-accent text-accent-foreground",
+        isCollapsed && "justify-center px-2",
       )}
     >
       <Icon className="w-4 h-4 shrink-0" />
-      <span>{label}</span>
+      {/* <span>{label}</span> */}
+      {!isCollapsed && <span>{label}</span>}
     </Link>
   );
 }

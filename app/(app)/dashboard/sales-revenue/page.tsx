@@ -32,6 +32,12 @@ export default function Page() {
               revenue: "600",
               percent: 5,
             },
+            {
+              name: "Latte",
+              category: "Coffee",
+              revenue: "500",
+              percent: -5,
+            },
           ]}
         />
       </div>
