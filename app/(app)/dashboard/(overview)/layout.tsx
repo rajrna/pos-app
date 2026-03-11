@@ -1,0 +1,107 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  Flame,
+  LayoutDashboard,
+  TrendingUp,
+} from "lucide-react";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+
+const tabs = [
+  {
+    label: "Overview",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Growth Tracker",
+    href: "/dashboard/growth-tracker",
+    icon: TrendingUp,
+  },
+  {
+    label: "Heatmap",
+    href: "/dashboard/heatmap",
+    icon: Flame,
+  },
+];
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <div className="w-full px-4">
+      <div className="flex justify-between items-center w-full py-2">
+        <div className="py-4">
+          <h1 className="font-bold text-2xl">
+            Dashboard Overview
+          </h1>
+          <p className="text-gray-600">
+            Welcome back, Ek. Here&apos;s
+            what&apos;s happening with Rebuzz POS
+          </p>
+        </div>
+        <div className="mx-3">
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 text-white rounded-2xl"
+            asChild
+          >
+            <Link href="/invoices/add">
+              Create order
+            </Link>
+          </Button>
+        </div>
+      </div>
+
+      <div className="px-2 flex items-center justify-between border-b-2 py-2">
+        <div className="gap-2 flex">
+          {tabs.map(
+            ({ label, href, icon: Icon }) => (
+              <Button
+                key={href}
+                asChild
+                variant={
+                  pathname === href
+                    ? "default"
+                    : "outline"
+                }
+                className={
+                  pathname === href
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : ""
+                }
+              >
+                <Link href={href}>
+                  <Icon className="mr-2 h-4 w-4" />
+                  {label}
+                </Link>
+              </Button>
+            ),
+          )}
+        </div>
+        <div className="flex justify-between items-center gap-1">
+          <p className="text-gray-400">
+            FILTER BY:
+          </p>
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="Last week" />
+            </SelectTrigger>
+          </Select>
+        </div>
+      </div>
+
+      {children}
+    </div>
+  );
+}

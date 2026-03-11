@@ -35,7 +35,11 @@ export default function Page() {
       </div>
     );
   if (error)
-    return <div>Error loading invoices</div>;
+    return (
+      <div className="flex items-center justify-center w-screen h-screen text-2xl">
+        {":( Error loading invoices"}
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
