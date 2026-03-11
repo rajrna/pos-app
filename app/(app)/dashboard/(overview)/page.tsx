@@ -1,10 +1,3 @@
-import {
-  CreditCard,
-  DollarSign,
-  Package,
-  ShoppingBag,
-} from "lucide-react";
-
 import SalesLocationChart from "@/components/dashboard/SalesLocationChart";
 import StatBox from "@/components/dashboard/StatBox";
 import WinningStatBox from "@/components/dashboard/WinningStatBox";
@@ -12,14 +5,43 @@ import WeeklyRevenueChart from "@/components/dashboard/WeeklyRevenueChart";
 import HourlySalesTrend from "@/components/dashboard/HourlySalesChart";
 import TopItems from "@/components/dashboard/TopItems";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
+import { StatsApiResponse } from "@/lib/dashboardstats";
+import { STATS_CONFIG } from "@/lib/config/dashboard";
+
+const mockStats: StatsApiResponse = {
+  totalSales: {
+    value: "$999,999",
+    percent: 12,
+  },
+  totalOrders: {
+    value: "1234",
+    percent: 10,
+  },
+  productsSold: {
+    value: "123",
+    percent: 10,
+  },
+  netProfit: {
+    value: "$12000",
+    percent: -10,
+  },
+};
 
 export default function Page() {
+  const stats = STATS_CONFIG.map((config) => ({
+    ...config,
+    ...mockStats[config.key],
+  }));
   return (
     <div className="w-full px-4">
       {/* ACTUAL CONTENTS */}
       <div>
         <div className="flex flex-wrap items-center justify-center my-4 gap-2">
-          <StatBox
+          {stats.map(({ key, ...stat }) => (
+            <StatBox key={key} {...stat} />
+          ))}
+
+          {/* <StatBox
             statTitle="Total Sales"
             amount={999999}
             percent={12}
@@ -46,7 +68,7 @@ export default function Page() {
             percent={10}
             icon={CreditCard}
             iconColor="text-green-500"
-          />
+          /> */}
         </div>
 
         <WinningStatBox />

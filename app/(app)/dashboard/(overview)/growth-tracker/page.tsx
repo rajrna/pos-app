@@ -1,51 +1,49 @@
 import GrowthTrackCard from "@/components/dashboard/growthtracker/GrowthTrackCard";
+import { GROWTH_STAT_CONFIG } from "@/lib/config/dashboard";
+import { GrowthStatsApiResponse } from "@/lib/dashboardstats";
 
-const stats = [
-  {
-    label: "Revenue Growth (MoM)",
+const mockGrowthStats: GrowthStatsApiResponse = {
+  revenue: {
     value: "$124,500",
     prev: "$116,900",
     percent: 6.4,
-    inverseColor: false,
   },
-  {
-    label: "Order Growth (MoM)",
+  orders: {
     value: "1,420",
     prev: "1,342",
     percent: 5.8,
-    inverseColor: false,
   },
-  {
-    label: "Avg Order Value",
+  avgOrder: {
     value: "$88.60",
     prev: "$86.40",
     percent: 2.1,
-    inverseColor: false,
   },
-  {
-    label: "Customer Growth (MoM)",
+  customers: {
     value: "700",
     prev: "641",
     percent: 9.2,
-    inverseColor: false,
   },
-  {
-    label: "Profit Margin",
+  margin: {
     value: "34.0%",
     prev: "34.8%",
     percent: -0.8,
-    inverseColor: false,
   },
-  {
-    label: "Refund Rate",
+  refunds: {
     value: "3.1%",
     prev: "3.4%",
     percent: -0.3,
-    inverseColor: true,
   },
-];
+};
+
+// const apiData: GrowthStatsApiResponse = await fetchGrowthStats();
 
 export default function Page() {
+  const stats = GROWTH_STAT_CONFIG.map(
+    (config) => ({
+      ...config,
+      ...mockGrowthStats[config.key],
+    }),
+  );
   return (
     <div className="py-8 px-4">
       <h1 className="font-semibold text-xl">
@@ -57,15 +55,8 @@ export default function Page() {
       </p>
 
       <div className="flex flex-wrap items-center justify-center my-4 gap-2">
-        {stats.map((stat) => (
-          <GrowthTrackCard
-            key={stat.label}
-            label={stat.label}
-            value={stat.value}
-            prev={stat.prev}
-            percent={stat.percent}
-            inverseColor={stat.inverseColor}
-          />
+        {stats.map(({ key, ...stat }) => (
+          <GrowthTrackCard key={key} {...stat} />
         ))}
       </div>
     </div>

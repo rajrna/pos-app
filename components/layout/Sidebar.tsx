@@ -10,9 +10,6 @@ import SidebarSection from "./SidebarSection";
 
 export default function Sidebar() {
   const pathname = usePathname();
-
-  // 1. Calculate which section SHOULD be open based on the URL
-  // We do this outside of useState/useEffect so it's always fresh
   const activeSectionFromUrl =
     navigationConfig.find(
       (item) =>
@@ -22,8 +19,6 @@ export default function Sidebar() {
         ),
     );
 
-  // 2. Initialize state. If there's an active URL, use that label, otherwise null.
-  // We use a "lazy initializer" (the function inside useState) so it only runs once.
   const [openSectionLabel, setOpenSectionLabel] =
     useState<string | null>(() => {
       return activeSectionFromUrl?.type ===
@@ -32,7 +27,6 @@ export default function Sidebar() {
         : null;
     });
 
-  // 3. Keep manual toggle logic
   const handleToggle = (label: string) => {
     setOpenSectionLabel((prev) =>
       prev === label ? null : label,
@@ -41,9 +35,9 @@ export default function Sidebar() {
 
   return (
     <aside className="w-56 border-r bg-background h-screen flex flex-col">
-      <div className="p-1">
+      <div className="py-2 px-1">
         <Button
-          className="w-35 bg-white text-blue-500 text-sm font-bold hover:bg-blue-200"
+          className="w-35 bg-white text-blue-500 text-[14px] font-semibold hover:bg-blue-100 "
           size="sm"
         >
           <Plus className="w-2 h-2 mr-1 font-bold" />
