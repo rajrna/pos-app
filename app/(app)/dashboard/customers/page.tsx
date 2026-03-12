@@ -1,3 +1,4 @@
+import AtRiskCustomer from "@/components/dashboard/cutomerdash/AtRiskCustomer";
 import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
 import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
 import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
@@ -73,15 +74,47 @@ export default function Page() {
           <CustomerSegmentationChart />
           <LoyaltyTierChart />
         </div>
+        <AtRiskCustomer
+          riskCustomers={[
+            {
+              rank: 1,
+              name: "Mary Linton",
+              lastVisit: 5,
+              spendLevel: "High",
+            },
+            {
+              rank: 2,
+              name: "Strauss",
+              lastVisit: 2,
+              spendLevel: "Medium",
+            },
+          ]}
+        />
         <TopCustomer
           topCustomers={[
             {
               rank: 1,
-              name: "Uncle",
+              name: "Lenny",
+              numVisits: 11,
+              totalSpent: 60,
+              loyaltyTier: "Gold",
+              loyaltyPoints: 60,
+            },
+            {
+              rank: 2,
+              name: "Sadie Adler",
               numVisits: 10,
               totalSpent: 50,
               loyaltyTier: "Gold",
               loyaltyPoints: 50,
+            },
+            {
+              rank: 3,
+              name: "Uncle",
+              numVisits: 5,
+              totalSpent: 30,
+              loyaltyTier: "Silver",
+              loyaltyPoints: 30,
             },
           ]}
         />

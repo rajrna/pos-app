@@ -35,8 +35,8 @@ const tierStyles: Record<
     badge: "bg-yellow-200",
   },
   Silver: {
-    cell: "text-silver-800",
-    badge: "bg-silver-200",
+    cell: "text-gray-800",
+    badge: "bg-gray-200",
   },
   Bronze: {
     cell: "text-brown-800",
@@ -90,7 +90,7 @@ export default function TopCustomer({
                 </TableCell>
                 <TableCell>
                   <p
-                    className={`w-12 flex items-center justify-center ${styles.badge} ${styles.cell}  text-yellow-900 rounded-lg px-1`}
+                    className={`w-12 flex items-center justify-center ${styles.badge} ${styles.cell}  rounded-lg px-1`}
                   >
                     {customer.loyaltyTier}
                   </p>

@@ -1,7 +1,70 @@
+import RevenueVsProfitChart, {
+  ProductData,
+} from "@/components/dashboard/growthtracker/RevenueVsProfitChart";
+import SalesTrendChart from "@/components/dashboard/growthtracker/SalesTrendChart";
+import SlowProducts from "@/components/dashboard/salesrevenue/SlowProducts";
 import TopProducts from "@/components/dashboard/salesrevenue/TopProducts";
 import { Button } from "@/components/ui/button";
 
-export default function Page() {
+const mockRevenueVsProfit: ProductData[] = [
+  {
+    product: "Espresso",
+    revenue: 12800,
+    profit: 8200,
+  },
+  {
+    product: "Latte",
+    revenue: 18200,
+    profit: 13200,
+  },
+  {
+    product: "Cappuccino",
+    revenue: 15000,
+    profit: 9800,
+  },
+  {
+    product: "Cold Brew",
+    revenue: 9200,
+    profit: 7200,
+  },
+  {
+    product: "Pastries",
+    revenue: 14000,
+    profit: 5200,
+  },
+  {
+    product: "Sandwiches",
+    revenue: 10200,
+    profit: 4800,
+  },
+];
+
+// Replace later with real api
+async function getRevenueVsProfitData(): Promise<
+  ProductData[]
+> {
+  // try {
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_API_URL}/api/products/revenue-profit?range=30d`,
+  //     { next: { revalidate: 300 } },
+  //   );
+  //   if (!res.ok) throw new Error();
+  //   return res.json();
+  // } catch {
+  //   return [];
+  // }
+  return mockRevenueVsProfit;
+}
+export default async function Page() {
+  // Fetch all server data in parallel — add more fetches here as charts are added
+  const [revenueVsProfitData] = await Promise.all(
+    [
+      getRevenueVsProfitData(),
+      // getHourlySalesData(),
+      // getCustomerTrendData(),
+      // ... other charts
+    ],
+  );
   return (
     <div className="p-4">
       <div className="border-b border-gray-900 py-2">
@@ -23,7 +86,7 @@ export default function Page() {
       </div>
 
       {/* Actual COntent */}
-      <div>
+      <div className="flex flex-wrap gap-1">
         <TopProducts
           topProducts={[
             {
@@ -40,7 +103,29 @@ export default function Page() {
             },
           ]}
         />
+        <SlowProducts
+          slowProducts={[
+            {
+              name: "Matcha Latte",
+              days: 5,
+              stockAmount: 10,
+            },
+            {
+              name: "Black Coffee",
+              days: 2,
+              stockAmount: 10,
+            },
+          ]}
+        />
       </div>
+      <RevenueVsProfitChart
+        initialData={revenueVsProfitData}
+      />
+      <SalesTrendChart />
+      {/* As you add more charts:
+                <HourlySalesChart    initialData={hourlySalesData} />
+                <CustomerTrendChart  initialData={customerTrendData} />
+            */}
     </div>
   );
 }

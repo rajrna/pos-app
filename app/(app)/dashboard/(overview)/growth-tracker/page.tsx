@@ -1,4 +1,7 @@
 import GrowthTrackCard from "@/components/dashboard/growthtracker/GrowthTrackCard";
+import RevenueVsProfitChart, {
+  type ProductData,
+} from "@/components/dashboard/growthtracker/RevenueVsProfitChart";
 import { GROWTH_STAT_CONFIG } from "@/lib/config/dashboard";
 import { GrowthStatsApiResponse } from "@/lib/dashboardstats";
 
@@ -34,16 +37,73 @@ const mockGrowthStats: GrowthStatsApiResponse = {
     percent: -0.3,
   },
 };
+const mockRevenueVsProfit: ProductData[] = [
+  {
+    product: "Espresso",
+    revenue: 12800,
+    profit: 8200,
+  },
+  {
+    product: "Latte",
+    revenue: 18200,
+    profit: 13200,
+  },
+  {
+    product: "Cappuccino",
+    revenue: 15000,
+    profit: 9800,
+  },
+  {
+    product: "Cold Brew",
+    revenue: 9200,
+    profit: 7200,
+  },
+  {
+    product: "Pastries",
+    revenue: 14000,
+    profit: 5200,
+  },
+  {
+    product: "Sandwiches",
+    revenue: 10200,
+    profit: 4800,
+  },
+];
 
-// const apiData: GrowthStatsApiResponse = await fetchGrowthStats();
+// Replace later with real api
+async function getRevenueVsProfitData(): Promise<
+  ProductData[]
+> {
+  // try {
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_API_URL}/api/products/revenue-profit?range=30d`,
+  //     { next: { revalidate: 300 } },
+  //   );
+  //   if (!res.ok) throw new Error();
+  //   return res.json();
+  // } catch {
+  //   return [];
+  // }
+  return mockRevenueVsProfit;
+}
+export default async function Page() {
+  // Fetch all server data in parallel — add more fetches here as charts are added
+  const [revenueVsProfitData] = await Promise.all(
+    [
+      getRevenueVsProfitData(),
+      // getHourlySalesData(),
+      // getCustomerTrendData(),
+      // ... other charts
+    ],
+  );
 
-export default function Page() {
   const stats = GROWTH_STAT_CONFIG.map(
     (config) => ({
       ...config,
       ...mockGrowthStats[config.key],
     }),
   );
+
   return (
     <div className="py-8 px-4">
       <h1 className="font-semibold text-xl">
@@ -59,6 +119,14 @@ export default function Page() {
           <GrowthTrackCard key={key} {...stat} />
         ))}
       </div>
+
+      <RevenueVsProfitChart
+        initialData={revenueVsProfitData}
+      />
+      {/* As you add more charts:
+          <HourlySalesChart    initialData={hourlySalesData} />
+          <CustomerTrendChart  initialData={customerTrendData} />
+      */}
     </div>
   );
 }

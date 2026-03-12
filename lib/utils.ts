@@ -22,3 +22,13 @@ export function getPercentColor(percent: number) {
         ArrowIcon: ArrowDownRight,
       };
 }
+
+export function getDaysColor(days: number) {
+  return days >= 5
+    ? {
+        text: "text-red-500",
+      }
+    : {
+        text: "text-orange-500",
+      };
+}
