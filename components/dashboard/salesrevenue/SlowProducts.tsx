@@ -54,7 +54,6 @@ export default function SlowProducts({
                   {product.days} days
                 </TableCell>
                 <TableCell className="text-gray-500">
-                  {" "}
                   {product.stockAmount} units
                 </TableCell>
               </TableRow>

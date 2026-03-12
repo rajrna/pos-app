@@ -32,3 +32,15 @@ export function getDaysColor(days: number) {
         text: "text-orange-500",
       };
 }
+
+export function getDaysColorCustomers(
+  days: number,
+) {
+  return days >= 10
+    ? {
+        text: "text-red-500",
+      }
+    : {
+        text: "text-orange-500",
+      };
+}

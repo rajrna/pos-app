@@ -8,12 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-
-type TransactionStatus =
-  | "completed"
-  | "pending"
-  | "failed"
-  | "refunded";
+import { TransactionStatus } from "@/lib/transaction";
+import { statusStyles } from "@/lib/transaction";
 
 type Transaction = {
   id: string;
@@ -28,28 +24,6 @@ type RecentTransactionsProps = {
   description?: string;
   viewAllHref?: string;
   transactions: Transaction[];
-};
-
-const statusStyles: Record<
-  TransactionStatus,
-  { cell: string; badge: string }
-> = {
-  completed: {
-    cell: "text-green-800",
-    badge: "bg-green-300",
-  },
-  pending: {
-    cell: "text-yellow-800",
-    badge: "bg-yellow-200",
-  },
-  failed: {
-    cell: "text-red-800",
-    badge: "bg-red-300",
-  },
-  refunded: {
-    cell: "text-gray-800",
-    badge: "bg-gray-300",
-  },
 };
 
 export default function RecentTransactions({

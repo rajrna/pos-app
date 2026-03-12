@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getDaysColorCustomers } from "@/lib/utils";
 import { TriangleAlert } from "lucide-react";
 
 type SpendingLevel = "High" | "Medium" | "Low";
@@ -81,12 +82,19 @@ export default function AtRiskCustomer({
               spendLevelStyles[
                 customer.spendLevel
               ];
+
+            const { text } =
+              getDaysColorCustomers(
+                customer.lastVisit,
+              );
             return (
               <TableRow key={customer.rank}>
                 <TableCell className="font-semibold">
                   {customer.name}
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  className={`font-semibold ${text}`}
+                >
                   {customer.lastVisit} days ago
                 </TableCell>
                 <TableCell>
@@ -102,7 +110,7 @@ export default function AtRiskCustomer({
                   </p>
                 </TableCell>
                 <TableCell>
-                  <Button className="bg-gray-50 text-blue-600 border-blue-500 border">
+                  <Button className="bg-gray-50 text-blue-600 hover:bg-blue-600 hover:text-gray-100 border-blue-500 border">
                     Send Offer
                   </Button>
                 </TableCell>

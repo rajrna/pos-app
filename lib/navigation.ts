@@ -30,6 +30,10 @@ export const navigationConfig: NavigationItem[] =
       items: [
         { label: "Overview", href: "/dashboard" },
         {
+          label: "Sales & Revenue",
+          href: "/dashboard/sales-revenue",
+        },
+        {
           label: "Customers",
           href: "/dashboard/customers",
         },
@@ -38,8 +42,8 @@ export const navigationConfig: NavigationItem[] =
           href: "/dashboard/staff",
         },
         {
-          label: "Sales & Revenue",
-          href: "/dashboard/sales-revenue",
+          label: "Order History",
+          href: "/dashboard/order-history",
         },
       ],
     },

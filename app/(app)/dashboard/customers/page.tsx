@@ -1,6 +1,7 @@
 import AtRiskCustomer from "@/components/dashboard/cutomerdash/AtRiskCustomer";
 import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
 import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
+import CustomerTrendChart from "@/components/dashboard/cutomerdash/CustomerTrendChart";
 import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
 import TopCustomer from "@/components/dashboard/cutomerdash/TopCustomer";
 import { Button } from "@/components/ui/button";
@@ -74,12 +75,13 @@ export default function Page() {
           <CustomerSegmentationChart />
           <LoyaltyTierChart />
         </div>
+        <CustomerTrendChart />
         <AtRiskCustomer
           riskCustomers={[
             {
               rank: 1,
               name: "Mary Linton",
-              lastVisit: 5,
+              lastVisit: 15,
               spendLevel: "High",
             },
             {
