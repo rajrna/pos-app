@@ -23,68 +23,52 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  TransactionStatus,
-  PaymentMethod,
-} from "@/lib/transaction";
 
-const STATUSES: TransactionStatus[] = [
-  "completed",
-  "pending",
-  "failed",
-  "refunded",
-];
-const PAYMENT_METHODS: PaymentMethod[] = [
-  "Card",
-  "Cash",
-  "Loyalty",
-];
+import { FilterConfig } from "@/lib/datatable";
 
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>;
-  searchColumn?: string;
-  searchPlaceholder?: string;
-}
-
-interface FilterConfig {
-  columnId: string;
-  label: string;
-  options: string[];
-}
-interface DataTableToolbarProps<TData> {
+type DataTableToolbarProps<TData> = {
   table: Table<TData>;
   searchColumn?: string;
   searchPlaceholder?: string;
   filters?: FilterConfig[];
-}
+  showDateFilter?: boolean;
+  showColumnToggle?: boolean;
+};
 
 export function DataTableToolbar<TData>({
   table,
   searchColumn,
   searchPlaceholder = "Search...",
+  filters,
+  showDateFilter = false,
+  showColumnToggle = false,
 }: DataTableToolbarProps<TData>) {
   const [dateRange, setDateRange] =
     React.useState<DateRange | undefined>();
 
-  // Derive active filter values directly from table state
-  const selectedStatuses =
-    (table
-      .getColumn("status")
-      ?.getFilterValue() as TransactionStatus[]) ??
-    [];
-  const selectedPayments =
-    (table
-      .getColumn("paymentMethod")
-      ?.getFilterValue() as PaymentMethod[]) ??
-    [];
-  const isFiltered =
-    selectedStatuses.length > 0 ||
-    selectedPayments.length > 0 ||
-    dateRange?.from;
+  // Dynamically check filter values for each FilterConfig
+  const activeFilterCounts = filters?.map(
+    (f) => ({
+      columnId: f.columnId,
+      count:
+        (
+          table
+            .getColumn(f.columnId)
+            ?.getFilterValue() as
+            | string[]
+            | undefined
+        )?.length ?? 0,
+    }),
+  );
 
-  function toggleValue<T>(
-    current: T[],
-    value: T,
+  const isFiltered =
+    activeFilterCounts?.some(
+      (f) => f.count > 0,
+    ) || dateRange?.from;
+
+  function toggleValue(
+    current: string[],
+    value: string,
     columnId: string,
   ) {
     const next = current.includes(value)
@@ -98,20 +82,22 @@ export function DataTableToolbar<TData>({
   }
 
   function clearAll() {
-    table
-      .getColumn("status")
-      ?.setFilterValue(undefined);
-    table
-      .getColumn("paymentMethod")
-      ?.setFilterValue(undefined);
-    table
-      .getColumn("date")
-      ?.setFilterValue(undefined);
-    setDateRange(undefined);
+    filters?.forEach((f) =>
+      table
+        .getColumn(f.columnId)
+        ?.setFilterValue(undefined),
+    );
+    if (showDateFilter) {
+      table
+        .getColumn("date")
+        ?.setFilterValue(undefined);
+      setDateRange(undefined);
+    }
   }
 
   return (
     <div className="flex flex-wrap items-center gap-2 py-4">
+      {/* Search */}
       {searchColumn && (
         <Input
           placeholder={searchPlaceholder}
@@ -129,175 +115,151 @@ export function DataTableToolbar<TData>({
         />
       )}
 
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm">
-            {dateRange?.from
-              ? dateRange.to
-                ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
-                : format(
-                    dateRange.from,
-                    "MMM d, yyyy",
-                  )
-              : "Date range"}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0"
-          align="start"
-        >
-          <Calendar
-            mode="range"
-            selected={dateRange}
-            onSelect={(range) => {
-              setDateRange(range);
-              table
-                .getColumn("date")
-                ?.setFilterValue(
-                  range
-                    ? {
-                        from: range.from,
-                        to: range.to,
-                      }
-                    : undefined,
-                );
-            }}
-            numberOfMonths={2}
-          />
-          {dateRange?.from && (
-            <div className="border-t p-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full"
-                onClick={() => {
-                  setDateRange(undefined);
-                  table
-                    .getColumn("date")
-                    ?.setFilterValue(undefined);
-                }}
-              >
-                Clear dates
-              </Button>
-            </div>
-          )}
-        </PopoverContent>
-      </Popover>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            Status
-            {selectedStatuses.length > 0 && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="mx-2 h-4"
-                />
-                <Badge variant="secondary">
-                  {selectedStatuses.length}
-                </Badge>
-              </>
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuLabel>
-            Filter by status
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {STATUSES.map((status) => (
-            <DropdownMenuCheckboxItem
-              key={status}
-              checked={selectedStatuses.includes(
-                status,
-              )}
-              onCheckedChange={() =>
-                toggleValue(
-                  selectedStatuses,
-                  status,
-                  "status",
-                )
-              }
-              className="capitalize"
-            >
-              {status}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            Payment
-            {selectedPayments.length > 0 && (
-              <>
-                <Separator
-                  orientation="vertical"
-                  className="mx-2 h-4"
-                />
-                <Badge variant="secondary">
-                  {selectedPayments.length}
-                </Badge>
-              </>
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuLabel>
-            Filter by payment
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {PAYMENT_METHODS.map((method) => (
-            <DropdownMenuCheckboxItem
-              key={method}
-              checked={selectedPayments.includes(
-                method,
-              )}
-              onCheckedChange={() =>
-                toggleValue(
-                  selectedPayments,
-                  method,
-                  "paymentMethod",
-                )
-              }
-            >
-              {method}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto"
+      {/* Date Range — only renders if showDateFilter is true */}
+      {showDateFilter && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm">
+              {dateRange?.from
+                ? dateRange.to
+                  ? `${format(dateRange.from, "MMM d")} – ${format(dateRange.to, "MMM d, yyyy")}`
+                  : format(
+                      dateRange.from,
+                      "MMM d, yyyy",
+                    )
+                : "Date range"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-auto p-0"
+            align="start"
           >
-            Columns
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter((col) => col.getCanHide())
-            .map((col) => (
-              <DropdownMenuCheckboxItem
-                key={col.id}
-                className="capitalize"
-                checked={col.getIsVisible()}
-                onCheckedChange={(value) =>
-                  col.toggleVisibility(!!value)
-                }
-              >
-                {col.id}
-              </DropdownMenuCheckboxItem>
-            ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <Calendar
+              mode="range"
+              selected={dateRange}
+              onSelect={(range) => {
+                setDateRange(range);
+                table
+                  .getColumn("date")
+                  ?.setFilterValue(
+                    range
+                      ? {
+                          from: range.from,
+                          to: range.to,
+                        }
+                      : undefined,
+                  );
+              }}
+              numberOfMonths={2}
+            />
+            {dateRange?.from && (
+              <div className="border-t p-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    setDateRange(undefined);
+                    table
+                      .getColumn("date")
+                      ?.setFilterValue(undefined);
+                  }}
+                >
+                  Clear dates
+                </Button>
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
+      )}
 
+      {/* Generic filter dropdowns — one per FilterConfig */}
+      {filters?.map((filter) => {
+        const selected =
+          (table
+            .getColumn(filter.columnId)
+            ?.getFilterValue() as string[]) ?? [];
+        return (
+          <DropdownMenu key={filter.columnId}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                {filter.label}
+                {selected.length > 0 && (
+                  <>
+                    <Separator
+                      orientation="vertical"
+                      className="mx-2 h-4"
+                    />
+                    <Badge variant="secondary">
+                      {selected.length}
+                    </Badge>
+                  </>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuLabel>
+                Filter by{" "}
+                {filter.label.toLowerCase()}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {filter.options.map((option) => (
+                <DropdownMenuCheckboxItem
+                  key={option}
+                  checked={selected.includes(
+                    option,
+                  )}
+                  onCheckedChange={() =>
+                    toggleValue(
+                      selected,
+                      option,
+                      filter.columnId,
+                    )
+                  }
+                  className="capitalize"
+                >
+                  {option}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      })}
+
+      {/* Column Visibility */}
+
+      {showColumnToggle && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+            >
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((col) => col.getCanHide())
+              .map((col) => (
+                <DropdownMenuCheckboxItem
+                  key={col.id}
+                  className="capitalize"
+                  checked={col.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    col.toggleVisibility(!!value)
+                  }
+                >
+                  {col.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+
+      {/* Reset */}
       {isFiltered && (
         <Button
           variant="ghost"

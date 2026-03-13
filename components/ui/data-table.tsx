@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/table";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { Button } from "@/components/ui/button";
+import { FilterConfig } from "@/lib/datatable";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +31,9 @@ interface DataTableProps<TData, TValue> {
   searchColumn?: string;
   searchPlaceholder?: string;
   pageSize?: number;
+  filters?: FilterConfig[];
+  showDateFilter?: boolean;
+  showColumnToggle?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +42,9 @@ export function DataTable<TData, TValue>({
   searchColumn,
   searchPlaceholder = "Search...",
   pageSize = 10,
+  filters,
+  showDateFilter,
+  showColumnToggle,
 }: DataTableProps<TData, TValue>) {
   "use no memo";
   const [sorting, setSorting] =
@@ -73,6 +80,9 @@ export function DataTable<TData, TValue>({
         table={table}
         searchColumn={searchColumn}
         searchPlaceholder={searchPlaceholder}
+        filters={filters}
+        showDateFilter={showDateFilter}
+        showColumnToggle={showColumnToggle}
       />
       {/* Table */}
       <div className="overflow-hidden rounded-md border">

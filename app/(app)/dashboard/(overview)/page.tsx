@@ -52,7 +52,28 @@ export default function Page() {
         <HourlySalesTrend />
 
         <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
-          <TopItems />
+          <TopItems
+            topProducts={[
+              {
+                rank: 1,
+                productName: "Black Coffee",
+                noOfSale: 10,
+                totalRevenue: 500,
+              },
+              {
+                rank: 2,
+                productName: "Sandwich",
+                noOfSale: 5,
+                totalRevenue: 300,
+              },
+              {
+                rank: 3,
+                productName: "Latte",
+                noOfSale: 8,
+                totalRevenue: 250,
+              },
+            ]}
+          />
           <RecentTransactions
             transactions={[
               {
