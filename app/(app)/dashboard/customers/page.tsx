@@ -5,16 +5,25 @@ import CustomerTrendChart from "@/components/dashboard/cutomerdash/CustomerTrend
 import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
 import TopCustomer from "@/components/dashboard/cutomerdash/TopCustomer";
 import { Button } from "@/components/ui/button";
-import {
-  Award,
-  Gift,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { CUSTOMER_STAT_CONFIG } from "@/lib/config/dashboard";
+import { CustomerApiResponse } from "@/lib/dashboardstats";
+import { UserPlus } from "lucide-react";
 import Link from "next/link";
 
+const mockStats: CustomerApiResponse = {
+  totalMembers: { value: "50" },
+  activeCustomers: { value: "100" },
+  pointsRedeemed: { value: "5000" },
+  pointsPerMember: { value: "120" },
+};
+
 export default function Page() {
+  const stats = CUSTOMER_STAT_CONFIG.map(
+    (config) => ({
+      ...config,
+      ...mockStats[config.key],
+    }),
+  );
   return (
     <div className="w-full px-4">
       <div className="flex justify-between items-center w-full  py-2 border-b-2">
@@ -42,34 +51,12 @@ export default function Page() {
       {/* CONTENTS */}
       <div>
         <div className="flex flex-wrap items-center justify-center my-4 gap-2">
-          <CustomerStatBox
-            statTitle="Total Members"
-            amount={50}
-            icon={Users}
-            iconColor={"text-blue-500"}
-            bgColor={"blue"}
-          />
-          <CustomerStatBox
-            statTitle="Active This Month"
-            amount={20}
-            icon={User}
-            iconColor={"text-green-500"}
-            bgColor={"green"}
-          />
-          <CustomerStatBox
-            statTitle="Points Redeemed"
-            amount={1100}
-            icon={Gift}
-            iconColor={"text-purple-500"}
-            bgColor={"purple"}
-          />
-          <CustomerStatBox
-            statTitle="Avg Points / Member"
-            amount={50}
-            icon={Award}
-            iconColor={"text-orange-500"}
-            bgColor={"orange"}
-          />
+          {stats.map(({ key, ...stat }) => (
+            <CustomerStatBox
+              key={key}
+              {...stat}
+            />
+          ))}
         </div>
         <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
           <CustomerSegmentationChart />

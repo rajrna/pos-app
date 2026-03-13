@@ -1,15 +1,15 @@
 import { LucideIcon } from "lucide-react";
 
 interface StatBoxProps {
-  statTitle: string;
-  amount: number;
+  label: string;
+  value: string;
   icon: LucideIcon;
   iconColor?: string;
   bgColor?: string;
 }
 export default function CustomerStatBox({
-  statTitle,
-  amount,
+  label,
+  value,
   icon: Icon,
   iconColor,
   bgColor,
@@ -18,18 +18,16 @@ export default function CustomerStatBox({
     <div className="border w-72 px-6 py-6  rounded-lg shadow-md hover:shadow-lg transition duration-300">
       {/* TOTAL SALES */}
       <div className="flex justify-between items-end ">
-        <p className="text-gray-500">
-          {statTitle}
-        </p>
+        <p className="text-gray-500">{label}</p>
 
         <Icon
           size={16}
-          className={`${iconColor} mb-1 bg-${bgColor}-100`}
+          className={`${iconColor} mb-1 ${bgColor} rounded-lg`}
         />
       </div>
       <div className="py-4 mt-2">
         <span className="font-bold text-2xl">
-          {amount}
+          {value}
         </span>
       </div>
     </div>

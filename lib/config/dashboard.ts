@@ -7,6 +7,7 @@ import {
   Users,
   User,
   Gift,
+  Award,
 } from "lucide-react";
 
 // For dashboard overview stats
@@ -15,6 +16,7 @@ export interface StatConfig {
   label: string;
   icon: LucideIcon;
   iconColor: string;
+  bgColor?: string;
 }
 
 export const STATS_CONFIG: StatConfig[] = [
@@ -45,29 +47,37 @@ export const STATS_CONFIG: StatConfig[] = [
 ];
 
 // For Customer Stats
-export const CUSTOMER_STAT_CONFIG = [
-  {
-    key: "totalMembers",
-    label: "Total Members",
-    icon: Users,
-    iconColor: "text-blue-500",
-    bgColor: "bg-blue-100",
-  },
-  {
-    key: "activeCustomers",
-    label: "Active This Month",
-    icon: User,
-    iconColor: "text-green-500",
-    bgColor: "bg-green-100",
-  },
-  {
-    key: "points",
-    label: "Points Redeemed",
-    icon: Gift,
-    iconColor: "text-purple-500",
-    bgColor: "bg-purple-100",
-  },
-];
+export const CUSTOMER_STAT_CONFIG: StatConfig[] =
+  [
+    {
+      key: "totalMembers",
+      label: "Total Members",
+      icon: Users,
+      iconColor: "text-blue-500",
+      bgColor: "bg-blue-100",
+    },
+    {
+      key: "activeCustomers",
+      label: "Active This Month",
+      icon: User,
+      iconColor: "text-green-500",
+      bgColor: "bg-green-100",
+    },
+    {
+      key: "pointsRedeemed",
+      label: "Points Redeemed",
+      icon: Gift,
+      iconColor: "text-purple-500",
+      bgColor: "bg-purple-100",
+    },
+    {
+      key: "pointsPerMember",
+      label: "Avg Points / Member",
+      icon: Award,
+      iconColor: "text-orange-500",
+      bgColor: "bg-orange-100",
+    },
+  ];
 
 // For Growth Stats
 export const GROWTH_STAT_CONFIG = [
