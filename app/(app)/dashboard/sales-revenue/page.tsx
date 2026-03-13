@@ -4,7 +4,6 @@ import RevenueVsProfitChart, {
 import SalesTrendChart from "@/components/dashboard/growthtracker/SalesTrendChart";
 import SlowProducts from "@/components/dashboard/salesrevenue/SlowProducts";
 import TopProducts from "@/components/dashboard/salesrevenue/TopProducts";
-import { Button } from "@/components/ui/button";
 
 const mockRevenueVsProfit: ProductData[] = [
   {
@@ -56,7 +55,6 @@ async function getRevenueVsProfitData(): Promise<
   return mockRevenueVsProfit;
 }
 export default async function Page() {
-  // Fetch all server data in parallel — add more fetches here as charts are added
   const [revenueVsProfitData] = await Promise.all(
     [
       getRevenueVsProfitData(),
@@ -67,7 +65,7 @@ export default async function Page() {
   );
   return (
     <div className="p-4">
-      <div className="border-b border-gray-900 py-2">
+      <div className="border-b border-gray-200 py-2">
         <h1 className="text-2xl font-bold ">
           Sales & Revenue
         </h1>
@@ -81,7 +79,6 @@ export default async function Page() {
           <h1 className="text-xl font-semibold mt-10">
             Performance metrics
           </h1>
-          <Button>Past Week</Button>
         </div>
       </div>
 
@@ -112,8 +109,8 @@ export default async function Page() {
             },
             {
               name: "Black Coffee",
-              days: 2,
-              stockAmount: 10,
+              days: 3,
+              stockAmount: 9,
             },
           ]}
         />

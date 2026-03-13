@@ -4,6 +4,9 @@ import {
   LucideIcon,
   Package,
   ShoppingBag,
+  Users,
+  User,
+  Gift,
 } from "lucide-react";
 
 // For dashboard overview stats
@@ -38,6 +41,31 @@ export const STATS_CONFIG: StatConfig[] = [
     label: "Net Profit",
     icon: CreditCard,
     iconColor: "text-green-500",
+  },
+];
+
+// For Customer Stats
+export const CUSTOMER_STAT_CONFIG = [
+  {
+    key: "totalMembers",
+    label: "Total Members",
+    icon: Users,
+    iconColor: "text-blue-500",
+    bgColor: "bg-blue-100",
+  },
+  {
+    key: "activeCustomers",
+    label: "Active This Month",
+    icon: User,
+    iconColor: "text-green-500",
+    bgColor: "bg-green-100",
+  },
+  {
+    key: "points",
+    label: "Points Redeemed",
+    icon: Gift,
+    iconColor: "text-purple-500",
+    bgColor: "bg-purple-100",
   },
 ];
 

@@ -1,18 +1,8 @@
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { getDaysColor } from "@/lib/utils";
-
-type SlowProduct = {
-  name: string;
-  days: number;
-  stockAmount: number;
-};
+  SlowProduct,
+  slowProductColumns,
+} from "./slow-product-columns";
+import { DataTable } from "@/components/ui/data-table";
 
 type SlowProductsProps = {
   slowProducts: SlowProduct[];
@@ -30,7 +20,12 @@ export default function SlowProducts({
         No sales in 3+ days, attention required.
       </p>
 
-      <Table>
+      <DataTable
+        columns={slowProductColumns}
+        data={slowProducts}
+        pageSize={5}
+      />
+      {/* <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Product</TableHead>
@@ -60,7 +55,7 @@ export default function SlowProducts({
             );
           })}
         </TableBody>
-      </Table>
+      </Table> */}
     </div>
   );
 }
