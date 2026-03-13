@@ -29,7 +29,7 @@ type RecentTransactionsProps = {
 export default function RecentTransactions({
   title = "Recent Transactions",
   description = "Revenue performance - current week",
-  viewAllHref = "/invoices",
+  viewAllHref = "/dashboard/order-history",
   transactions,
 }: RecentTransactionsProps) {
   return (
