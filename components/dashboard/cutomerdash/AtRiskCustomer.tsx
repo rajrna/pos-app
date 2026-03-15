@@ -1,14 +1,6 @@
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { getDaysColorCustomers } from "@/lib/utils";
+import { DataTable } from "@/components/ui/data-table";
 import { TriangleAlert } from "lucide-react";
+import { columns } from "./atrisk-customer-column";
 
 type SpendingLevel = "High" | "Medium" | "Low";
 
@@ -21,24 +13,6 @@ type AtRiskCustomer = {
 
 type AtRiskCustomersProps = {
   riskCustomers: AtRiskCustomer[];
-};
-
-const spendLevelStyles: Record<
-  SpendingLevel,
-  { cell: string; badge: string }
-> = {
-  High: {
-    cell: "text-yellow-800",
-    badge: "bg-yellow-200",
-  },
-  Medium: {
-    cell: "text-blue-800",
-    badge: "bg-blue-200",
-  },
-  Low: {
-    cell: "text-gray-800",
-    badge: "bg-gray-200",
-  },
 };
 
 export default function AtRiskCustomer({
@@ -66,7 +40,22 @@ export default function AtRiskCustomer({
         </div>
       </div>
 
-      <Table>
+      <DataTable
+        columns={columns}
+        data={riskCustomers}
+        searchColumn="name"
+        searchPlaceholder="Search customer..."
+        pageSize={10}
+        filters={[
+          {
+            columnId: "spendLevel",
+            label: "Spending Level",
+            options: ["High", "Medium", "Low"],
+          },
+        ]}
+      />
+
+      {/* <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Customer</TableHead>
@@ -118,7 +107,7 @@ export default function AtRiskCustomer({
             );
           })}
         </TableBody>
-      </Table>
+      </Table> */}
     </div>
   );
 }

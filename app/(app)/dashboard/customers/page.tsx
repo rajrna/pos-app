@@ -83,7 +83,7 @@ export default function Page() {
           topCustomers={[
             {
               rank: 1,
-              name: "Lenny",
+              customer: "Lenny",
               numVisits: 11,
               totalSpent: 60,
               loyaltyTier: "Gold",
@@ -91,7 +91,7 @@ export default function Page() {
             },
             {
               rank: 2,
-              name: "Sadie Adler",
+              customer: "Sadie Adler",
               numVisits: 10,
               totalSpent: 50,
               loyaltyTier: "Gold",
@@ -99,7 +99,7 @@ export default function Page() {
             },
             {
               rank: 3,
-              name: "Uncle",
+              customer: "Uncle",
               numVisits: 5,
               totalSpent: 30,
               loyaltyTier: "Silver",

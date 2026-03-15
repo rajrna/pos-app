@@ -1,52 +1,16 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { columns } from "./top-customer-column";
+import { TopCustomersProps } from "./top-customer-column";
+import { DataTable } from "@/components/ui/data-table";
 
-type LoyaltyTier =
-  | "Gold"
-  | "Silver"
-  | "Bronze"
-  | "None";
+// type TopCustomer = {
+//   rank: number;
+//   name: string;
+//   numVisits: number;
+//   totalSpent: number;
+//   loyaltyTier: LoyaltyTier;
+//   loyaltyPoints: number;
+// };
 
-type TopCustomer = {
-  rank: number;
-  name: string;
-  numVisits: number;
-  totalSpent: number;
-  loyaltyTier: LoyaltyTier;
-  loyaltyPoints: number;
-};
-
-type TopCustomersProps = {
-  topCustomers: TopCustomer[];
-};
-
-const tierStyles: Record<
-  LoyaltyTier,
-  { cell: string; badge: string }
-> = {
-  Gold: {
-    cell: "text-yellow-800",
-    badge: "bg-yellow-200",
-  },
-  Silver: {
-    cell: "text-gray-800",
-    badge: "bg-gray-200",
-  },
-  Bronze: {
-    cell: "text-brown-800",
-    badge: "bg-brown-200",
-  },
-  None: {
-    cell: "text-gray-800",
-    badge: "bg-gray-200",
-  },
-};
 export default function TopCustomer({
   topCustomers,
 }: TopCustomersProps) {
@@ -59,7 +23,27 @@ export default function TopCustomer({
         Highest value contributors this month
       </p>
 
-      <Table>
+      <DataTable
+        columns={columns}
+        data={topCustomers}
+        searchColumn="customer"
+        searchPlaceholder="Search customer..."
+        pageSize={10}
+        filters={[
+          {
+            columnId: "loyaltyTier",
+            label: "Tier",
+            options: [
+              "Gold",
+              "Silver",
+              "Bronze",
+              "None",
+            ],
+          },
+        ]}
+      />
+
+      {/* <Table>
         <TableHeader>
           <TableRow>
             <TableHead>#</TableHead>
@@ -102,7 +86,7 @@ export default function TopCustomer({
             );
           })}
         </TableBody>
-      </Table>
+      </Table> */}
     </div>
   );
 }

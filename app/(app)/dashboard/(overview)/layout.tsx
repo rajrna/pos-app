@@ -89,7 +89,8 @@ export default function DashboardLayout({
             ),
           )}
         </div>
-        <div className="flex justify-between items-center gap-1">
+        {/* Implement later */}
+        {/* <div className="flex justify-between items-center gap-1">
           <p className="text-gray-400">
             FILTER BY:
           </p>
@@ -98,7 +99,7 @@ export default function DashboardLayout({
               <SelectValue placeholder="Last week" />
             </SelectTrigger>
           </Select>
-        </div>
+        </div> */}
       </div>
 
       {children}

@@ -45,13 +45,6 @@ export default function Page() {
         <WinningStatBox />
 
         <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
-          <WeeklyRevenueChart />
-          <SalesLocationChart />
-        </div>
-
-        <HourlySalesTrend />
-
-        <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
           <TopItems
             topProducts={[
               {
@@ -100,6 +93,13 @@ export default function Page() {
             ]}
           />
         </div>
+
+        <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
+          <WeeklyRevenueChart />
+          <SalesLocationChart />
+        </div>
+
+        <HourlySalesTrend />
       </div>
     </div>
   );
