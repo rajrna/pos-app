@@ -44,3 +44,19 @@ export function getDaysColorCustomers(
         text: "text-orange-500",
       };
 }
+
+const MARGIN_THRESHOLDS = [
+  { min: 70, color: "text-green-700" },
+  { min: 55, color: "text-orange-500" },
+  { min: 20, color: "text-red-500" },
+  { min: 0, color: "text-red-700" },
+];
+
+export function getMarginColors(percent: number) {
+  const match = MARGIN_THRESHOLDS.find(
+    ({ min }) => percent >= min,
+  );
+  return {
+    text: match?.color ?? "text-green-500",
+  };
+}

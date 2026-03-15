@@ -60,7 +60,6 @@ export default async function Page() {
       getRevenueVsProfitData(),
       // getHourlySalesData(),
       // getCustomerTrendData(),
-      // ... other charts
     ],
   );
   return (
@@ -119,10 +118,6 @@ export default async function Page() {
         initialData={revenueVsProfitData}
       />
       <SalesTrendChart />
-      {/* As you add more charts:
-                <HourlySalesChart    initialData={hourlySalesData} />
-                <CustomerTrendChart  initialData={customerTrendData} />
-            */}
     </div>
   );
 }

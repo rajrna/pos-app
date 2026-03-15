@@ -1,6 +1,7 @@
 import {
   CUSTOMER_STAT_CONFIG,
   GROWTH_STAT_CONFIG,
+  PROFIT_COST_STAT_CONFIG,
   STATS_CONFIG,
 } from "./config/dashboard";
 
@@ -25,6 +26,17 @@ export type CustomerStatKey =
 export type CustomerApiResponse = Record<
   CustomerStatKey,
   CustomerStat
+>;
+
+// For profit cost stats
+export interface ProfitCostStat {
+  value: string;
+}
+export type ProfitCostStatKey =
+  (typeof PROFIT_COST_STAT_CONFIG)[number]["key"];
+export type ProfitCostApiResponse = Record<
+  ProfitCostStatKey,
+  ProfitCostStat
 >;
 // For growth stats
 export interface GrowthStat {

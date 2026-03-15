@@ -8,6 +8,9 @@ import {
   User,
   Gift,
   Award,
+  TrendingUp,
+  RefreshCcw,
+  Percent,
 } from "lucide-react";
 
 // For dashboard overview stats
@@ -78,6 +81,38 @@ export const CUSTOMER_STAT_CONFIG: StatConfig[] =
       bgColor: "bg-orange-100",
     },
   ];
+
+// For Profit & Cost Stats
+export const PROFIT_COST_STAT_CONFIG = [
+  {
+    key: "grossRevenue",
+    label: "Gross Revenue",
+    icon: DollarSign,
+    iconColor: "text-blue-500",
+    bgColor: "bg-blue-100",
+  },
+  {
+    key: "netProfit",
+    label: "Net Profit",
+    icon: TrendingUp,
+    iconColor: "text-green-500",
+    bgColor: "bg-green-100",
+  },
+  {
+    key: "totalRefunds",
+    label: "Total Refunds",
+    icon: RefreshCcw,
+    iconColor: "text-red-500",
+    bgColor: "bg-red-100",
+  },
+  {
+    key: "avgMargin",
+    label: "Avg Margin",
+    icon: Percent,
+    iconColor: "text-purple-500",
+    bgColor: "bg-purple-100",
+  },
+];
 
 // For Growth Stats
 export const GROWTH_STAT_CONFIG = [
