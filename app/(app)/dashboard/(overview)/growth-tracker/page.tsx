@@ -2,6 +2,10 @@ import GrowthTrackCard from "@/components/dashboard/growthtracker/GrowthTrackCar
 import RevenueVsProfitChart, {
   type ProductData,
 } from "@/components/dashboard/growthtracker/RevenueVsProfitChart";
+import TargetVsActualChart, {
+  TargetActualData,
+} from "@/components/dashboard/growthtracker/TargetVsActualChart";
+import YearOverYearChart from "@/components/dashboard/growthtracker/YearOverYearChart";
 import { GROWTH_STAT_CONFIG } from "@/lib/config/dashboard";
 import { GrowthStatsApiResponse } from "@/lib/dashboardstats";
 
@@ -70,6 +74,65 @@ const mockRevenueVsProfit: ProductData[] = [
   },
 ];
 
+const mockTargetActualData: TargetActualData[] = [
+  { month: "Jan", actual: 98000, target: 95000 },
+  {
+    month: "Feb",
+    actual: 104000,
+    target: 100000,
+  },
+  {
+    month: "Mar",
+    actual: 112000,
+    target: 108000,
+  },
+  {
+    month: "Apr",
+    actual: 108000,
+    target: 112000,
+  },
+  {
+    month: "May",
+    actual: 119000,
+    target: 115000,
+  },
+  {
+    month: "Jun",
+    actual: 125000,
+    target: 120000,
+  },
+  {
+    month: "Jul",
+    actual: 131000,
+    target: 125000,
+  },
+  {
+    month: "Aug",
+    actual: 128000,
+    target: 130000,
+  },
+  {
+    month: "Sep",
+    actual: 116000,
+    target: 118000,
+  },
+  {
+    month: "Oct",
+    actual: 122000,
+    target: 115000,
+  },
+  {
+    month: "Nov",
+    actual: 118000,
+    target: 120000,
+  },
+  {
+    month: "Dec",
+    actual: 142000,
+    target: 135000,
+  },
+];
+
 // Replace later with real api
 async function getRevenueVsProfitData(): Promise<
   ProductData[]
@@ -86,14 +149,18 @@ async function getRevenueVsProfitData(): Promise<
   // }
   return mockRevenueVsProfit;
 }
+
+async function getTargetActualData(): Promise<
+  TargetActualData[]
+> {
+  return mockTargetActualData;
+}
 export default async function Page() {
   // Fetch all server data in parallel — add more fetches here as charts are added
   const [revenueVsProfitData] = await Promise.all(
     [
       getRevenueVsProfitData(),
-      // getHourlySalesData(),
-      // getCustomerTrendData(),
-      // ... other charts
+      getTargetActualData(),
     ],
   );
 
@@ -123,10 +190,12 @@ export default async function Page() {
       <RevenueVsProfitChart
         initialData={revenueVsProfitData}
       />
-      {/* As you add more charts:
-          <HourlySalesChart    initialData={hourlySalesData} />
-          <CustomerTrendChart  initialData={customerTrendData} />
-      */}
+      <div className="flex flex-wrap">
+        <TargetVsActualChart
+          initialData={mockTargetActualData}
+        />
+        <YearOverYearChart />
+      </div>
     </div>
   );
 }
