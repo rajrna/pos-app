@@ -19,9 +19,7 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 export interface ProductData {
   product: string;
@@ -39,9 +37,7 @@ interface Props {
   initialData: ProductData[];
 }
 
-// ---------------------------------------------------------------
 // Fetcher (reused by TanStack Query)
-// ---------------------------------------------------------------
 
 export const fetchRevenueProfit = async (
   range: DateRange,
@@ -56,9 +52,7 @@ export const fetchRevenueProfit = async (
   return res.json();
 };
 
-// ---------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------
 
 const RANGE_OPTIONS: {
   label: string;
@@ -157,9 +151,7 @@ const CustomTooltip = ({
   );
 };
 
-// ---------------------------------------------------------------
 // Chart — accepts initialData from Server Component
-// ---------------------------------------------------------------
 
 export default function RevenueVsProfitChart({
   initialData,
@@ -174,10 +166,9 @@ export default function RevenueVsProfitChart({
   } = useQuery({
     queryKey: ["revenue-profit", range],
     queryFn: () => fetchRevenueProfit(range),
-    // Server-fetched data hydrates the cache instantly — no loading spinner on first paint
     initialData:
       range === "30d" ? initialData : undefined,
-    staleTime: 5 * 60 * 1000, // treat data as fresh for 5 minutes
+    staleTime: 5 * 60 * 1000,
     retry: 2,
   });
 
@@ -190,9 +181,9 @@ export default function RevenueVsProfitChart({
     Math.ceil(maxValue / 2000) * 2000 + 2000;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm md:p-6 p-4 w-full">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-lg font-bold text-gray-900">
             Revenue vs Profit by Product
@@ -210,7 +201,7 @@ export default function RevenueVsProfitChart({
         </div>
 
         {/* Date range filter */}
-        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 self-start">
           {RANGE_OPTIONS.map(
             ({ label, value }) => (
               <button
@@ -229,69 +220,73 @@ export default function RevenueVsProfitChart({
         </div>
       </div>
 
-      {/* Chart — opacity signals background refetch without blocking interaction */}
+      {/* Chart */}
       <div
         className={`transition-opacity duration-200 ${isFetching ? "opacity-60" : "opacity-100"}`}
       >
-        <ResponsiveContainer
-          width="100%"
-          height={300}
-        >
-          <BarChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 10,
-              left: 10,
-              bottom: 10,
-            }}
-            barCategoryGap="15%"
-            barGap={4}
+        <div className="h-55 sm:h-75">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
           >
-            <CartesianGrid
-              vertical={false}
-              stroke="#f3f4f6"
-            />
-            <XAxis
-              dataKey="product"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: "#9ca3af",
-                fontSize: 12,
+            <BarChart
+              data={data}
+              margin={{
+                top: 10,
+                right: 10,
+                left: 10,
+                bottom: 10,
               }}
-              dy={8}
-            />
-            <YAxis
-              tickFormatter={formatYAxis}
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: "#9ca3af",
-                fontSize: 12,
-              }}
-              domain={[0, yAxisMax]}
-              width={45}
-            />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{
-                fill: "rgba(0,0,0,0.03)",
-              }}
-            />
-            <Legend content={<CustomLegend />} />
-            <Bar
-              dataKey="revenue"
-              name="Revenue"
-              shape={RevenueBar}
-            />
-            <Bar
-              dataKey="profit"
-              name="Profit"
-              shape={ProfitBar}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+              barCategoryGap="15%"
+              barGap={4}
+            >
+              <CartesianGrid
+                vertical={false}
+                stroke="#f3f4f6"
+              />
+              <XAxis
+                dataKey="product"
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: "#9ca3af",
+                  fontSize: 12,
+                }}
+                dy={8}
+              />
+              <YAxis
+                tickFormatter={formatYAxis}
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: "#9ca3af",
+                  fontSize: 12,
+                }}
+                domain={[0, yAxisMax]}
+                width={45}
+              />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{
+                  fill: "rgba(0,0,0,0.03)",
+                }}
+              />
+              <Legend
+                content={<CustomLegend />}
+              />
+              <Bar
+                dataKey="revenue"
+                name="Revenue"
+                shape={RevenueBar}
+              />
+              <Bar
+                dataKey="profit"
+                name="Profit"
+                shape={ProfitBar}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

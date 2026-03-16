@@ -1,7 +1,7 @@
 import GrowthTrackCard from "@/components/dashboard/growthtracker/GrowthTrackCard";
 import RevenueVsProfitChart, {
   type ProductData,
-} from "@/components/dashboard/growthtracker/RevenueVsProfitChart";
+} from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
 import TargetVsActualChart, {
   TargetActualData,
 } from "@/components/dashboard/growthtracker/TargetVsActualChart";

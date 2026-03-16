@@ -12,7 +12,7 @@ export default function SlowProducts({
   slowProducts,
 }: SlowProductsProps) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 min-w-150">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full">
       <h1 className="font-semibold text-[17px]">
         Slow Moving Products
       </h1>
