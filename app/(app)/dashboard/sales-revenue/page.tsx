@@ -56,11 +56,7 @@ async function getRevenueVsProfitData(): Promise<
 }
 export default async function Page() {
   const [revenueVsProfitData] = await Promise.all(
-    [
-      getRevenueVsProfitData(),
-      // getHourlySalesData(),
-      // getCustomerTrendData(),
-    ],
+    [getRevenueVsProfitData()],
   );
   return (
     <div className="p-4">

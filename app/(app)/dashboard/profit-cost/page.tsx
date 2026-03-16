@@ -1,10 +1,20 @@
+import { BudgetItem } from "@/components/dashboard/profitcostdash/budget-column";
+import BudgetTable from "@/components/dashboard/profitcostdash/BudgetTable";
+import ExpensesByCategoryChart from "@/components/dashboard/profitcostdash/ExpenseByCategoryChart";
+import ExpenseStatBox from "@/components/dashboard/profitcostdash/ExpenseStatBox";
 import GrossProfitTrendChart from "@/components/dashboard/profitcostdash/GrossProfitTrendChart";
 import ProfitCostStatBox from "@/components/dashboard/profitcostdash/ProfitCostStatBox";
 import ProfitPerProduct from "@/components/dashboard/profitcostdash/ProfitPerProduct";
 import RefundAnalysis from "@/components/dashboard/profitcostdash/RefundAnalysis";
 import { Button } from "@/components/ui/button";
-import { PROFIT_COST_STAT_CONFIG } from "@/lib/config/dashboard";
-import { ProfitCostApiResponse } from "@/lib/dashboardstats";
+import {
+  EXPENSE_STAT_CONFIG,
+  PROFIT_COST_STAT_CONFIG,
+} from "@/lib/config/dashboard";
+import {
+  ExpenseApiResponse,
+  ProfitCostApiResponse,
+} from "@/lib/dashboardstats";
 import { TrendingUp } from "lucide-react";
 
 const mockStats: ProfitCostApiResponse = {
@@ -13,12 +23,62 @@ const mockStats: ProfitCostApiResponse = {
   totalRefunds: { value: "50" },
   avgMargin: { value: "60%" },
 };
+const mockCostStats: ExpenseApiResponse = {
+  totalExpenses: { value: "$50,000" },
+  totalBudget: { value: "$47,000" },
+  budgetVariance: { value: "3000 under" },
+  revenueMargin: { value: "60%" },
+};
+export const mockBudgetData: BudgetItem[] = [
+  {
+    category: "Labor",
+    actual: 18200,
+    budget: 19000,
+  },
+  {
+    category: "COGS",
+    actual: 10800,
+    budget: 11500,
+  },
+  {
+    category: "Rent",
+    actual: 6500,
+    budget: 6500,
+  },
+  {
+    category: "Utilities",
+    actual: 2800,
+    budget: 3000,
+  },
+  {
+    category: "Marketing",
+    actual: 3200,
+    budget: 4000,
+  },
+  {
+    category: "Supplies",
+    actual: 1800,
+    budget: 2000,
+  },
+  {
+    category: "Maintenance",
+    actual: 1200,
+    budget: 2000,
+  },
+];
 
 export default function Page() {
   const stats = PROFIT_COST_STAT_CONFIG.map(
     (config) => ({
       ...config,
       ...mockStats[config.key],
+    }),
+  );
+
+  const expenseStats = EXPENSE_STAT_CONFIG.map(
+    (config) => ({
+      ...config,
+      ...mockCostStats[config.key],
     }),
   );
   return (
@@ -116,6 +176,29 @@ export default function Page() {
                 loss: 300,
               },
             ]}
+          />
+        </div>
+      </div>
+
+      <div>
+        <h1 className="font-semibold text-2xl">
+          Expense breakdown
+        </h1>
+        <div className="flex flex-wrap items-center justify-center my-4 gap-2">
+          {expenseStats.map(
+            ({ key, ...stat }) => (
+              <ExpenseStatBox
+                key={key}
+                {...stat}
+              />
+            ),
+          )}
+        </div>
+
+        <div>
+          <ExpensesByCategoryChart />
+          <BudgetTable
+            budgetData={mockBudgetData}
           />
         </div>
       </div>

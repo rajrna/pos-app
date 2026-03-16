@@ -187,9 +187,9 @@ export default async function Page() {
         ))}
       </div>
 
-      <RevenueVsProfitChart
+      {/* <RevenueVsProfitChart
         initialData={revenueVsProfitData}
-      />
+      /> */}
       <div className="flex flex-wrap">
         <TargetVsActualChart
           initialData={mockTargetActualData}
