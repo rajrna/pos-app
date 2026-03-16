@@ -1,5 +1,6 @@
 import {
   CUSTOMER_STAT_CONFIG,
+  EXPENSE_STAT_CONFIG,
   GROWTH_STAT_CONFIG,
   PROFIT_COST_STAT_CONFIG,
   STATS_CONFIG,
@@ -37,6 +38,17 @@ export type ProfitCostStatKey =
 export type ProfitCostApiResponse = Record<
   ProfitCostStatKey,
   ProfitCostStat
+>;
+
+// For expense stats
+export interface ExpenseStat {
+  value: string;
+}
+export type ExpenseStatKey =
+  (typeof EXPENSE_STAT_CONFIG)[number]["key"];
+export type ExpenseApiResponse = Record<
+  ExpenseStatKey,
+  ExpenseStat
 >;
 // For growth stats
 export interface GrowthStat {

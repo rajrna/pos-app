@@ -11,6 +11,8 @@ import {
   TrendingUp,
   RefreshCcw,
   Percent,
+  ChartPie,
+  ArrowUpDown,
 } from "lucide-react";
 
 // For dashboard overview stats
@@ -113,7 +115,37 @@ export const PROFIT_COST_STAT_CONFIG = [
     bgColor: "bg-purple-100",
   },
 ];
-
+// For Expenses Stats
+export const EXPENSE_STAT_CONFIG = [
+  {
+    key: "totalExpenses",
+    label: "Total Expenses",
+    icon: DollarSign,
+    iconColor: "text-red-500",
+    bgColor: "bg-red-100",
+  },
+  {
+    key: "totalBudget",
+    label: "Total Budget",
+    icon: ChartPie,
+    iconColor: "text-grey-500",
+    bgColor: "bg-grey-100",
+  },
+  {
+    key: "budgetVariance",
+    label: "Budget Variance",
+    icon: ArrowUpDown,
+    iconColor: "text-yellow-500",
+    bgColor: "bg-yellow-100",
+  },
+  {
+    key: "revenueMargin",
+    label: "% of Revenue",
+    icon: Percent,
+    iconColor: "text-purple-500",
+    bgColor: "bg-purple-100",
+  },
+];
 // For Growth Stats
 export const GROWTH_STAT_CONFIG = [
   {

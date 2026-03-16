@@ -9,7 +9,7 @@ interface StatBoxProps {
   iconColor?: string;
 }
 
-export default function StatBox({
+export default function StaffStatBox({
   label,
   value,
   percent,

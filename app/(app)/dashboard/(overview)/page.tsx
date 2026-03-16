@@ -1,5 +1,5 @@
 import SalesLocationChart from "@/components/dashboard/SalesLocationChart";
-import StatBox from "@/components/dashboard/StatBox";
+import StatBox from "@/components/dashboard/StaffStatBox";
 import WinningStatBox from "@/components/dashboard/WinningStatBox";
 import WeeklyRevenueChart from "@/components/dashboard/WeeklyRevenueChart";
 import HourlySalesTrend from "@/components/dashboard/HourlySalesChart";
