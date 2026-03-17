@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { TableRow, TableCell } from "../ui/table";
 import { formatDatetime } from "@/utils/helper";
-import { InvoiceRowProps } from "@/types/invoice";
+import { InvoiceRowProps } from "@/lib/types/invoice";
 
 export default function InvoiceRow({
   invoice,

@@ -20,9 +20,9 @@ import { useCustomersList } from "@/hooks/useCustomersList";
 import { useCreateInvoice } from "@/hooks/useInvoices";
 import { useProductsList } from "@/hooks/useProductsList";
 
-import { CreateInvoiceInput } from "@/types/invoice";
-import { InvoiceItem } from "@/types/invoice";
-import { Discount } from "@/types/invoice";
+import { CreateInvoiceInput } from "@/lib/types/invoice";
+import { InvoiceItem } from "@/lib/types/invoice";
+import { Discount } from "@/lib/types/invoice";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",

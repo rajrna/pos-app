@@ -17,7 +17,9 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { mockSalesTrendData } from "./mock-salesrevenue";
-
+import { CurrencyConfig } from "@/lib/config/store";
+import { formatCurrency } from "@/lib/utils";
+import { useCurrency } from "@/lib/context/CurrencyContext";
 // Types
 
 type ViewMode = "daily" | "weekly" | "monthly";
@@ -34,11 +36,6 @@ export interface SalesTrendsData {
 }
 
 // Helpers
-
-const formatYAxis = (value: number): string => {
-  if (value >= 1000) return `$${value / 1000}k`;
-  return `$${value}`;
-};
 
 const getYAxisTicks = (
   data: DataPoint[],
@@ -64,12 +61,14 @@ interface CustomTooltipProps {
   active?: boolean;
   label?: string;
   payload?: Payload<ValueType, NameType>[];
+  currency: CurrencyConfig;
 }
 
 const CustomTooltip = ({
   active,
   payload,
   label,
+  currency,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
@@ -78,10 +77,14 @@ const CustomTooltip = ({
         {label}
       </p>
       <p className="text-violet-500 font-bold text-sm">
-        $
+        {/* $
         {(
           payload[0].value as number
-        ).toLocaleString()}
+        ).toLocaleString()} */}
+        {formatCurrency(
+          payload[0].value as number,
+          currency,
+        )}
       </p>
     </div>
   );
@@ -107,6 +110,12 @@ export default function SalesTrendChart({
 }: SalesTrendsProps) {
   const [view, setView] =
     useState<ViewMode>("weekly");
+  const { currency } = useCurrency();
+
+  const formatYAxis = (value: number): string =>
+    value >= 1000
+      ? `${currency.symbol}${value / 1000}k`
+      : formatCurrency(value, currency);
 
   const activeData = initialData[view];
   const yTicks = getYAxisTicks(activeData);
@@ -191,7 +200,11 @@ export default function SalesTrendChart({
             />
 
             <Tooltip
-              content={<CustomTooltip />}
+              content={
+                <CustomTooltip
+                  currency={currency}
+                />
+              }
               cursor={{
                 fill: "rgba(167,139,250,0.06)",
               }}

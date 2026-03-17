@@ -9,6 +9,7 @@ import Navbar from "@/components/layout/Navbar";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { SidebarProvider } from "@/providers/SiderbarProvider";
 import MainContent from "@/components/layout/MainContent";
+import { CurrencyProvider } from "@/lib/context/CurrencyContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -44,7 +45,9 @@ export default function RootLayout({
 
         <MainContent>
           <QueryProvider>
-            {children}
+            <CurrencyProvider>
+              {children}
+            </CurrencyProvider>
           </QueryProvider>
         </MainContent>
       </SidebarProvider>

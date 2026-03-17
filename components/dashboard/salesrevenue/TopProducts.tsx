@@ -1,6 +1,8 @@
+"use client";
+import { useCurrency } from "@/lib/context/CurrencyContext";
 import {
+  getTopProductColumns,
   TopProduct,
-  topProductColumns,
 } from "./top-product-columns";
 import { DataTable } from "@/components/ui/data-table";
 
@@ -11,6 +13,8 @@ type TopProductsProps = {
 export default function TopProducts({
   topProducts,
 }: TopProductsProps) {
+  const { currency } = useCurrency();
+  const columns = getTopProductColumns(currency);
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full">
       <h1 className="font-semibold text-[17px]">
@@ -21,7 +25,7 @@ export default function TopProducts({
         growth
       </p>
       <DataTable
-        columns={topProductColumns}
+        columns={columns}
         data={topProducts}
         pageSize={5}
       />

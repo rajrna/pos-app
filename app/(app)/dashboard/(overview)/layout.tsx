@@ -7,12 +7,8 @@ import {
   LayoutDashboard,
   TrendingUp,
 } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import CurrencySelect from "@/components/dashboard/CurrencySelect";
 
 const tabs = [
   {
@@ -88,18 +84,11 @@ export default function DashboardLayout({
               </Button>
             ),
           )}
+
+          <div>
+            <CurrencySelect />
+          </div>
         </div>
-        {/* Implement later */}
-        {/* <div className="flex justify-between items-center gap-1">
-          <p className="text-gray-400">
-            FILTER BY:
-          </p>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Last week" />
-            </SelectTrigger>
-          </Select>
-        </div> */}
       </div>
 
       {children}

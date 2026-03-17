@@ -2,7 +2,7 @@ import supabase from "./supabase";
 import {
   Customer,
   CreateCustomerInput,
-} from "@/types/customer";
+} from "@/lib/types/customer";
 
 function transformCustomer(row: any): Customer {
   return {

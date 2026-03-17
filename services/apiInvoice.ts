@@ -1,4 +1,4 @@
-import { CreateInvoiceInput } from "@/types/invoice";
+import { CreateInvoiceInput } from "@/lib/types/invoice";
 import supabase from "./supabase";
 
 export async function fetchInvoices() {
