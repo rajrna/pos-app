@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CurrencyConfig } from "@/lib/config/store";
+import { formatCurrency } from "@/lib/utils";
 import {
   ColumnDef,
   FilterFn,
@@ -56,7 +58,9 @@ const multiSelectFilter: FilterFn<TopCustomer> = (
   return value.includes(row.getValue(columnId));
 };
 
-export const columns: ColumnDef<TopCustomer>[] = [
+export const getTopCustomerColumns = (
+  currency: CurrencyConfig,
+): ColumnDef<TopCustomer>[] => [
   {
     accessorKey: "rank",
     header: "Rank",
@@ -109,7 +113,11 @@ export const columns: ColumnDef<TopCustomer>[] = [
     ),
     cell: ({ row }) => (
       <span className="font-semibold">
-        {row.getValue("totalSpent")}
+        {formatCurrency(
+          Number(row.getValue("totalSpent")),
+          currency,
+        )}
+        {/* {row.getValue("totalSpent")} */}
       </span>
     ),
   },

@@ -69,7 +69,7 @@ const CustomBar = (props: BarShapeProps) => (
 
 export default function LoyaltyTierChart() {
   return (
-    <div className="flex-2 min-w-90 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 ">
+    <div className="flex-2  bg-white rounded-2xl border border-gray-100 shadow-sm md:p-6 w-full p-4 ">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">
@@ -81,73 +81,75 @@ export default function LoyaltyTierChart() {
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer
-        width="100%"
-        height={240}
-      >
-        <BarChart
-          data={data}
-          layout="vertical"
-          margin={{
-            top: 0,
-            right: 40,
-            left: 10,
-            bottom: 0,
-          }}
-          barCategoryGap="30%"
+      <div className="h-55 sm:h-75">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
         >
-          <CartesianGrid
-            horizontal={false}
-            stroke="#f3f4f6"
-          />
-
-          <XAxis
-            type="number"
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 12,
+          <BarChart
+            data={data}
+            layout="vertical"
+            margin={{
+              top: 0,
+              right: 40,
+              left: 10,
+              bottom: 0,
             }}
-            ticks={[0, 150, 300, 450, 600]}
-            domain={[0, 600]}
-          />
-
-          <YAxis
-            type="category"
-            dataKey="tier"
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 13,
-            }}
-            width={58}
-          />
-
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={{
-              fill: "rgba(96,165,250,0.05)",
-            }}
-          />
-
-          <Bar
-            dataKey="members"
-            shape={CustomBar}
+            barCategoryGap="30%"
           >
-            <LabelList
-              dataKey="members"
-              position="right"
-              style={{
-                fill: "#6b7280",
+            <CartesianGrid
+              horizontal={false}
+              stroke="#f3f4f6"
+            />
+
+            <XAxis
+              type="number"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 12,
+              }}
+              ticks={[0, 150, 300, 450, 600]}
+              domain={[0, 600]}
+            />
+
+            <YAxis
+              type="category"
+              dataKey="tier"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
                 fontSize: 13,
-                fontWeight: 500,
+              }}
+              width={58}
+            />
+
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{
+                fill: "rgba(96,165,250,0.05)",
               }}
             />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+
+            <Bar
+              dataKey="members"
+              shape={CustomBar}
+            >
+              <LabelList
+                dataKey="members"
+                position="right"
+                style={{
+                  fill: "#6b7280",
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
