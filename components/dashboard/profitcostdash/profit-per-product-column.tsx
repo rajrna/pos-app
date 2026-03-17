@@ -1,6 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { getMarginColors } from "@/lib/utils";
+import { CurrencyConfig } from "@/lib/config/store";
+import {
+  formatCurrency,
+  getMarginColors,
+} from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
@@ -12,7 +16,9 @@ export type Product = {
   margin: number;
 };
 
-export const columns: ColumnDef<Product>[] = [
+export const getProfitPerProductColumns = (
+  currency: CurrencyConfig,
+): ColumnDef<Product>[] => [
   {
     accessorKey: "name",
     header: "Product",
@@ -39,7 +45,10 @@ export const columns: ColumnDef<Product>[] = [
     ),
     cell: ({ row }) => (
       <span className="font-semibold">
-        $ {row.getValue("revenue")}
+        {formatCurrency(
+          Number(row.getValue("revenue")),
+          currency,
+        )}
       </span>
     ),
   },
@@ -60,7 +69,11 @@ export const columns: ColumnDef<Product>[] = [
     ),
     cell: ({ row }) => (
       <span className="font-semibold text-red-600">
-        -$ {row.getValue("cogs")}
+        -
+        {formatCurrency(
+          Number(row.getValue("cogs")),
+          currency,
+        )}
       </span>
     ),
   },
@@ -81,7 +94,10 @@ export const columns: ColumnDef<Product>[] = [
     ),
     cell: ({ row }) => (
       <span className="font-bold text-green-600">
-        $ {row.getValue("revenue")}
+        {formatCurrency(
+          Number(row.getValue("profit")),
+          currency,
+        )}
       </span>
     ),
   },

@@ -1,4 +1,7 @@
 "use client";
+import { CurrencyConfig } from "@/lib/config/store";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { formatCurrency } from "@/lib/utils";
 import {
   PieChart,
   Pie,
@@ -12,9 +15,7 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 export interface ExpenseCategory {
   name: string;
@@ -22,9 +23,7 @@ export interface ExpenseCategory {
   color: string;
 }
 
-// ---------------------------------------------------------------
 // Mock data
-// ---------------------------------------------------------------
 
 const MOCK_DATA: ExpenseCategory[] = [
   {
@@ -64,18 +63,18 @@ const MOCK_DATA: ExpenseCategory[] = [
   }, // indigo
 ];
 
-// ---------------------------------------------------------------
 // Tooltip
-// ---------------------------------------------------------------
 
 interface CustomTooltipProps {
   active?: boolean;
   payload?: Payload<ValueType, NameType>[];
+  currency: CurrencyConfig;
 }
 
 const CustomTooltip = ({
   active,
   payload,
+  currency,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   const entry = payload[0]
@@ -101,7 +100,10 @@ const CustomTooltip = ({
         </span>
       </div>
       <p className="text-sm font-bold text-gray-900">
-        ${entry.value.toLocaleString()}
+        {formatCurrency(
+          entry.value as number,
+          currency,
+        )}
       </p>
       <p className="text-xs text-gray-400">
         {pct}% of total
@@ -110,9 +112,7 @@ const CustomTooltip = ({
   );
 };
 
-// ---------------------------------------------------------------
 // Legend
-// ---------------------------------------------------------------
 
 const CustomLegend = ({
   data,
@@ -137,9 +137,7 @@ const CustomLegend = ({
   </div>
 );
 
-// ---------------------------------------------------------------
 // Chart
-// ---------------------------------------------------------------
 
 export interface ExpensesByCategoryProps {
   initialData?: ExpenseCategory[];
@@ -152,6 +150,8 @@ export default function ExpensesByCategoryChart({
     (s, d) => s + d.value,
     0,
   );
+
+  const { currency } = useCurrency();
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
@@ -192,7 +192,11 @@ export default function ExpensesByCategoryChart({
               ))}
             </Pie>
             <Tooltip
-              content={<CustomTooltip />}
+              content={
+                <CustomTooltip
+                  currency={currency}
+                />
+              }
             />
           </PieChart>
         </ResponsiveContainer>
@@ -203,7 +207,8 @@ export default function ExpensesByCategoryChart({
             Total
           </span>
           <span className="text-lg font-bold text-gray-900">
-            ${(total / 1000).toFixed(0)}k
+            {currency.symbol}
+            {(total / 1000).toFixed(0)}k
           </span>
         </div>
       </div>

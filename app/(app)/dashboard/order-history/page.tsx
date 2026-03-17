@@ -1,6 +1,10 @@
+import { getTransactions } from "@/services/dashboard/apiTransaction";
 import Transactions from "@/components/dashboard/orderhistory/Transactions";
 
-export default function Page() {
+export default async function Page() {
+  const [transactions] = await Promise.all([
+    getTransactions(),
+  ]);
   return (
     <div className="p-4">
       <div>
@@ -14,39 +18,7 @@ export default function Page() {
       <div className="flex flex-wrap">
         <div></div>
       </div>
-      <Transactions
-        transactions={[
-          {
-            id: "ORD-421",
-            date: "Jan 20",
-            timestamp: "10:00",
-            customer: "John Marston",
-            amount: "50.50",
-            paymentMethod: "Loyalty",
-            items: [
-              { name: "Latte", quantity: 5 },
-              { name: "Sandwich", quantity: 2 },
-            ],
-            status: "completed",
-          },
-          {
-            id: "ORD-422",
-            date: "Jan 20",
-            timestamp: "9:00",
-            customer: "Arthur Morgan",
-            amount: "45.00",
-            paymentMethod: "Cash",
-            items: [
-              {
-                name: "Black Coffee",
-                quantity: 5,
-              },
-              { name: "Cookies", quantity: 2 },
-            ],
-            status: "completed",
-          },
-        ]}
-      />
+      <Transactions transactions={transactions} />
     </div>
   );
 }

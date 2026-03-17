@@ -3,6 +3,7 @@ import SlowProducts from "@/components/dashboard/salesrevenue/SlowProducts";
 import SalesTrendChart from "@/components/dashboard/salesrevenue/SalesTrendChart";
 import RevenueVsProfitChart from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
 import { mockSalesTrendData } from "@/components/dashboard/salesrevenue/mock-salesrevenue";
+
 import {
   getRevenueVsProfitData,
   getSalesTrends,

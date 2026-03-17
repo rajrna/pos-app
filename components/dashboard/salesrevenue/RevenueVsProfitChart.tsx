@@ -13,11 +13,13 @@ import {
   Rectangle,
 } from "recharts";
 import type { BarShapeProps } from "recharts";
+
 import type {
   NameType,
   Payload,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+
 import { formatCurrency } from "@/lib/utils";
 import {
   CurrencyConfig,
