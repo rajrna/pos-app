@@ -11,7 +11,7 @@ import {
 import { TableCell, TableRow } from "../ui/table";
 
 import { formatCurrency } from "@/utils/helper";
-import { CustomerRowProps } from "@/types/customer";
+import { CustomerRowProps } from "@/lib/types/customer";
 import { useDeleteCustomer } from "@/hooks/useCustomers";
 
 export default function CustomerRow({

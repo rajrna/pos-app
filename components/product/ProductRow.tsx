@@ -10,7 +10,7 @@ import { TableCell, TableRow } from "../ui/table";
 import { formatCurrency } from "@/utils/helper";
 
 import toast from "react-hot-toast";
-import { ProductRowProps } from "@/types/product";
+import { ProductRowProps } from "@/lib/types/product";
 import { useDeleteProduct } from "@/hooks/useProducts";
 
 export default function ProductRow({

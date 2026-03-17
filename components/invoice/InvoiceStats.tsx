@@ -1,7 +1,7 @@
 import { RefreshCw } from "lucide-react";
 
 // import AlertCard from "./AlertCard";
-import { InvoiceStatsProps } from "@/types/invoice";
+import { InvoiceStatsProps } from "@/lib/types/invoice";
 import { useInvoiceStore } from "@/stores/invoiceStore";
 
 export default function InvoiceStats({

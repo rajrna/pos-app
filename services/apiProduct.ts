@@ -2,7 +2,7 @@ import supabase from "./supabase";
 import {
   Product,
   CreateProductInput,
-} from "@/types/product";
+} from "@/lib/types/product";
 
 function transformProduct(row: any): Product {
   return {

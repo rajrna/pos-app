@@ -12,8 +12,8 @@ import {
   SelectValue,
 } from "../ui/select";
 
-import { InvoiceItem } from "@/types/invoice";
-import { InvoiceItemsSelectorProps } from "@/types/invoice";
+import { InvoiceItem } from "@/lib/types/invoice";
+import { InvoiceItemsSelectorProps } from "@/lib/types/invoice";
 
 import { TableCell, TableRow } from "../ui/table";
 import { Input } from "../ui/input";

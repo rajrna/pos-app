@@ -18,6 +18,11 @@ import type {
   Payload,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { formatCurrency } from "@/lib/utils";
+import {
+  CurrencyConfig,
+  useCurrency,
+} from "@/lib/context/CurrencyContext";
 
 // Types
 
@@ -109,12 +114,14 @@ interface CustomTooltipProps {
   active?: boolean;
   label?: string;
   payload?: Payload<ValueType, NameType>[];
+  currency: CurrencyConfig;
 }
 
 const CustomTooltip = ({
   active,
   payload,
   label,
+  currency,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
@@ -140,10 +147,10 @@ const CustomTooltip = ({
             </span>
           </div>
           <span className="text-xs font-bold text-gray-800">
-            $
-            {(
-              entry.value as number
-            ).toLocaleString()}
+            {formatCurrency(
+              entry.value as number,
+              currency,
+            )}
           </span>
         </div>
       ))}
@@ -159,6 +166,7 @@ export default function RevenueVsProfitChart({
   const [range, setRange] =
     useState<DateRange>("30d");
 
+  const { currency } = useCurrency();
   const {
     data = initialData,
     isFetching,
@@ -173,7 +181,9 @@ export default function RevenueVsProfitChart({
   });
 
   const formatYAxis = (value: number): string =>
-    `$${value / 1000}k`;
+    value >= 1000
+      ? `${currency.symbol}${value / 1000}k`
+      : formatCurrency(value, currency);
   const maxValue = Math.max(
     ...data.flatMap((d) => [d.revenue, d.profit]),
   );
@@ -266,7 +276,11 @@ export default function RevenueVsProfitChart({
                 width={45}
               />
               <Tooltip
-                content={<CustomTooltip />}
+                content={
+                  <CustomTooltip
+                    currency={currency}
+                  />
+                }
                 cursor={{
                   fill: "rgba(0,0,0,0.03)",
                 }}

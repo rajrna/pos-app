@@ -1,4 +1,4 @@
-import { Customer } from "@/types/customer";
+import { Customer } from "@/lib/types/customer";
 
 interface CustomerSelectorProps {
   customers: Customer[];

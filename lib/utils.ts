@@ -4,9 +4,20 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+import { CurrencyConfig } from "./context/CurrencyContext";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function formatCurrency(
+  amount: number,
+  currency: CurrencyConfig,
+): string {
+  return new Intl.NumberFormat(currency.locale, {
+    style: "currency",
+    currency: currency.code,
+  }).format(amount);
 }
 
 export function getPercentColor(percent: number) {

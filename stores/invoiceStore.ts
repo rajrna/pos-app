@@ -1,6 +1,6 @@
 // store/invoiceStore.ts
 import { create } from "zustand";
-import { Invoice } from "@/types/invoice";
+import { Invoice } from "@/lib/types/invoice";
 
 interface Filters {
   status: string;
