@@ -1,10 +1,11 @@
-import { DataTable } from "@/components/ui/data-table";
 import { TriangleAlert } from "lucide-react";
+
 import { columns } from "./atrisk-customer-column";
+import { DataTable } from "@/components/ui/data-table";
 
 type SpendingLevel = "High" | "Medium" | "Low";
 
-type AtRiskCustomer = {
+export type AtRiskCustomer = {
   rank: number;
   name: string;
   lastVisit: number;
@@ -20,21 +21,21 @@ export default function AtRiskCustomer({
 }: AtRiskCustomersProps) {
   const numCustomers = riskCustomers.length;
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 min-w-150">
-      <h1 className="font-semibold">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full">
+      <h1 className="font-semibold text-[17px]">
         At-Risk Customers
       </h1>
       <div className="flex items-center justify-between">
-        <p className="text-gray-600">
+        <p className="text-gray-700">
           Inactive customers who need
           re-engagement
         </p>
-        <div className="text-yellow-600 border-yellow-500 border bg-yellow-100 flex rounded-2xl px-1 gap-1">
+        <div className="text-yellow-600 border-yellow-500 border bg-yellow-100 flex rounded-2xl md:px-1  gap-1">
           <TriangleAlert
             size={12}
             className="mt-0.5"
           />
-          <p className="text-[12px] font-semibold">
+          <p className="md:text-[12px] text-[9px] font-semibold">
             {numCustomers} at risk
           </p>
         </div>

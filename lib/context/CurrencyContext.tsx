@@ -56,18 +56,6 @@ export function CurrencyProvider({
       localStorage.setItem("currency", code);
     }
   };
-  //   const [currency, setCurrencyState] =
-  //     useState<CurrencyConfig>(
-  //       storeConfig.currency,
-  //     );
-
-  //   const setCurrency = (code: string) => {
-  //     const found = CURRENCIES.find(
-  //       (c) => c.code === code,
-  //     );
-  //     if (found) setCurrencyState(found);
-  //   };
-
   return (
     <CurrencyContext.Provider
       value={{

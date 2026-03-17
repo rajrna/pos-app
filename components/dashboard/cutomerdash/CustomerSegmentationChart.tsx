@@ -63,9 +63,9 @@ export default function CustomerSegmentationChart() {
   );
 
   return (
-    <div className="flex-1 w-80 min-w-70 bg-white rounded-2xl border border-gray-100 shadow-md p-6 ">
+    <div className=" bg-white rounded-2xl px-4 py-3 border min-w-48 border-gray-100 shadow-md">
       {/* Header */}
-      <div className="mb-2">
+      <div>
         <h2 className="text-lg font-bold text-gray-900">
           Customer Segmentation
         </h2>
@@ -75,10 +75,11 @@ export default function CustomerSegmentationChart() {
       </div>
 
       {/* Donut Chart */}
-      <div className="flex items-center justify-center py-4">
+      {/* <div className="flex items-center justify-center py-4"> */}
+      <div className="h-55 sm:h-75  ">
         <ResponsiveContainer
           width="100%"
-          height={220}
+          height="100%"
         >
           <PieChart>
             <Pie
@@ -106,6 +107,7 @@ export default function CustomerSegmentationChart() {
           </PieChart>
         </ResponsiveContainer>
       </div>
+      {/* </div> */}
 
       {/* Legend */}
       <div className="flex items-center justify-center gap-6 mt-1">
@@ -122,7 +124,7 @@ export default function CustomerSegmentationChart() {
             />
             <span className="text-sm text-gray-600">
               {entry.name}:{" "}
-              <span className="font-bold text-gray-900">
+              <span className="font-bold text-gray-700">
                 {entry.value.toLocaleString()}
               </span>
             </span>

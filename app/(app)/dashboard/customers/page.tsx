@@ -1,33 +1,39 @@
-import AtRiskCustomer from "@/components/dashboard/cutomerdash/AtRiskCustomer";
-import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
-import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
-import CustomerTrendChart from "@/components/dashboard/cutomerdash/CustomerTrendChart";
-import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
-import TopCustomer from "@/components/dashboard/cutomerdash/TopCustomer";
-import { Button } from "@/components/ui/button";
-import { CUSTOMER_STAT_CONFIG } from "@/lib/config/dashboard";
-import { CustomerApiResponse } from "@/lib/dashboardstats";
-import { UserPlus } from "lucide-react";
 import Link from "next/link";
 
-const mockStats: CustomerApiResponse = {
-  totalMembers: { value: "50" },
-  activeCustomers: { value: "100" },
-  pointsRedeemed: { value: "5000" },
-  pointsPerMember: { value: "120" },
-};
+import { UserPlus } from "lucide-react";
 
-export default function Page() {
+import { CUSTOMER_STAT_CONFIG } from "@/lib/config/dashboard";
+
+import { Button } from "@/components/ui/button";
+import TopCustomer from "@/components/dashboard/cutomerdash/TopCustomer";
+import AtRiskCustomer from "@/components/dashboard/cutomerdash/AtRiskCustomer";
+import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
+import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
+import CustomerTrendChart from "@/components/dashboard/cutomerdash/CustomerTrendChart";
+import { mockCustomerStats } from "@/components/dashboard/cutomerdash/mock-customer-data";
+import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
+import {
+  getAtRiskCustomers,
+  getTopCustomers,
+} from "@/services/dashboard/apiCustomerDash";
+
+export default async function Page() {
   const stats = CUSTOMER_STAT_CONFIG.map(
     (config) => ({
       ...config,
-      ...mockStats[config.key],
+      ...mockCustomerStats[config.key],
     }),
   );
+
+  const [topCustomers, atRiskCustomers] =
+    await Promise.all([
+      getTopCustomers(),
+      getAtRiskCustomers(),
+    ]);
   return (
-    <div className="w-full px-4">
+    <div className="p-3 md:p-6">
       <div className="flex justify-between items-center w-full  py-2 border-b-2">
-        <div className="py-4">
+        <div className="py-2">
           {/* FOR HEADER TEXT */}
           <h1 className="font-bold text-2xl">
             Customer Analytics
@@ -58,54 +64,17 @@ export default function Page() {
             />
           ))}
         </div>
-        <div className="flex flex-wrap items-stretch gap-4 px-4 my-4">
+        {/* <div className="flex flex-wrap items-stretch gap-4 px-4 my-4"> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <CustomerSegmentationChart />
           <LoyaltyTierChart />
         </div>
         <CustomerTrendChart />
         <AtRiskCustomer
-          riskCustomers={[
-            {
-              rank: 1,
-              name: "Mary Linton",
-              lastVisit: 15,
-              spendLevel: "High",
-            },
-            {
-              rank: 2,
-              name: "Strauss",
-              lastVisit: 2,
-              spendLevel: "Medium",
-            },
-          ]}
+          riskCustomers={atRiskCustomers}
         />
         <TopCustomer
-          topCustomers={[
-            {
-              rank: 1,
-              customer: "Lenny",
-              numVisits: 11,
-              totalSpent: 60,
-              loyaltyTier: "Gold",
-              loyaltyPoints: 60,
-            },
-            {
-              rank: 2,
-              customer: "Sadie Adler",
-              numVisits: 10,
-              totalSpent: 50,
-              loyaltyTier: "Gold",
-              loyaltyPoints: 50,
-            },
-            {
-              rank: 3,
-              customer: "Uncle",
-              numVisits: 5,
-              totalSpent: 30,
-              loyaltyTier: "Silver",
-              loyaltyPoints: 30,
-            },
-          ]}
+          topCustomers={topCustomers}
         />
       </div>
     </div>

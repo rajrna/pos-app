@@ -1,14 +1,14 @@
-import { mockSalesTrendData } from "@/components/dashboard/salesrevenue/mock-salesrevenue";
-import RevenueVsProfitChart from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
-import SalesTrendChart from "@/components/dashboard/salesrevenue/SalesTrendChart";
-import SlowProducts from "@/components/dashboard/salesrevenue/SlowProducts";
 import TopProducts from "@/components/dashboard/salesrevenue/TopProducts";
+import SlowProducts from "@/components/dashboard/salesrevenue/SlowProducts";
+import SalesTrendChart from "@/components/dashboard/salesrevenue/SalesTrendChart";
+import RevenueVsProfitChart from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
+import { mockSalesTrendData } from "@/components/dashboard/salesrevenue/mock-salesrevenue";
 import {
   getRevenueVsProfitData,
   getSalesTrends,
   getSlowProducts,
   getTopProducts,
-} from "@/services/dashboard/sales&revenue/apiSalesRevenue";
+} from "@/services/dashboard/apiSalesRevenue";
 
 export default async function Page() {
   const [
@@ -28,7 +28,7 @@ export default async function Page() {
           Sales & Revenue
         </h1>
 
-        <p>
+        <p className="text-gray-500">
           Detailed breakdown of your store&apos;s
           financial performance
         </p>
