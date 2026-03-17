@@ -4,19 +4,25 @@ import {
   ColumnDef,
   FilterFn,
 } from "@tanstack/react-table";
+
 import {
   isWithinInterval,
   startOfDay,
   endOfDay,
 } from "date-fns";
+
 import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import {
   TransactionStatus,
   statusStyles,
   PaymentMethod,
   paymentMethods,
 } from "@/lib/transaction";
+import { CurrencyConfig } from "@/lib/config/store";
+import { formatCurrency } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
 
 type Item = { name: string; quantity: number };
 
@@ -57,7 +63,9 @@ export const multiSelectFilter: FilterFn<
   return value.includes(row.getValue(columnId));
 };
 
-export const columns: ColumnDef<Transaction>[] = [
+export const getTransactionColumns = (
+  currency: CurrencyConfig,
+): ColumnDef<Transaction>[] => [
   {
     accessorKey: "id",
     header: "Order ID",
@@ -171,7 +179,10 @@ export const columns: ColumnDef<Transaction>[] = [
     ),
     cell: ({ row }) => (
       <span className="font-bold">
-        $ {row.getValue("amount")}
+        {formatCurrency(
+          Number(row.getValue("amount")),
+          currency,
+        )}
       </span>
     ),
     // Enables numeric sorting

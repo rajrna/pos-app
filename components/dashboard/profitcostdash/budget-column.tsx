@@ -2,6 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { formatCurrency } from "@/lib/utils";
+import { CurrencyConfig } from "@/lib/config/store";
 
 type BudgetCategory =
   | "Labor"
@@ -41,69 +43,76 @@ export type BudgetItem = {
   budget: number;
 };
 
-export const budgetColumns: ColumnDef<BudgetItem>[] =
-  [
-    {
-      accessorKey: "category",
-      header: "Category",
-      cell: ({ row }) => {
-        const color = getCategoryColor(
-          row.original.category,
-        );
-        return (
-          <div className="flex items-center gap-2">
-            <span
-              className={`w-2 h-2 rounded-full ${color}`}
-            />
-            <span>
-              {row.getValue("category")}
-            </span>
-          </div>
-        );
-      },
+export const getBudgetColumns = (
+  currency: CurrencyConfig,
+): ColumnDef<BudgetItem>[] => [
+  {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+      const color = getCategoryColor(
+        row.original.category,
+      );
+      return (
+        <div className="flex items-center gap-2">
+          <span
+            className={`w-2 h-2 rounded-full ${color}`}
+          />
+          <span>{row.getValue("category")}</span>
+        </div>
+      );
     },
-    {
-      accessorKey: "actual",
-      header: "Actual",
-      cell: ({ row }) => (
-        <span className="font-bold">
-          $
-          {row
-            .getValue<number>("actual")
-            .toLocaleString()}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "budget",
-      header: "Budget",
-      cell: ({ row }) => (
-        <span className="text-gray-500">
-          $
+  },
+  {
+    accessorKey: "actual",
+    header: "Actual",
+    cell: ({ row }) => (
+      <span className="font-bold">
+        {/* $
+        {row
+          .getValue<number>("actual")
+          .toLocaleString()} */}
+        {formatCurrency(
+          Number(row.getValue("actual")),
+          currency,
+        )}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "budget",
+    header: "Budget",
+    cell: ({ row }) => (
+      <span className="text-gray-500">
+        {/* $
           {row
             .getValue<number>("budget")
-            .toLocaleString()}
-        </span>
-      ),
+            .toLocaleString()} */}
+        {formatCurrency(
+          Number(row.getValue("budget")),
+          currency,
+        )}
+      </span>
+    ),
+  },
+  {
+    id: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const color = getCategoryColor(
+        row.original.category,
+      );
+      const percentage = Math.round(
+        (row.original.actual /
+          row.original.budget) *
+          100,
+      );
+      return (
+        <ProgressBar
+          percentage={percentage}
+          color={color}
+        />
+      );
     },
-    {
-      id: "status",
-      header: "Status",
-      cell: ({ row }) => {
-        const color = getCategoryColor(
-          row.original.category,
-        );
-        const percentage = Math.round(
-          (row.original.actual /
-            row.original.budget) *
-            100,
-        );
-        return (
-          <ProgressBar
-            percentage={percentage}
-            color={color}
-          />
-        );
-      },
-    },
-  ];
+  },
+];

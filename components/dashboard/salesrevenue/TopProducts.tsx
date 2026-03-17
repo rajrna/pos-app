@@ -1,10 +1,10 @@
 "use client";
 import { useCurrency } from "@/lib/context/CurrencyContext";
+import { DataTable } from "@/components/ui/data-table";
 import {
   getTopProductColumns,
   TopProduct,
 } from "./top-product-columns";
-import { DataTable } from "@/components/ui/data-table";
 
 type TopProductsProps = {
   topProducts: TopProduct[];

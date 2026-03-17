@@ -15,9 +15,7 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 export interface ProfitTrendData {
   month: string;
@@ -25,9 +23,7 @@ export interface ProfitTrendData {
   netProfit: number;
 }
 
-// ---------------------------------------------------------------
 // Mock data — full 12 months
-// ---------------------------------------------------------------
 
 const MOCK_DATA: ProfitTrendData[] = [
   {
@@ -92,9 +88,7 @@ const MOCK_DATA: ProfitTrendData[] = [
   },
 ];
 
-// ---------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------
 
 const formatYAxis = (value: number): string =>
   `$${value / 1000}k`;
@@ -109,9 +103,7 @@ const getYAxisTicks = (
   return [0, step, step * 2, step * 3, step * 4];
 };
 
-// ---------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -187,9 +179,7 @@ const CustomLegend = () => (
   </div>
 );
 
-// ---------------------------------------------------------------
 // Chart
-// ---------------------------------------------------------------
 
 export interface GrossProfitTrendProps {
   initialData?: ProfitTrendData[];

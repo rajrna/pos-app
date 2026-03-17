@@ -1,10 +1,11 @@
-import { columns } from "@/components/dashboard/orderhistory/transaction-columns";
-import { DataTable } from "@/components/ui/data-table";
+"use client";
 
-import { TransactionStatus } from "@/lib/transaction";
+import { useCurrency } from "@/lib/context/CurrencyContext";
 import { PaymentMethod } from "@/lib/transaction";
+import { TransactionStatus } from "@/lib/transaction";
 
-import { mockTransactions } from "./mock-transactions";
+import { DataTable } from "@/components/ui/data-table";
+import { getTransactionColumns } from "@/components/dashboard/orderhistory/transaction-columns";
 
 type Item = {
   name: string;
@@ -27,8 +28,8 @@ export default function Transactions({
 }: {
   transactions: Transaction[];
 }) {
-  // I'll remove later
-  transactions = mockTransactions;
+  const { currency } = useCurrency();
+  const columns = getTransactionColumns(currency);
   return (
     <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 py-8 px-4">
       <h1 className="font-semibold text-xl">
