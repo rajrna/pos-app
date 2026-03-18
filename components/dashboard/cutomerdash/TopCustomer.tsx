@@ -14,7 +14,7 @@ export default function TopCustomer({
       <h1 className="font-semibold text-base md:text-[17px]">
         Top Customers & Loyalty Points
       </h1>
-      <p className="text-gray-700 text-xs md:text-sm mt-0.5">
+      <p className="text-gray-400 text-xs md:text-sm mt-0.5">
         Highest value contributors this month
       </p>
 

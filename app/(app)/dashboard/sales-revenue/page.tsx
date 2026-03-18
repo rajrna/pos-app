@@ -35,14 +35,14 @@ export default async function Page() {
         </p>
 
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold mt-10">
+          <h1 className="text-xl font-semibold mt-2">
             Performance metrics
           </h1>
         </div>
       </div>
 
       {/* Actual COntent */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
         <TopProducts topProducts={topProducts} />
         <SlowProducts
           slowProducts={slowProducts}
