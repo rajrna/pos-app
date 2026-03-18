@@ -4,12 +4,16 @@ import {
   Geist_Mono,
 } from "next/font/google";
 import "@/app/globals.css";
-import Sidebar from "@/components/layout/Sidebar";
-import Navbar from "@/components/layout/Navbar";
+
 import { QueryProvider } from "@/providers/QueryProvider";
-import { SidebarProvider } from "@/providers/SiderbarProvider";
-import MainContent from "@/components/layout/MainContent";
+import { SidebarProvider } from "@/providers/SidebarProvider";
 import { CurrencyProvider } from "@/lib/context/CurrencyContext";
+
+import Navbar from "@/components/layout/Navbar";
+import Sidebar from "@/components/layout/Sidebar";
+import MainContent from "@/components/layout/MainContent";
+import MobileSidebarOverlay from "@/components/layout/MobileSidebarOverlay";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,14 +38,16 @@ export default function RootLayout({
     <div
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <div className="fixed top-0 left-0 right-0 z-50 md:h-(--navbar-height)">
-        <Navbar />
-      </div>
-
       <SidebarProvider>
-        <div className="fixed top-(--navbar-height) left-0 bottom-0  z-40">
+        <div className="fixed top-0 left-0 right-0 z-50 md:h-(--navbar-height)">
+          <Navbar />
+        </div>
+
+        <div className="fixed top-(--navbar-height) left-0 bottom-0  z-40 hidden md:block">
           <Sidebar />
         </div>
+
+        <MobileSidebarOverlay />
 
         <MainContent>
           <QueryProvider>

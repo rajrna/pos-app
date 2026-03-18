@@ -118,14 +118,14 @@ const CustomTooltip = ({
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white rounded-xl px-4 py-3 shadow-lg border border-gray-100 min-w-40">
+    <div className="bg-white rounded-xl px-4 py-3 shadow-lg border border-gray-100 ">
       <p className="text-gray-400 text-xs mb-2 font-medium">
         {label}
       </p>
       {payload.map((entry) => (
         <div
           key={entry.name}
-          className="flex items-center justify-between gap-4"
+          className="flex items-center justify-between gap-2 md:gap-4"
         >
           <div className="flex items-center gap-1.5">
             <span
@@ -192,105 +192,109 @@ export default function GrossProfitTrendChart({
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl px-4 py-3 border min-w-0 border-gray-100 shadow-md">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">
+      <div>
+        <h2 className="text-base md:text-lg font-bold text-gray-900">
           Gross vs Net Profit Trend
         </h2>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <p className="text-xs md:text-sm text-gray-400 mt-0.5">
           Monthly comparison of revenue and net
           profit
         </p>
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer
-        width="100%"
-        height={320}
-      >
-        <LineChart
-          data={initialData}
-          margin={{
-            top: 10,
-            right: 20,
-            left: 10,
-            bottom: 10,
-          }}
+      <div className="h-44 sm:h-56 md:h-64">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
         >
-          <CartesianGrid
-            vertical={false}
-            stroke="#f3f4f6"
-          />
+          <LineChart
+            data={initialData}
+            margin={{
+              top: 10,
+              right: 20,
+              left: 10,
+              bottom: 10,
+            }}
+          >
+            <CartesianGrid
+              vertical={false}
+              stroke="#f3f4f6"
+            />
 
-          <XAxis
-            dataKey="month"
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 12,
-            }}
-            dy={8}
-          />
+            <XAxis
+              dataKey="month"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 12,
+              }}
+              dy={8}
+            />
 
-          <YAxis
-            tickFormatter={formatYAxis}
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 12,
-            }}
-            ticks={yTicks}
-            domain={[0, yMax]}
-            width={52}
-          />
+            <YAxis
+              tickFormatter={formatYAxis}
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 12,
+              }}
+              ticks={yTicks}
+              domain={[0, yMax]}
+              width={52}
+            />
 
-          <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={<CustomTooltip />}
+            />
 
-          <Legend content={<CustomLegend />} />
+            <Legend content={<CustomLegend />} />
 
-          <Line
-            type="monotone"
-            dataKey="grossRevenue"
-            name="Gross Revenue"
-            stroke="#60a5fa"
-            strokeWidth={2.5}
-            dot={{
-              r: 4,
-              fill: "#60a5fa",
-              stroke: "#fff",
-              strokeWidth: 2,
-            }}
-            activeDot={{
-              r: 6,
-              fill: "#60a5fa",
-              stroke: "#fff",
-              strokeWidth: 2,
-            }}
-          />
-          <Line
-            type="monotone"
-            dataKey="netProfit"
-            name="Net Profit"
-            stroke="#34d399"
-            strokeWidth={2.5}
-            dot={{
-              r: 4,
-              fill: "#34d399",
-              stroke: "#fff",
-              strokeWidth: 2,
-            }}
-            activeDot={{
-              r: 6,
-              fill: "#34d399",
-              stroke: "#fff",
-              strokeWidth: 2,
-            }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+            <Line
+              type="monotone"
+              dataKey="grossRevenue"
+              name="Gross Revenue"
+              stroke="#60a5fa"
+              strokeWidth={2.5}
+              dot={{
+                r: 4,
+                fill: "#60a5fa",
+                stroke: "#fff",
+                strokeWidth: 2,
+              }}
+              activeDot={{
+                r: 6,
+                fill: "#60a5fa",
+                stroke: "#fff",
+                strokeWidth: 2,
+              }}
+            />
+            <Line
+              type="monotone"
+              dataKey="netProfit"
+              name="Net Profit"
+              stroke="#34d399"
+              strokeWidth={2.5}
+              dot={{
+                r: 4,
+                fill: "#34d399",
+                stroke: "#fff",
+                strokeWidth: 2,
+              }}
+              activeDot={{
+                r: 6,
+                fill: "#34d399",
+                stroke: "#fff",
+                strokeWidth: 2,
+              }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

@@ -13,12 +13,6 @@ export function ProgressBar({
   );
   return (
     <div className="flex items-center gap-2">
-      <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full ${color}`}
-          style={{ width: `${clamped}%` }}
-        />
-      </div>
       <span
         className={`text-xs font-medium px-1.5 py-0.5 rounded-md ${
           clamped >= 100
@@ -30,6 +24,12 @@ export function ProgressBar({
       >
         {clamped}%
       </span>
+      <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full ${color}`}
+          style={{ width: `${clamped}%` }}
+        />
+      </div>
     </div>
   );
 }

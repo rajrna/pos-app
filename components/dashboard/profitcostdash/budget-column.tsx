@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ProgressBar } from "@/components/ui/progress-bar";
 import { formatCurrency } from "@/lib/utils";
 import { CurrencyConfig } from "@/lib/config/store";
+import { ProgressBar } from "@/components/ui/progress-bar";
 
 type BudgetCategory =
   | "Labor"
@@ -68,10 +68,6 @@ export const getBudgetColumns = (
     header: "Actual",
     cell: ({ row }) => (
       <span className="font-bold">
-        {/* $
-        {row
-          .getValue<number>("actual")
-          .toLocaleString()} */}
         {formatCurrency(
           Number(row.getValue("actual")),
           currency,
@@ -84,10 +80,6 @@ export const getBudgetColumns = (
     header: "Budget",
     cell: ({ row }) => (
       <span className="text-gray-500">
-        {/* $
-          {row
-            .getValue<number>("budget")
-            .toLocaleString()} */}
         {formatCurrency(
           Number(row.getValue("budget")),
           currency,

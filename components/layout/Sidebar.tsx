@@ -7,16 +7,20 @@ import {
   PanelLeftOpen,
   Plus,
 } from "lucide-react";
-import { Button } from "../ui/button";
+
+import { cn } from "@/lib/utils";
 import { navigationConfig } from "@/lib/navigation";
+
+import { useSidebar } from "@/providers/SidebarProvider";
+
+import { Button } from "../ui/button";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
-import { cn } from "@/lib/utils";
-import { useSidebar } from "@/providers/SiderbarProvider";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { isCollapsed, toggle } = useSidebar();
+  const { isCollapsed, toggle, closeMobile } =
+    useSidebar();
 
   const activeSectionFromUrl =
     navigationConfig.find(
@@ -71,8 +75,10 @@ export default function Sidebar() {
         </Button>
       </div>
 
-      {/* {!isCollapsed && ( */}
-      <nav className="flex-1 overflow-y-auto p-2">
+      <nav
+        className="flex-1 overflow-y-auto p-2"
+        onClick={closeMobile}
+      >
         <div className="space-y-1">
           {navigationConfig.map((item) => {
             const isSectionActive =
@@ -105,7 +111,6 @@ export default function Sidebar() {
           })}
         </div>
       </nav>
-      {/* )} */}
     </aside>
   );
 }

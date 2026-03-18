@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useSidebar } from "@/providers/SiderbarProvider";
+import { useSidebar } from "@/providers/SidebarProvider";
 
 export default function MainContent({
   children,
@@ -14,7 +14,7 @@ export default function MainContent({
     <main
       className={cn(
         "pt-(--navbar-height) transition-all duration-300",
-        isCollapsed ? "pl-12" : "pl-56",
+        isCollapsed ? "md:pl-12" : "md:pl-56",
       )}
     >
       {children}

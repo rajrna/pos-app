@@ -47,7 +47,10 @@ export default async function Page() {
           {/* FOR HEADER BUTTONS*/}
           <Button className="bg-blue-600 hover:bg-blue-700 px-3 md:px-6 py-3 text-white rounded-2xl">
             <UserPlus className="shrink-0" />
-            <Link href="/customers/add">
+            <Link
+              href="/customers/add"
+              // className="hidden sm:inline ml-1"
+            >
               New Customer
             </Link>
           </Button>

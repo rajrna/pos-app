@@ -18,12 +18,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import BudgetTable from "@/components/dashboard/profitcostdash/BudgetTable";
-import ExpenseStatBox from "@/components/dashboard/profitcostdash/ExpenseStatBox";
 import RefundAnalysis from "@/components/dashboard/profitcostdash/RefundAnalysis";
 import ProfitPerProduct from "@/components/dashboard/profitcostdash/ProfitPerProduct";
-import ProfitCostStatBox from "@/components/dashboard/profitcostdash/ProfitCostStatBox";
 import GrossProfitTrendChart from "@/components/dashboard/profitcostdash/GrossProfitTrendChart";
 import ExpensesByCategoryChart from "@/components/dashboard/profitcostdash/ExpenseByCategoryChart";
+import StatBox from "@/components/dashboard/StatBox";
 
 const mockStats: ProfitCostApiResponse = {
   grossRevenue: { value: "$50,000" },
@@ -65,38 +64,35 @@ export default async function Page() {
   );
 
   return (
-    <div className="w-full px-4">
+    <div className="p-3 md:p-6">
       <div className="flex justify-between items-center w-full  py-2 border-b-2">
-        <div className="py-4">
+        <div className="py-2 min-w-0">
           {/* FOR HEADER TEXT */}
-          <h1 className="font-bold text-2xl">
+          <h1 className="font-bold text-xl md:text-2xl truncate">
             Profit & Cost
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 text-sm md:text-base hidden sm:block">
             Financial health and margin analysis.
           </p>
         </div>
-        <div className="mx-3">
+        <div className="shrink-0">
           {/* FOR HEADER BUTTONS*/}
-          <Button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 text-white rounded-2xl">
-            <TrendingUp />
+          <Button className="bg-blue-600 hover:bg-blue-700 px-3 md:px-6 py-3 text-white rounded-2xl">
+            <TrendingUp className="shrink-0" />
             Optimize Margins
           </Button>
         </div>
       </div>
 
       <div>
-        <div className="flex flex-wrap items-center justify-center my-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
           {stats.map(({ key, ...stat }) => (
-            <ProfitCostStatBox
-              key={key}
-              {...stat}
-            />
+            <StatBox key={key} {...stat} />
           ))}
         </div>
         <GrossProfitTrendChart />
 
-        <div className="flex flex-wrap gap-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ProfitPerProduct
             products={profitPerProduct}
           />
@@ -107,21 +103,23 @@ export default async function Page() {
       </div>
 
       <div>
-        <h1 className="font-semibold text-2xl">
-          Expense breakdown
-        </h1>
-        <div className="flex flex-wrap items-center justify-center my-4 gap-2">
+        <div className=" py-4 border-b-2">
+          <h1 className="font-bold text-xl md:text-2xl truncate ">
+            Expenses breakdown
+          </h1>
+          <p className="text-gray-500 text-sm md:text-base hidden sm:block">
+            Expenses and budget analysis.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
           {expenseStats.map(
             ({ key, ...stat }) => (
-              <ExpenseStatBox
-                key={key}
-                {...stat}
-              />
+              <StatBox key={key} {...stat} />
             ),
           )}
         </div>
 
-        <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ExpensesByCategoryChart />
           <BudgetTable budgetData={budgetData} />
         </div>

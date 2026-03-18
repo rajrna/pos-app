@@ -1,6 +1,13 @@
-import { StatBoxProps } from "../StatBox";
+import { LucideIcon } from "lucide-react";
 
-export default function ExpenseStatBox({
+export interface StatBoxProps {
+  label: string;
+  value: string;
+  icon: LucideIcon;
+  iconColor?: string;
+  bgColor?: string;
+}
+export default function StatBox({
   label,
   value,
   icon: Icon,

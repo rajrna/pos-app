@@ -1,7 +1,9 @@
 "use client";
+
 import { CurrencyConfig } from "@/lib/config/store";
 import { useCurrency } from "@/lib/context/CurrencyContext";
 import { formatCurrency } from "@/lib/utils";
+
 import {
   PieChart,
   Pie,
@@ -9,6 +11,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+
 import type {
   NameType,
   Payload,
@@ -119,17 +122,17 @@ const CustomLegend = ({
 }: {
   data: ExpenseCategory[];
 }) => (
-  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-4 px-2">
+  <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-3 px-1">
     {data.map((entry) => (
       <div
         key={entry.name}
         className="flex items-center gap-1.5"
       >
         <span
-          className="w-2.5 h-2.5 rounded-full shrink-0"
+          className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full shrink-0"
           style={{ backgroundColor: entry.color }}
         />
-        <span className="text-sm text-gray-600">
+        <span className="text-xs md:text-sm text-gray-600">
           {entry.name}
         </span>
       </div>
@@ -154,7 +157,7 @@ export default function ExpensesByCategoryChart({
   const { currency } = useCurrency();
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full">
       {/* Header */}
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900">
@@ -169,15 +172,15 @@ export default function ExpensesByCategoryChart({
       <div className="relative flex items-center justify-center">
         <ResponsiveContainer
           width="100%"
-          height={240}
+          height={200}
         >
           <PieChart>
             <Pie
               data={initialData}
               cx="50%"
               cy="50%"
-              innerRadius={72}
-              outerRadius={108}
+              innerRadius={60}
+              outerRadius={90}
               paddingAngle={2}
               dataKey="value"
               startAngle={90}
@@ -206,7 +209,7 @@ export default function ExpensesByCategoryChart({
           <span className="text-xs text-gray-400">
             Total
           </span>
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-base font-bold text-gray-900">
             {currency.symbol}
             {(total / 1000).toFixed(0)}k
           </span>

@@ -1,12 +1,5 @@
-import { LucideIcon } from "lucide-react";
+import { StatBoxProps } from "../StatBox";
 
-interface StatBoxProps {
-  label: string;
-  value: string;
-  icon: LucideIcon;
-  iconColor?: string;
-  bgColor?: string;
-}
 export default function CustomerStatBox({
   label,
   value,
@@ -16,7 +9,6 @@ export default function CustomerStatBox({
 }: StatBoxProps) {
   return (
     <div className="border w-full px-3 py-4 md:px-6 md:py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
-      {/* TOTAL SALES */}
       <div className="flex justify-between items-end ">
         <p className="text-gray-500 text-xs md:text-sm leading-tight">
           {label}
