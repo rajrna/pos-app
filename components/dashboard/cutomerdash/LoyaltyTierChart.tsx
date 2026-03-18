@@ -69,19 +69,19 @@ const CustomBar = (props: BarShapeProps) => (
 
 export default function LoyaltyTierChart() {
   return (
-    <div className="flex-2  bg-white rounded-2xl border border-gray-100 shadow-sm md:p-6 w-full p-4 ">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full min-w-0">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">
+      <div className="mb-4 md:mb-6">
+        <h2 className="text-base md:text-lg font-bold text-gray-900">
           Loyalty Tier Breakdown
         </h2>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <p className="text-xs md:text-sm text-gray-400 mt-0.5">
           Members by loyalty status
         </p>
       </div>
 
       {/* Chart */}
-      <div className="h-55 sm:h-75">
+      <div className="h-44 sm:h-56 md:h-64">
         <ResponsiveContainer
           width="100%"
           height="100%"
@@ -123,7 +123,7 @@ export default function LoyaltyTierChart() {
                 fill: "#9ca3af",
                 fontSize: 13,
               }}
-              width={58}
+              width={52}
             />
 
             <Tooltip
