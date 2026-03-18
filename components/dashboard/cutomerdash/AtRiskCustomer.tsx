@@ -27,7 +27,7 @@ export default function AtRiskCustomer({
           <h1 className="font-semibold text-base md:text-[17px]">
             At-Risk Customers
           </h1>
-          <p className="text-gray-700 text-xs md:text-sm mt-0.5">
+          <p className="text-gray-400 text-xs md:text-sm mt-0.5">
             Inactive customers who need
             re-engagement
           </p>
