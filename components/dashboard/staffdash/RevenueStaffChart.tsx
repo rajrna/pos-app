@@ -71,7 +71,7 @@ const CustomBar = (props: BarShapeProps) => (
 
 export default function RevenueStaffChart() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 min-w-150">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm md:p-6 w-full">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">

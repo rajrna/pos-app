@@ -24,8 +24,6 @@ interface StaffHourlyData {
   Micah: number | null;
 }
 
-// Morning shift: Aisha, John,  Charles (7am–12pm)
-// Afternoon shift: Dutch, Micah (12pm–7pm)
 const data: StaffHourlyData[] = [
   {
     hour: "7am",
@@ -194,7 +192,7 @@ const CustomTooltip = ({
 };
 
 const CustomLegend = () => (
-  <div className="flex items-center justify-center gap-6 mt-2">
+  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-2">
     {STAFF_LINES.map(({ key, color }) => (
       <div
         key={key}
@@ -227,74 +225,78 @@ export default function StaffOrdersChart() {
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer
-        width="100%"
-        height={300}
-      >
-        <LineChart
-          data={data}
-          margin={{
-            top: 10,
-            right: 20,
-            left: 0,
-            bottom: 10,
-          }}
+      <div className="h-55 md:h-75">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
         >
-          <CartesianGrid
-            vertical={false}
-            stroke="#f3f4f6"
-          />
-
-          <XAxis
-            dataKey="hour"
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 12,
+          <LineChart
+            data={data}
+            margin={{
+              top: 10,
+              right: 20,
+              left: 0,
+              bottom: 10,
             }}
-            dy={8}
-          />
-
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 12,
-            }}
-            ticks={[0, 15, 30, 45, 60]}
-            domain={[0, 65]}
-            width={30}
-          />
-
-          <Tooltip content={<CustomTooltip />} />
-
-          <Legend content={<CustomLegend />} />
-
-          {STAFF_LINES.map(({ key, color }) => (
-            <Line
-              key={key}
-              type="monotone"
-              dataKey={key}
-              stroke={color}
-              strokeWidth={2}
-              dot={{
-                r: 3,
-                fill: color,
-                stroke: color,
-              }}
-              activeDot={{
-                r: 5,
-                fill: color,
-                stroke: "#fff",
-                strokeWidth: 2,
-              }}
-              connectNulls={false}
+          >
+            <CartesianGrid
+              vertical={false}
+              stroke="#f3f4f6"
             />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
+
+            <XAxis
+              dataKey="hour"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 12,
+              }}
+              dy={8}
+            />
+
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 12,
+              }}
+              ticks={[0, 15, 30, 45, 60]}
+              domain={[0, 65]}
+              width={30}
+            />
+
+            <Tooltip
+              content={<CustomTooltip />}
+            />
+
+            <Legend content={<CustomLegend />} />
+
+            {STAFF_LINES.map(({ key, color }) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={color}
+                strokeWidth={2}
+                dot={{
+                  r: 3,
+                  fill: color,
+                  stroke: color,
+                }}
+                activeDot={{
+                  r: 5,
+                  fill: color,
+                  stroke: "#fff",
+                  strokeWidth: 2,
+                }}
+                connectNulls={false}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
