@@ -49,7 +49,7 @@ export default function StaffStatBox({
     avatarColors.length;
   const avatarColor = avatarColors[colorIndex];
   return (
-    <div className="border min-w-56  px-6 py-6  rounded-lg shadow-md hover:shadow-lg transition duration-300">
+    <div className="border px-6 py-6  rounded-lg shadow-md hover:shadow-lg transition duration-300">
       {/* TOTAL SALES */}
       <div className="flex items-center px-2 gap-3 ">
         <div
