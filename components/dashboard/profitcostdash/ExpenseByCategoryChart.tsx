@@ -172,15 +172,15 @@ export default function ExpensesByCategoryChart({
       <div className="relative flex items-center justify-center">
         <ResponsiveContainer
           width="100%"
-          height={200}
+          height={220}
         >
           <PieChart>
             <Pie
               data={initialData}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={90}
+              innerRadius={72}
+              outerRadius={108}
               paddingAngle={2}
               dataKey="value"
               startAngle={90}
