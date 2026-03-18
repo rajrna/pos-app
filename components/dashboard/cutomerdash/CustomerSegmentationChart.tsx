@@ -63,20 +63,19 @@ export default function CustomerSegmentationChart() {
   );
 
   return (
-    <div className=" bg-white rounded-2xl px-4 py-3 border min-w-48 border-gray-100 shadow-md">
+    <div className="bg-white rounded-2xl px-4 py-3 border min-w-0 border-gray-100 shadow-md">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-base md:text-lg font-bold text-gray-900">
           Customer Segmentation
         </h2>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <p className="text-xs md:text-sm text-gray-400 mt-0.5">
           New vs Repeat customer distribution
         </p>
       </div>
 
       {/* Donut Chart */}
-      {/* <div className="flex items-center justify-center py-4"> */}
-      <div className="h-55 sm:h-75  ">
+      <div className="h-44 sm:h-56 md:h-64">
         <ResponsiveContainer
           width="100%"
           height="100%"
@@ -86,8 +85,8 @@ export default function CustomerSegmentationChart() {
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius={75}
-              outerRadius={105}
+              innerRadius="45%"
+              outerRadius="65%"
               paddingAngle={3}
               dataKey="value"
               startAngle={90}
@@ -107,22 +106,21 @@ export default function CustomerSegmentationChart() {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      {/* </div> */}
 
       {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-1">
+      <div className="flex items-center justify-center gap-4 md:gap-6 mt-1 mb-1">
         {data.map((entry) => (
           <div
             key={entry.name}
-            className="flex items-center gap-2"
+            className="flex items-center gap-1.5 md:gap-2"
           >
             <span
-              className="w-3 h-3 rounded-full shrink-0"
+              className="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full shrink-0"
               style={{
                 backgroundColor: entry.color,
               }}
             />
-            <span className="text-sm text-gray-600">
+            <span className="text-xs md:text-sm text-gray-600">
               {entry.name}:{" "}
               <span className="font-bold text-gray-700">
                 {entry.value.toLocaleString()}

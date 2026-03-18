@@ -10,33 +10,35 @@ export default function TopCustomer({
   const { currency } = useCurrency();
   const columns = getTopCustomerColumns(currency);
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 min-w-150">
-      <h1 className="font-semibold text-[17px]">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4 overflow-hidden">
+      <h1 className="font-semibold text-base md:text-[17px]">
         Top Customers & Loyalty Points
       </h1>
-      <p className="text-gray-700">
+      <p className="text-gray-700 text-xs md:text-sm mt-0.5">
         Highest value contributors this month
       </p>
 
-      <DataTable
-        columns={columns}
-        data={topCustomers}
-        searchColumn="customer"
-        searchPlaceholder="Search customer..."
-        pageSize={10}
-        filters={[
-          {
-            columnId: "loyaltyTier",
-            label: "Tier",
-            options: [
-              "Gold",
-              "Silver",
-              "Bronze",
-              "None",
-            ],
-          },
-        ]}
-      />
+      <div className="mt-3 overflow-x-auto">
+        <DataTable
+          columns={columns}
+          data={topCustomers}
+          searchColumn="customer"
+          searchPlaceholder="Search customer..."
+          pageSize={10}
+          filters={[
+            {
+              columnId: "loyaltyTier",
+              label: "Tier",
+              options: [
+                "Gold",
+                "Silver",
+                "Bronze",
+                "None",
+              ],
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 }

@@ -33,20 +33,20 @@ export default async function Page() {
   return (
     <div className="p-3 md:p-6">
       <div className="flex justify-between items-center w-full  py-2 border-b-2">
-        <div className="py-2">
+        <div className="py-2 min-w-0">
           {/* FOR HEADER TEXT */}
-          <h1 className="font-bold text-2xl">
+          <h1 className="font-bold text-xl md:text-2xl truncate">
             Customer Analytics
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 text-sm md:text-base hidden sm:block">
             Insights into customer behavior and
             retention.
           </p>
         </div>
-        <div className="mx-3">
+        <div className="shrink-0">
           {/* FOR HEADER BUTTONS*/}
-          <Button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 text-white rounded-2xl">
-            <UserPlus />
+          <Button className="bg-blue-600 hover:bg-blue-700 px-3 md:px-6 py-3 text-white rounded-2xl">
+            <UserPlus className="shrink-0" />
             <Link href="/customers/add">
               New Customer
             </Link>
@@ -56,7 +56,7 @@ export default async function Page() {
 
       {/* CONTENTS */}
       <div>
-        <div className="flex flex-wrap items-center justify-center my-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
           {stats.map(({ key, ...stat }) => (
             <CustomerStatBox
               key={key}

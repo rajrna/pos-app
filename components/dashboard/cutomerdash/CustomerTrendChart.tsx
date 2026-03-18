@@ -17,9 +17,7 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 export interface CustomerTrendData {
   month: string;
@@ -27,9 +25,7 @@ export interface CustomerTrendData {
   new: number;
 }
 
-// ---------------------------------------------------------------
 // Mock data
-// ---------------------------------------------------------------
 
 const MOCK_DATA: CustomerTrendData[] = [
   { month: "Sep", repeat: 150, new: 55 },
@@ -40,9 +36,7 @@ const MOCK_DATA: CustomerTrendData[] = [
   { month: "Feb", repeat: 210, new: 85 },
 ];
 
-// ---------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------
 
 const getYAxisTicks = (
   data: CustomerTrendData[],
@@ -54,9 +48,7 @@ const getYAxisTicks = (
   return [0, step, step * 2, step * 3, step * 4];
 };
 
-// ---------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------
 
 // Bottom bar — flat top since another bar sits on it
 const RepeatBar = (props: BarShapeProps) => (
@@ -118,7 +110,7 @@ const CustomTooltip = ({
     0,
   );
   return (
-    <div className="bg-white rounded-xl px-4 py-3 my-4 shadow-lg border border-gray-100 min-w-36">
+    <div className="bg-white rounded-xl px-4 py-3 my-4 shadow-lg border border-gray-100 min-w-32">
       <p className="text-gray-400 text-xs mb-2 font-medium">
         {label}
       </p>
@@ -156,9 +148,7 @@ const CustomTooltip = ({
   );
 };
 
-// ---------------------------------------------------------------
 // Chart
-// ---------------------------------------------------------------
 
 export interface CustomerTrendProps {
   initialData?: CustomerTrendData[];
@@ -171,13 +161,13 @@ export default function CustomerTrendChart({
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">
+      <div className="mb-4 md:mb-6">
+        <h2 className="text-base md:text-lg font-bold text-gray-900">
           New vs Repeat Customer Trend
         </h2>
-        <p className="text-sm text-gray-400 mt-0.5">
+        <p className="text-xs md:text-sm text-gray-400 mt-0.5">
           Monthly breakdown over the last 6 months
         </p>
       </div>
@@ -185,7 +175,7 @@ export default function CustomerTrendChart({
       {/* Chart */}
       <ResponsiveContainer
         width="100%"
-        height={300}
+        height={240}
       >
         <BarChart
           data={initialData}
