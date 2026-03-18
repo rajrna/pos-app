@@ -9,7 +9,7 @@ interface StatBoxProps {
   iconColor?: string;
 }
 
-export default function StaffStatBox({
+export default function OverviewStatBox({
   label,
   value,
   percent,
@@ -26,17 +26,19 @@ export default function StaffStatBox({
   const { text, ArrowIcon } =
     getPercentColor(percent);
   return (
-    <div className="border w-72 px-6 py-6  rounded-lg shadow-md hover:shadow-lg transition duration-300">
+    <div className="border w-full px-3 md:px-6 py-3 md:py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <div className="flex justify-between items-end ">
-        <p className="text-gray-500">{label}</p>
+        <p className="text-gray-500 text-sm md:text-base leading-tight">
+          {label}
+        </p>
 
         <Icon
           size={16}
-          className={`${iconColor} mb-1`}
+          className={`${iconColor} mb-1 rounded-lg shrink-0`}
         />
       </div>
       <div className="py-4">
-        <span className="font-bold text-2xl">
+        <span className="font-bold text-lg md:text-2xl">
           {value}
         </span>
         <div className="flex justify-start gap-0.5">
@@ -49,8 +51,12 @@ export default function StaffStatBox({
             className={`${text} mt-1`}
           />
 
-          <span className={text}>{percent}%</span>
-          <span className="text-gray-500">
+          <span
+            className={`text-[12px] md:text-base ${text}`}
+          >
+            {percent}%
+          </span>
+          <span className="text-gray-500 text-[12px] md:text-base">
             {" from last month"}
           </span>
         </div>

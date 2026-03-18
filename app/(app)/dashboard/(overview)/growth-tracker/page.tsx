@@ -1,13 +1,12 @@
+import { GROWTH_STAT_CONFIG } from "@/lib/config/dashboard";
+import { GrowthStatsApiResponse } from "@/lib/dashboardstats";
+
 import GrowthTrackCard from "@/components/dashboard/growthtracker/GrowthTrackCard";
-import RevenueVsProfitChart, {
-  type ProductData,
-} from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
+import YearOverYearChart from "@/components/dashboard/growthtracker/YearOverYearChart";
+import { type ProductData } from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
 import TargetVsActualChart, {
   TargetActualData,
 } from "@/components/dashboard/growthtracker/TargetVsActualChart";
-import YearOverYearChart from "@/components/dashboard/growthtracker/YearOverYearChart";
-import { GROWTH_STAT_CONFIG } from "@/lib/config/dashboard";
-import { GrowthStatsApiResponse } from "@/lib/dashboardstats";
 
 const mockGrowthStats: GrowthStatsApiResponse = {
   revenue: {
@@ -172,16 +171,16 @@ export default async function Page() {
   );
 
   return (
-    <div className="py-8 px-4">
-      <h1 className="font-semibold text-xl">
+    <div className="py-4 md:py-8 px-2 md:px-4">
+      <h1 className="font-bold text-xl md:text-2xl truncate">
         Growth Tracker
       </h1>
-      <p className="text-gray-600">
+      <p className="text-gray-500 text-sm md:text-base">
         Month-over-month and year-over-year
         performance analysis
       </p>
 
-      <div className="flex flex-wrap items-center justify-center my-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
         {stats.map(({ key, ...stat }) => (
           <GrowthTrackCard key={key} {...stat} />
         ))}

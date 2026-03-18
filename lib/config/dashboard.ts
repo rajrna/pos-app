@@ -160,7 +160,7 @@ export const GROWTH_STAT_CONFIG = [
   },
   {
     key: "avgOrder",
-    label: "Avg Order Value",
+    label: "Avg Order Value (AoV)",
     inverseColor: false,
   },
   {

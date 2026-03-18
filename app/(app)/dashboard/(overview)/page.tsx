@@ -1,5 +1,5 @@
 import SalesLocationChart from "@/components/dashboard/SalesLocationChart";
-import StatBox from "@/components/dashboard/StaffStatBox";
+import StatBox from "@/components/dashboard/OverviewStatBox";
 import WinningStatBox from "@/components/dashboard/WinningStatBox";
 import WeeklyRevenueChart from "@/components/dashboard/WeeklyRevenueChart";
 import HourlySalesTrend from "@/components/dashboard/HourlySalesChart";
@@ -7,6 +7,7 @@ import TopItems from "@/components/dashboard/TopItems";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import { StatsApiResponse } from "@/lib/dashboardstats";
 import { STATS_CONFIG } from "@/lib/config/dashboard";
+import OverviewStatBox from "@/components/dashboard/OverviewStatBox";
 
 const mockStats: StatsApiResponse = {
   totalSales: {
@@ -36,9 +37,12 @@ export default function Page() {
     <div className="w-full px-4">
       {/* ACTUAL CONTENTS */}
       <div>
-        <div className="flex flex-wrap items-center justify-center my-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
           {stats.map(({ key, ...stat }) => (
-            <StatBox key={key} {...stat} />
+            <OverviewStatBox
+              key={key}
+              {...stat}
+            />
           ))}
         </div>
 
