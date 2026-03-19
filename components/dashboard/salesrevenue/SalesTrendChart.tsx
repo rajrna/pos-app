@@ -11,15 +11,11 @@ import {
   Rectangle,
 } from "recharts";
 import type { BarShapeProps } from "recharts";
-import type {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
-import { mockSalesTrendData } from "./mock-salesrevenue";
-import { CurrencyConfig } from "@/lib/config/store";
-import { formatCurrency } from "@/lib/utils";
+
 import { useCurrency } from "@/lib/context/CurrencyContext";
+import { formatCurrency } from "@/lib/utils";
+import { CustomTooltipProps } from "@/lib/types/chart";
+import { mockSalesTrendData } from "./mock-salesrevenue";
 // Types
 
 type ViewMode = "daily" | "weekly" | "monthly";
@@ -57,13 +53,6 @@ const CustomBar = (props: BarShapeProps) => (
   />
 );
 
-interface CustomTooltipProps {
-  active?: boolean;
-  label?: string;
-  payload?: Payload<ValueType, NameType>[];
-  currency: CurrencyConfig;
-}
-
 const CustomTooltip = ({
   active,
   payload,
@@ -77,10 +66,6 @@ const CustomTooltip = ({
         {label}
       </p>
       <p className="text-violet-500 font-bold text-sm">
-        {/* $
-        {(
-          payload[0].value as number
-        ).toLocaleString()} */}
         {formatCurrency(
           payload[0].value as number,
           currency,

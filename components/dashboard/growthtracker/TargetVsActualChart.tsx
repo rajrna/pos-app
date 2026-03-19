@@ -17,10 +17,9 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 import SetTargetsModal from "./SetTargetsModal";
+import { useCurrency } from "@/lib/context/CurrencyContext";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 export interface TargetActualData {
   month: string;
@@ -28,9 +27,7 @@ export interface TargetActualData {
   target: number;
 }
 
-// ---------------------------------------------------------------
 // Mock data — full 12 months
-// ---------------------------------------------------------------
 
 const MOCK_DATA: TargetActualData[] = [
   { month: "Jan", actual: 98000, target: 95000 },
@@ -91,12 +88,7 @@ const MOCK_DATA: TargetActualData[] = [
   },
 ];
 
-// ---------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------
-
-const formatYAxis = (v: number): string =>
-  `$${v / 1000}k`;
 
 const getYAxisTicks = (
   data: TargetActualData[],
@@ -108,9 +100,7 @@ const getYAxisTicks = (
   return [0, step, step * 2, step * 3, step * 4];
 };
 
-// ---------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -210,9 +200,7 @@ const CustomLegend = () => (
   </div>
 );
 
-// ---------------------------------------------------------------
 // Chart
-// ---------------------------------------------------------------
 
 export interface TargetVsActualProps {
   initialData?: TargetActualData[];
@@ -227,6 +215,10 @@ export default function TargetVsActualChart({
   const [modalOpen, setModalOpen] =
     useState(false);
 
+  const { currency } = useCurrency();
+
+  const formatYAxis = (v: number): string =>
+    `$${v / 1000}k`;
   const yTicks = getYAxisTicks(chartData);
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 

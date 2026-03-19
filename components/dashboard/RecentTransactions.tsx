@@ -15,7 +15,7 @@ import {
 import { useCurrency } from "@/lib/context/CurrencyContext";
 import { formatCurrency } from "@/lib/utils";
 
-type Transaction = {
+export type Transaction = {
   id: string;
   timestamp: string;
   customer: string;

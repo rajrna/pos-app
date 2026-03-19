@@ -4,7 +4,7 @@ import { formatCurrency } from "@/lib/utils";
 
 type Rank = 1 | 2 | 3;
 
-type TopProduct = {
+export type TopProduct = {
   rank: Rank;
   productName: string;
   noOfSale: number;

@@ -8,12 +8,25 @@ import {
 } from "@/lib/config/dashboard";
 
 import TopItems from "@/components/dashboard/TopItems";
-import WinningStatBox from "@/components/dashboard/WinningStatBox";
-import OverviewStatBox from "@/components/dashboard/OverviewStatBox";
-import HourlySalesTrend from "@/components/dashboard/HourlySalesChart";
-import SalesLocationChart from "@/components/dashboard/SalesLocationChart";
-import WeeklyRevenueChart from "@/components/dashboard/WeeklyRevenueChart";
+import WinningStatBox from "@/components/dashboard/overviewdash/WinningStatBox";
+import OverviewStatBox from "@/components/dashboard/overviewdash/OverviewStatBox";
+import HourlySalesTrend from "@/components/dashboard/overviewdash/HourlySalesChart";
+import SalesLocationChart from "@/components/dashboard/overviewdash/SalesLocationChart";
+import WeeklyRevenueChart from "@/components/dashboard/overviewdash/WeeklyRevenueChart";
 import RecentTransactions from "@/components/dashboard/RecentTransactions";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import {
+  getHourlySalesData,
+  getRecentTransactions,
+  getSalesLocations,
+  getTopProducts,
+  getWeeklyRevenueData,
+} from "@/services/dashboard/apiOverview";
+import { DataPoint } from "@/lib/types/chart";
 
 const mockStats: StatsApiResponse = {
   totalSales: {
@@ -46,7 +59,15 @@ const mockWinningStats: WinningApiResponse = {
   },
 };
 
-export default function Page() {
+function computePeakDay(
+  data: DataPoint[],
+): string {
+  return data.reduce((peak, curr) =>
+    curr.revenue > peak.revenue ? curr : peak,
+  ).day;
+}
+
+export default async function Page() {
   const stats = STATS_CONFIG.map((config) => ({
     ...config,
     ...mockStats[config.key],
@@ -57,6 +78,21 @@ export default function Page() {
       ...mockWinningStats[config.key],
     }),
   );
+
+  const [
+    topProducts,
+    recentTransactions,
+    weeklyRevenue,
+    locationData,
+    hourlySalesData,
+  ] = await Promise.all([
+    getTopProducts(),
+    getRecentTransactions(),
+    getWeeklyRevenueData(),
+    getSalesLocations(),
+    getHourlySalesData(),
+  ]);
+  const peakDay = computePeakDay(weeklyRevenue);
   return (
     <div className="w-full px-4">
       {/* ACTUAL CONTENTS */}
@@ -70,72 +106,49 @@ export default function Page() {
           ))}
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-1 lg:grid-cols-3 gap-2 md:gap-3 my-4">
-          {winningStats.map(
-            ({ key, ...stat }) => (
-              <WinningStatBox
-                key={key}
-                {...stat}
-              />
-            ),
-          )}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            dragFree: true,
+          }}
+          className="w-full my-4"
+        >
+          <CarouselContent className="-ml-3">
+            {winningStats.map(
+              ({ key, ...stat }) => (
+                <CarouselItem
+                  key={key}
+                  className="pl-3 basis-full sm:basis-1/2 lg:basis-1/3"
+                >
+                  <WinningStatBox
+                    key={key}
+                    {...stat}
+                  />
+                </CarouselItem>
+              ),
+            )}
+          </CarouselContent>
+        </Carousel>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
-          <TopItems
-            topProducts={[
-              {
-                rank: 1,
-                productName: "Black Coffee",
-                noOfSale: 10,
-                totalRevenue: 500,
-              },
-              {
-                rank: 2,
-                productName: "Sandwich",
-                noOfSale: 5,
-                totalRevenue: 300,
-              },
-              {
-                rank: 3,
-                productName: "Latte",
-                noOfSale: 8,
-                totalRevenue: 250,
-              },
-            ]}
-          />
+          <TopItems topProducts={topProducts} />
           <RecentTransactions
-            transactions={[
-              {
-                id: "ORD-421",
-                timestamp: "2 min ago",
-                customer: "Alex Johnson",
-                amount: 28.5,
-                status: "completed",
-              },
-              {
-                id: "ORD-420",
-                timestamp: "15 min ago",
-                customer: "Maria Garcia",
-                amount: 14.0,
-                status: "pending",
-              },
-              {
-                id: "ORD-419",
-                timestamp: "1 hr ago",
-                customer: "James Lee",
-                amount: 52.75,
-                status: "failed",
-              },
-            ]}
+            transactions={recentTransactions}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <WeeklyRevenueChart />
-          <SalesLocationChart />
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-4">
+          <WeeklyRevenueChart
+            data={weeklyRevenue}
+            peakDay={peakDay}
+          />
+          <SalesLocationChart
+            data={locationData}
+          />
         </div>
 
-        <HourlySalesTrend />
+        <HourlySalesTrend
+          data={hourlySalesData}
+        />
       </div>
     </div>
   );
