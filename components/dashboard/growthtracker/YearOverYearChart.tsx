@@ -17,9 +17,7 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 export interface YoYData {
   month: string;
@@ -27,9 +25,7 @@ export interface YoYData {
   thisYear: number;
 }
 
-// ---------------------------------------------------------------
 // Mock data — full 12 months
-// ---------------------------------------------------------------
 
 const MOCK_DATA: YoYData[] = [
   {
@@ -94,9 +90,7 @@ const MOCK_DATA: YoYData[] = [
   },
 ];
 
-// ---------------------------------------------------------------
 // Helpers
-// ---------------------------------------------------------------
 
 const formatYAxis = (v: number): string =>
   `$${v / 1000}k`;
@@ -114,9 +108,7 @@ const getYAxisTicks = (
   return [0, step, step * 2, step * 3, step * 4];
 };
 
-// ---------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------
 
 // Muted gray for last year
 const LastYearBar = (props: BarShapeProps) => (
@@ -244,9 +236,7 @@ const CustomTooltip = ({
   );
 };
 
-// ---------------------------------------------------------------
 // Chart
-// ---------------------------------------------------------------
 
 export interface YearOverYearProps {
   initialData?: YoYData[];
@@ -259,7 +249,7 @@ export default function YearOverYearChart({
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mt-2 md:mt-4 p-6 w-full">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">

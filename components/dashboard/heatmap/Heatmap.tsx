@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 // Weekly: { day -> { hour -> count } }
 export interface WeeklyHeatmapData {
@@ -22,21 +20,18 @@ export interface HeatmapDataSet {
 
 type ViewMode = "weekly" | "monthly";
 
-// ---------------------------------------------------------------
 // Color schemes — easy to extend or swap
-// ---------------------------------------------------------------
 
 export interface ColorScheme {
   name: string;
-  // Three RGB stops: [low, mid, high]
   stops: [
     [number, number, number],
     [number, number, number],
     [number, number, number],
   ];
-  lightText: string; // text color on light cells
-  darkText: string; // text color on dark cells
-  threshold: number; // 0–1 where text flips to darkText
+  lightText: string;
+  darkText: string;
+  threshold: number;
 }
 
 export const COLOR_SCHEMES: Record<
@@ -89,9 +84,7 @@ export const COLOR_SCHEMES: Record<
   },
 };
 
-// ---------------------------------------------------------------
 // Constants
-// ---------------------------------------------------------------
 
 const DAYS = [
   "Mon",
@@ -121,9 +114,7 @@ const HOURS = [
 ];
 const WEEKS = ["Wk 1", "Wk 2", "Wk 3", "Wk 4"];
 
-// ---------------------------------------------------------------
 // Mock data
-// ---------------------------------------------------------------
 
 const MOCK_DATA: HeatmapDataSet = {
   weekly: {
@@ -287,9 +278,7 @@ const MOCK_DATA: HeatmapDataSet = {
   },
 };
 
-// ---------------------------------------------------------------
 // Color helpers
-// ---------------------------------------------------------------
 
 const lerp = (a: number, b: number, t: number) =>
   Math.round(a + (b - a) * t);
@@ -331,9 +320,7 @@ const getCellTextColor = (
     : scheme.lightText;
 };
 
-// ---------------------------------------------------------------
 // Stats helpers
-// ---------------------------------------------------------------
 
 interface WeeklyStats {
   peakDay: string;
@@ -443,9 +430,7 @@ const deriveMonthlyStats = (
   };
 };
 
-// ---------------------------------------------------------------
 // Sub-components
-// ---------------------------------------------------------------
 
 const VIEW_OPTIONS: {
   label: string;
@@ -487,18 +472,14 @@ const Legend = ({
   </div>
 );
 
-// ---------------------------------------------------------------
 // Props
-// ---------------------------------------------------------------
 
 export interface SalesHeatmapProps {
   initialData?: HeatmapDataSet;
   defaultColorScheme?: keyof typeof COLOR_SCHEMES;
 }
 
-// ---------------------------------------------------------------
 // Component
-// ---------------------------------------------------------------
 
 export default function Heatmap({
   initialData = MOCK_DATA,
@@ -543,9 +524,9 @@ export default function Heatmap({
     view === "weekly" ? weeklyMax : monthlyMax;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mt-2 p-4 md:p-6 w-full">
       {/* Header */}
-      <div className="flex items-start justify-between mb-5 gap-4 flex-wrap">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-5 gap-3">
         <div>
           <h2 className="text-lg font-bold text-gray-900">
             Sales Activity Heatmap
@@ -563,15 +544,15 @@ export default function Heatmap({
       </div>
 
       {/* Controls */}
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
-        {/* View toggle */}
-        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
+        {/* View toggle — full width on mobile */}
+        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 w-full sm:w-auto">
           {VIEW_OPTIONS.map(
             ({ label, value }) => (
               <button
                 key={value}
                 onClick={() => setView(value)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   view === value
                     ? "bg-white text-gray-900 shadow-sm"
                     : "text-gray-400 hover:text-gray-600"
@@ -615,7 +596,7 @@ export default function Heatmap({
       {/* Grid */}
       <div className="overflow-x-auto">
         {view === "weekly" ? (
-          <div style={{ minWidth: 720 }}>
+          <div style={{ minWidth: 360 }}>
             {/* Hour headers */}
             <div className="flex mb-1 ml-12">
               {HOURS.map((hour) => (
@@ -623,7 +604,14 @@ export default function Heatmap({
                   key={hour}
                   className="flex-1 text-center text-xs text-gray-400 font-medium"
                 >
-                  {hour}
+                  <span className="sm:hidden">
+                    {hour
+                      .replace("am", "")
+                      .replace("pm", "")}
+                  </span>
+                  <span className="hidden sm:block">
+                    {hour}
+                  </span>
                 </div>
               ))}
             </div>
@@ -633,10 +621,10 @@ export default function Heatmap({
                 key={day}
                 className="flex items-center mb-1.5"
               >
-                <div className="w-12 shrink-0 text-sm text-gray-500 font-medium">
+                <div className="w-12 shrink-0 text-xs sm:text-sm text-gray-500 font-medium">
                   {day}
                 </div>
-                <div className="flex flex-1 gap-1">
+                <div className="flex flex-1 gap-0.5 sm:gap-1">
                   {HOURS.map((hour) => {
                     const value =
                       initialData.weekly[day]?.[
@@ -645,7 +633,7 @@ export default function Heatmap({
                     return (
                       <div
                         key={hour}
-                        className="flex-1 rounded-lg flex items-center justify-center text-xs font-bold cursor-default select-none transition-transform hover:scale-105"
+                        className="flex-1 rounded-md sm:rounded-lg flex items-center justify-center text-xs font-bold cursor-default select-none transition-transform hover:scale-105 h-6 sm:h-11"
                         style={{
                           backgroundColor:
                             getCellColor(
@@ -660,11 +648,13 @@ export default function Heatmap({
                             weeklyMax,
                             scheme,
                           ),
-                          height: 44,
                         }}
                         title={`${day} @ ${hour}: ${value} orders`}
                       >
-                        {value}
+                        <span className="hidden sm:block">
+                          {value}
+                        </span>{" "}
+                        {/* hide numbers on mobile — too small */}
                       </div>
                     );
                   })}
@@ -673,7 +663,8 @@ export default function Heatmap({
             ))}
           </div>
         ) : (
-          <div style={{ minWidth: 400 }}>
+          <div style={{ minWidth: 320 }}>
+            {" "}
             {/* Day headers */}
             <div className="flex mb-1 ml-16">
               {DAYS.map((day) => (
@@ -681,7 +672,13 @@ export default function Heatmap({
                   key={day}
                   className="flex-1 text-center text-xs text-gray-400 font-medium"
                 >
-                  {day}
+                  <span className="sm:hidden">
+                    {day.slice(0, 2)}
+                  </span>{" "}
+                  {/* Mo, Tu, We... */}
+                  <span className="hidden sm:block">
+                    {day}
+                  </span>
                 </div>
               ))}
             </div>
@@ -691,10 +688,10 @@ export default function Heatmap({
                 key={week}
                 className="flex items-center mb-1.5"
               >
-                <div className="w-16 shrink-0 text-sm text-gray-500 font-medium">
+                <div className="w-16 shrink-0 text-xs sm:text-sm text-gray-500 font-medium">
                   {week}
                 </div>
-                <div className="flex flex-1 gap-1">
+                <div className="flex flex-1 gap-0.5 sm:gap-1">
                   {DAYS.map((day) => {
                     const value =
                       initialData.monthly[week]?.[
@@ -703,7 +700,7 @@ export default function Heatmap({
                     return (
                       <div
                         key={day}
-                        className="flex-1 rounded-lg flex items-center justify-center text-xs font-bold cursor-default select-none transition-transform hover:scale-105"
+                        className="flex-1 rounded-md sm:rounded-lg flex items-center justify-center text-xs font-bold cursor-default select-none transition-transform hover:scale-105 h-8 sm:h-13"
                         style={{
                           backgroundColor:
                             getCellColor(
@@ -718,7 +715,6 @@ export default function Heatmap({
                             monthlyMax,
                             scheme,
                           ),
-                          height: 52,
                         }}
                         title={`${week} ${day}: ${value} orders`}
                       >
@@ -734,94 +730,114 @@ export default function Heatmap({
       </div>
 
       {/* Stats footer */}
-      <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-gray-100">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-4 border-t border-gray-100">
         {view === "weekly" ? (
           <>
-            <div className="text-center">
-              <p className="text-xs text-gray-400 mb-1">
-                Peak Slot
-              </p>
-              <p className="text-base font-bold text-gray-900">
-                {weeklyStats.peakDay} @{" "}
-                {weeklyStats.peakHour}
-              </p>
-              <p
-                className="text-sm font-medium"
-                style={{
-                  color: `rgb(${scheme.stops[1].join(",")})`,
-                }}
-              >
-                {weeklyStats.peakValue} orders
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-xs text-gray-400 mb-1">
-                Quietest Slot
-              </p>
-              <p className="text-base font-bold text-gray-900">
-                {weeklyStats.quietDay} @{" "}
-                {weeklyStats.quietHour}
-              </p>
-              <p className="text-sm text-gray-400">
-                {weeklyStats.quietValue} orders
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-xs text-gray-400 mb-1">
-                Busiest Day
-              </p>
-              <p className="text-base font-bold text-gray-900">
-                {weeklyStats.busiestDay}
-              </p>
-              <p className="text-sm text-green-500 font-medium">
-                {weeklyStats.busiestDayTotal}{" "}
-                total orders
-              </p>
-            </div>
+            {[
+              {
+                label: "Peak Slot",
+                primary: `${weeklyStats.peakDay} @ ${weeklyStats.peakHour}`,
+                secondary: `${weeklyStats.peakValue} orders`,
+                secondaryColor: `rgb(${scheme.stops[1].join(",")})`,
+              },
+              {
+                label: "Quietest Slot",
+                primary: `${weeklyStats.quietDay} @ ${weeklyStats.quietHour}`,
+                secondary: `${weeklyStats.quietValue} orders`,
+                secondaryColor: undefined,
+              },
+              {
+                label: "Busiest Day",
+                primary: weeklyStats.busiestDay,
+                secondary: `${weeklyStats.busiestDayTotal} total orders`,
+                secondaryColor: "#22c55e",
+              },
+            ].map(
+              ({
+                label,
+                primary,
+                secondary,
+                secondaryColor,
+              }) => (
+                <div
+                  key={label}
+                  className="flex items-center justify-between sm:flex-col sm:items-center border-b sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 last:pb-0"
+                >
+                  <p className="text-xs text-gray-400 sm:mb-1">
+                    {label}
+                  </p>
+                  <div className="text-right sm:text-center">
+                    <p className="text-sm font-bold text-gray-900">
+                      {primary}
+                    </p>
+                    <p
+                      className="text-xs sm:text-sm font-medium"
+                      style={{
+                        color:
+                          secondaryColor ??
+                          "#9ca3af",
+                      }}
+                    >
+                      {secondary}
+                    </p>
+                  </div>
+                </div>
+              ),
+            )}
           </>
         ) : (
           <>
-            <div className="text-center">
-              <p className="text-xs text-gray-400 mb-1">
-                Peak Slot
-              </p>
-              <p className="text-base font-bold text-gray-900">
-                {monthlyStats.peakWeek} ·{" "}
-                {monthlyStats.peakDay}
-              </p>
-              <p
-                className="text-sm font-medium"
-                style={{
-                  color: `rgb(${scheme.stops[1].join(",")})`,
-                }}
-              >
-                {monthlyStats.peakValue} orders
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-xs text-gray-400 mb-1">
-                Quietest Slot
-              </p>
-              <p className="text-base font-bold text-gray-900">
-                {monthlyStats.quietWeek} ·{" "}
-                {monthlyStats.quietDay}
-              </p>
-              <p className="text-sm text-gray-400">
-                {monthlyStats.quietValue} orders
-              </p>
-            </div>
-            <div className="text-center">
-              <p className="text-xs text-gray-400 mb-1">
-                Busiest Week
-              </p>
-              <p className="text-base font-bold text-gray-900">
-                {monthlyStats.busiestWeek}
-              </p>
-              <p className="text-sm text-green-500 font-medium">
-                {monthlyStats.busiestWeekTotal}{" "}
-                total orders
-              </p>
-            </div>
+            {[
+              {
+                label: "Peak Slot",
+                primary: `${monthlyStats.peakWeek} · ${monthlyStats.peakDay}`,
+                secondary: `${monthlyStats.peakValue} orders`,
+                secondaryColor: `rgb(${scheme.stops[1].join(",")})`,
+              },
+              {
+                label: "Quietest Slot",
+                primary: `${monthlyStats.quietWeek} · ${monthlyStats.quietDay}`,
+                secondary: `${monthlyStats.quietValue} orders`,
+                secondaryColor: undefined,
+              },
+              {
+                label: "Busiest Week",
+                primary: monthlyStats.busiestWeek,
+                secondary: `${monthlyStats.busiestWeekTotal} total orders`,
+                secondaryColor: "#22c55e",
+              },
+            ].map(
+              ({
+                label,
+                primary,
+                secondary,
+                secondaryColor,
+              }) => (
+                <div
+                  key={label}
+                  className="flex items-center justify-between sm:flex-col sm:items-center border-b sm:border-b-0 pb-3 sm:pb-0 last:border-b-0 last:pb-0"
+                >
+                  <p className="text-xs text-gray-400 sm:mb-1">
+                    {label}
+                  </p>
+                  <div className="text-right sm:text-center">
+                    <p className="text-sm font-bold text-gray-900">
+                      {primary}
+                    </p>
+                    <p
+                      className="text-xs sm:text-sm font-medium"
+                      style={{
+                        color:
+                          secondaryColor ??
+                          "#9ca3af",
+                      }}
+                    >
+                      {secondary}
+                    </p>
+                  </div>
+                </div>
+              ),
+            )}
           </>
         )}
       </div>

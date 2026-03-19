@@ -53,18 +53,18 @@ export default function GrowthTrackCard({
 
   return (
     <div
-      className={`py-6 px-4 w-90 border rounded-lg shadow ${cardBg}`}
+      className={`py-4 md:py-6  px-3 md:px-4 w-full border rounded-lg transition duration-300 shadow-md ${cardBg}`}
     >
       <div className="flex items-end justify-between">
         <p className="text-gray-700 text-[16px]">
           {label}
         </p>
         <TrendIcon
-          className={`${iconColor} p-1 text-[14px] ${iconBg} rounded-lg`}
+          className={`${iconColor} mb-1 text-[10px] md:text-[14px] shrink-0  ${iconBg} rounded-lg`}
           size={20}
         />
       </div>
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between py-2 md:py-4">
         <div>
           <p className="font-semibold text-xl">
             {value}
