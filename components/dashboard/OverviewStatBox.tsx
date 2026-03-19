@@ -26,7 +26,7 @@ export default function OverviewStatBox({
   const { text, ArrowIcon } =
     getPercentColor(percent);
   return (
-    <div className="border w-full px-3 md:px-6 py-3 md:py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+    <div className="border w-full px-3 md:px-6 py-4 md:py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <div className="flex justify-between items-end ">
         <p className="text-gray-500 text-sm md:text-base leading-tight">
           {label}

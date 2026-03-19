@@ -4,6 +4,7 @@ import {
   GROWTH_STAT_CONFIG,
   PROFIT_COST_STAT_CONFIG,
   STATS_CONFIG,
+  WINNING_STAT_CONFIG,
 } from "./config/dashboard";
 
 // For dashboard overview stats
@@ -18,6 +19,16 @@ export type StatsApiResponse = Record<
   Stat
 >;
 
+// For winning stats
+export interface WinningStat {
+  value: string;
+}
+export type WinningStatKey =
+  (typeof WINNING_STAT_CONFIG)[number]["key"];
+export type WinningApiResponse = Record<
+  WinningStatKey,
+  WinningStat
+>;
 // For customer stats
 export interface CustomerStat {
   value: string;

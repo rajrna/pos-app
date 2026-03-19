@@ -1,31 +1,50 @@
-import {
-  Clock,
-  Star,
-  Trophy,
-} from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
-export default function WinningStatBox() {
+export interface WinningStatBoxProps {
+  label: string;
+  value: string;
+  footer?: string;
+  icon: LucideIcon;
+  iconColor?: string;
+  bgColor?: string;
+}
+
+export default function WinningStatBox({
+  label,
+  value,
+  footer,
+  icon: Icon,
+  iconColor,
+  bgColor,
+}: WinningStatBoxProps) {
   return (
-    <div className="flex items-center flex-wrap justify-center mt-2  gap-4">
-      {/* TOP SELLING PRODUCTS */}
-      <div className="w-96 px-6 py-4 bg-blue-700 shadow-md shadow-blue-800 rounded-lg">
-        <span className="text-[14px] text-gray-300">
-          TOP SELLING PRODUCT
-        </span>
-        <div className="flex items-center justify-between mt-8">
-          <div>
-            <span className="font-bold text-xl text-gray-100">
-              Classic Latte
-            </span>
-            <p className="text-[14px] text-gray-300">
-              Statistics
-            </p>
-          </div>
-          <Trophy className="text-amber-300" />
+    <div
+      className={`w-full md:px-6 px-3 md:py-4 py-2 ${bgColor} shadow-md  rounded-lg`}
+    >
+      <span className="md:text-[14px] text-[10px] text-gray-300">
+        {label}
+      </span>
+      <div className="flex items-center justify-between mt-4 md:mt-8">
+        <div>
+          <span className="font-bold text-[16px] md:text-xl text-gray-100">
+            {value}
+          </span>
+          <p className="md:text-[14px] text-[10px] text-gray-300">
+            {footer}
+          </p>
         </div>
+        <Icon
+          className={`${iconColor} shrink-0`}
+        />
       </div>
-      {/* PEAK HOURS */}
-      <div className="w-94 shadow-md shadow-purple-600 px-6 py-4 bg-purple-500 rounded-lg">
+    </div>
+  );
+}
+{
+  /* PEAK HOURS */
+}
+{
+  /* <div className="w-full px-6 py-4 shadow-md shadow-purple-600 bg-purple-500 rounded-lg">
         <span className="text-[14px] text-gray-300">
           PEAK HOUR
         </span>
@@ -41,8 +60,10 @@ export default function WinningStatBox() {
           <Clock className="text-gray-100" />
         </div>
       </div>
-      {/* BEST DAY */}
-      <div className="w-94  px-6 py-4 bg-green-700 shadow-green-800 shadow-md rounded-lg">
+      {/* BEST DAY */
+}
+{
+  /* <div className="w-full  px-6 py-4 bg-green-700 shadow-green-800 shadow-md rounded-lg">
         <span className="text-[14px] text-gray-300">
           BEST DAY OF THE WEEK
         </span>
@@ -57,7 +78,5 @@ export default function WinningStatBox() {
           </div>
           <Star className="text-amber-300" />
         </div>
-      </div>
-    </div>
-  );
+      </div>  */
 }

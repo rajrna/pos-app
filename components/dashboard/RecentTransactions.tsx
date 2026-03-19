@@ -1,5 +1,9 @@
-import { ChevronRight } from "lucide-react";
+"use client";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+
+import { statusStyles } from "@/lib/transaction";
+import { TransactionStatus } from "@/lib/transaction";
 import {
   Table,
   TableBody,
@@ -8,14 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { TransactionStatus } from "@/lib/transaction";
-import { statusStyles } from "@/lib/transaction";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { formatCurrency } from "@/lib/utils";
 
 type Transaction = {
   id: string;
   timestamp: string;
   customer: string;
-  amount: string;
+  amount: number;
   status: TransactionStatus;
 };
 
@@ -32,6 +36,7 @@ export default function RecentTransactions({
   viewAllHref = "/dashboard/order-history",
   transactions,
 }: RecentTransactionsProps) {
+  const { currency } = useCurrency();
   return (
     <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-4">
       <div className="mb-6 flex items-start justify-between">
@@ -81,7 +86,12 @@ export default function RecentTransactions({
                 <TableCell>
                   {tx.customer}
                 </TableCell>
-                <TableCell>{tx.amount}</TableCell>
+                <TableCell>
+                  {formatCurrency(
+                    tx.amount as number,
+                    currency,
+                  )}
+                </TableCell>
                 <TableCell
                   className={styles.cell}
                 >

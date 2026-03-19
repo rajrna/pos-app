@@ -13,12 +13,16 @@ import {
   Percent,
   ChartPie,
   ArrowUpDown,
+  Trophy,
+  Clock,
+  Star,
 } from "lucide-react";
 
 // For dashboard overview stats
 export interface StatConfig {
   key: string;
   label: string;
+  footer?: string;
   icon: LucideIcon;
   iconColor: string;
   bgColor?: string;
@@ -51,6 +55,33 @@ export const STATS_CONFIG: StatConfig[] = [
   },
 ];
 
+// For Winning Stats
+export const WINNING_STAT_CONFIG: StatConfig[] = [
+  {
+    key: "topSellingProduct",
+    label: "TOP SELLING PRODUCT",
+    footer: "Statistics",
+    icon: Trophy,
+    iconColor: "text-amber-300",
+    bgColor: "bg-blue-700",
+  },
+  {
+    key: "peakHour",
+    label: "PEAK HOUR",
+    footer: "Busiest window of the day",
+    icon: Clock,
+    iconColor: "text-gray-100",
+    bgColor: "bg-purple-700",
+  },
+  {
+    key: "bestDay",
+    label: "BEST DAY OF THE WEEK",
+    footer: "Above daily mean",
+    icon: Star,
+    iconColor: "text-amber-300",
+    bgColor: "bg-green-700",
+  },
+];
 // For Customer Stats
 export const CUSTOMER_STAT_CONFIG: StatConfig[] =
   [
