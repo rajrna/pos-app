@@ -18,72 +18,106 @@ import {
   Star,
 } from "lucide-react";
 
+export const ICON_MAP: Record<
+  string,
+  LucideIcon
+> = {
+  DollarSign,
+  ShoppingBag,
+  Package,
+  CreditCard,
+};
 // For dashboard overview stats
-export interface StatConfig {
+export interface SerializableStatConfig {
+  key: string;
+  label: string;
+  footer?: string;
+  iconName: string;
+  iconColor: string;
+  bgColor?: string;
+  format?: "currency" | "number";
+}
+
+export interface ClientStatConfig {
   key: string;
   label: string;
   footer?: string;
   icon: LucideIcon;
   iconColor: string;
   bgColor?: string;
+  format?: "currency" | "number";
 }
 
-export const STATS_CONFIG: StatConfig[] = [
-  {
-    key: "totalSales",
-    label: "Total Sales",
-    icon: DollarSign,
-    iconColor: "text-blue-500",
-  },
-  {
-    key: "totalOrders",
-    label: "Total Orders",
-    icon: ShoppingBag,
-    iconColor: "text-purple-500",
-  },
-  {
-    key: "productsSold",
-    label: "Products Sold",
-    icon: Package,
-    iconColor: "text-red-500",
-  },
-  {
-    key: "netProfit",
-    label: "Net Profit",
-    icon: CreditCard,
-    iconColor: "text-green-500",
-  },
-];
+export interface MergedSerializableConfig extends SerializableStatConfig {
+  value: number;
+  percent: number;
+}
+
+export interface MergedClientConfig extends ClientStatConfig {
+  value: number;
+  percent: number;
+}
+
+export const STATS_CONFIG: SerializableStatConfig[] =
+  [
+    {
+      key: "totalSales",
+      label: "Total Sales",
+      iconName: "DollarSign",
+      iconColor: "text-blue-500",
+      format: "currency",
+    },
+    {
+      key: "totalOrders",
+      label: "Total Orders",
+      iconName: "ShoppingBag",
+      iconColor: "text-purple-500",
+    },
+    {
+      key: "productsSold",
+      label: "Products Sold",
+      iconName: "Package",
+      iconColor: "text-red-500",
+    },
+    {
+      key: "netProfit",
+      label: "Net Profit",
+      iconName: "CreditCard",
+      iconColor: "text-green-500",
+      format: "currency",
+    },
+  ];
 
 // For Winning Stats
-export const WINNING_STAT_CONFIG: StatConfig[] = [
-  {
-    key: "topSellingProduct",
-    label: "TOP SELLING PRODUCT",
-    footer: "Statistics",
-    icon: Trophy,
-    iconColor: "text-amber-300",
-    bgColor: "bg-blue-700",
-  },
-  {
-    key: "peakHour",
-    label: "PEAK HOUR",
-    footer: "Busiest window of the day",
-    icon: Clock,
-    iconColor: "text-gray-100",
-    bgColor: "bg-purple-700",
-  },
-  {
-    key: "bestDay",
-    label: "BEST DAY OF THE WEEK",
-    footer: "Above daily mean",
-    icon: Star,
-    iconColor: "text-amber-300",
-    bgColor: "bg-green-700",
-  },
-];
+export const WINNING_STAT_CONFIG: ClientStatConfig[] =
+  [
+    {
+      key: "topSellingProduct",
+      label: "TOP SELLING PRODUCT",
+      footer: "Statistics",
+      icon: Trophy,
+      iconColor: "text-amber-300",
+      bgColor: "bg-blue-700",
+    },
+    {
+      key: "peakHour",
+      label: "PEAK HOUR",
+      footer: "Busiest window of the day",
+      icon: Clock,
+      iconColor: "text-gray-100",
+      bgColor: "bg-purple-700",
+    },
+    {
+      key: "bestDay",
+      label: "BEST DAY OF THE WEEK",
+      footer: "Above daily mean",
+      icon: Star,
+      iconColor: "text-amber-300",
+      bgColor: "bg-green-700",
+    },
+  ];
 // For Customer Stats
-export const CUSTOMER_STAT_CONFIG: StatConfig[] =
+export const CUSTOMER_STAT_CONFIG: ClientStatConfig[] =
   [
     {
       key: "totalMembers",
@@ -183,6 +217,7 @@ export const GROWTH_STAT_CONFIG = [
     key: "revenue",
     label: "Revenue Growth (MoM)",
     inverseColor: false,
+    format: "currency",
   },
   {
     key: "orders",
@@ -193,6 +228,7 @@ export const GROWTH_STAT_CONFIG = [
     key: "avgOrder",
     label: "Avg Order Value (AoV)",
     inverseColor: false,
+    format: "currency",
   },
   {
     key: "customers",
@@ -203,10 +239,12 @@ export const GROWTH_STAT_CONFIG = [
     key: "margin",
     label: "Profit Margin",
     inverseColor: false,
+    format: "percent",
   },
   {
     key: "refunds",
     label: "Refund Rate",
     inverseColor: true,
+    format: "percent",
   },
 ] as const;

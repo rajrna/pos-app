@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import type { TargetActualData } from "./TargetVsActualChart";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { formatCurrency } from "@/lib/utils";
 
-// ---------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------
 
 interface Props {
   isOpen: boolean;
@@ -13,9 +13,7 @@ interface Props {
   onSave: (updated: TargetActualData[]) => void;
 }
 
-// ---------------------------------------------------------------
 // Component
-// ---------------------------------------------------------------
 
 export default function SetTargetsModal({
   isOpen,
@@ -23,11 +21,9 @@ export default function SetTargetsModal({
   data,
   onSave,
 }: Props) {
-  // ✅ No useEffect needed — because we return null when isOpen is false,
-  // the component fully unmounts and remounts each time the modal opens.
-  // This means useState(data) always initializes with the latest data on open.
   const [draft, setDraft] =
     useState<TargetActualData[]>(data);
+  const { currency } = useCurrency();
 
   if (!isOpen) return null;
 
@@ -105,14 +101,17 @@ export default function SetTargetsModal({
               <div className="flex items-center gap-1 text-xs text-gray-400">
                 <span>Actual:</span>
                 <span className="font-medium text-blue-500">
-                  ${row.actual.toLocaleString()}
+                  {formatCurrency(
+                    row.actual,
+                    currency,
+                  )}
                 </span>
               </div>
 
               {/* Target input */}
               <div className="relative flex items-center">
                 <span className="absolute left-3 text-sm text-gray-400">
-                  $
+                  {currency.symbol}
                 </span>
                 <input
                   type="number"
@@ -160,7 +159,10 @@ export default function SetTargetsModal({
               Total annual target
             </p>
             <p className="text-sm font-bold text-gray-800">
-              ${totalTarget.toLocaleString()}
+              {formatCurrency(
+                totalTarget,
+                currency,
+              )}
             </p>
           </div>
           <div className="flex gap-2">

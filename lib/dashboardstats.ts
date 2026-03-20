@@ -9,7 +9,7 @@ import {
 
 // For dashboard overview stats
 export interface Stat {
-  value: string;
+  value: number;
   percent: number;
 }
 export type StatKey =
@@ -63,8 +63,8 @@ export type ExpenseApiResponse = Record<
 >;
 // For growth stats
 export interface GrowthStat {
-  value: string;
-  prev: string;
+  value: number;
+  prev: number;
   percent: number;
 }
 export type GrowthStatKey =

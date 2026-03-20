@@ -1,4 +1,6 @@
 "use client";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { formatCurrency } from "@/lib/utils";
 import {
   BarChart,
   Bar,
@@ -11,12 +13,10 @@ import {
   Rectangle,
 } from "recharts";
 import type { BarShapeProps } from "recharts";
-import type {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
 
+import { CustomTooltipProps } from "@/lib/types/chart";
+import { mockYearOverYearData } from "./mock-growthtrackerdata";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
 // Types
 
 export interface YoYData {
@@ -25,75 +25,7 @@ export interface YoYData {
   thisYear: number;
 }
 
-// Mock data — full 12 months
-
-const MOCK_DATA: YoYData[] = [
-  {
-    month: "Jan",
-    lastYear: 72000,
-    thisYear: 98000,
-  },
-  {
-    month: "Feb",
-    lastYear: 78000,
-    thisYear: 104000,
-  },
-  {
-    month: "Mar",
-    lastYear: 85000,
-    thisYear: 112000,
-  },
-  {
-    month: "Apr",
-    lastYear: 80000,
-    thisYear: 108000,
-  },
-  {
-    month: "May",
-    lastYear: 90000,
-    thisYear: 119000,
-  },
-  {
-    month: "Jun",
-    lastYear: 95000,
-    thisYear: 125000,
-  },
-  {
-    month: "Jul",
-    lastYear: 100000,
-    thisYear: 131000,
-  },
-  {
-    month: "Aug",
-    lastYear: 97000,
-    thisYear: 128000,
-  },
-  {
-    month: "Sep",
-    lastYear: 88000,
-    thisYear: 116000,
-  },
-  {
-    month: "Oct",
-    lastYear: 84000,
-    thisYear: 122000,
-  },
-  {
-    month: "Nov",
-    lastYear: 91000,
-    thisYear: 118000,
-  },
-  {
-    month: "Dec",
-    lastYear: 110000,
-    thisYear: 142000,
-  },
-];
-
 // Helpers
-
-const formatYAxis = (v: number): string =>
-  `$${v / 1000}k`;
 
 const getYAxisTicks = (
   data: YoYData[],
@@ -110,7 +42,6 @@ const getYAxisTicks = (
 
 // Sub-components
 
-// Muted gray for last year
 const LastYearBar = (props: BarShapeProps) => (
   <Rectangle
     {...props}
@@ -119,7 +50,6 @@ const LastYearBar = (props: BarShapeProps) => (
   />
 );
 
-// Vivid blue for this year
 const ThisYearBar = (props: BarShapeProps) => (
   <Rectangle
     {...props}
@@ -161,16 +91,11 @@ const CustomLegend = () => (
   </div>
 );
 
-interface CustomTooltipProps {
-  active?: boolean;
-  label?: string;
-  payload?: Payload<ValueType, NameType>[];
-}
-
 const CustomTooltip = ({
   active,
   payload,
   label,
+  currency,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   const lastYear = payload.find(
@@ -212,10 +137,10 @@ const CustomTooltip = ({
             </span>
           </div>
           <span className="text-xs font-bold text-gray-800">
-            $
-            {(
-              entry.value as number
-            ).toLocaleString()}
+            {formatCurrency(
+              entry.value as number,
+              currency,
+            )}
           </span>
         </div>
       ))}
@@ -237,19 +162,27 @@ const CustomTooltip = ({
 };
 
 // Chart
-
 export interface YearOverYearProps {
-  initialData?: YoYData[];
+  data: YoYData[];
 }
-
 export default function YearOverYearChart({
-  initialData = MOCK_DATA,
+  data,
 }: YearOverYearProps) {
-  const yTicks = getYAxisTicks(initialData);
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockYearOverYearData
+    : data;
+  const { currency } = useCurrency();
+  const formatYAxis = (value: number): string =>
+    value >= 1000
+      ? `${currency.symbol}${value / 1000}k`
+      : formatCurrency(value, currency);
+  const yTicks = getYAxisTicks(displayData);
   const yMax = yTicks[yTicks.length - 1] * 1.05;
-
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mt-2 md:mt-4 p-6 w-full">
+    <div className="relative bg-white rounded-2xl border border-gray-100 shadow-sm mt-2 md:mt-4 p-6 w-full">
+      {isEmpty && <SampleDataBadge />}
+
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">
@@ -266,7 +199,7 @@ export default function YearOverYearChart({
         height={300}
       >
         <BarChart
-          data={initialData}
+          data={displayData}
           margin={{
             top: 10,
             right: 10,
@@ -280,7 +213,6 @@ export default function YearOverYearChart({
             vertical={false}
             stroke="#f3f4f6"
           />
-
           <XAxis
             dataKey="month"
             axisLine={false}
@@ -303,13 +235,15 @@ export default function YearOverYearChart({
             domain={[0, yMax]}
             width={50}
           />
-
           <Tooltip
-            content={<CustomTooltip />}
+            content={
+              <CustomTooltip
+                currency={currency}
+              />
+            }
             cursor={{ fill: "rgba(0,0,0,0.03)" }}
           />
           <Legend content={<CustomLegend />} />
-
           <Bar
             dataKey="lastYear"
             name="Last Year"

@@ -3,7 +3,42 @@ import { Transaction } from "../RecentTransactions";
 import { TopProduct } from "../TopItems";
 import { LocationData } from "./SalesLocationChart";
 import { HourlyData } from "./HourlySalesChart";
+import {
+  StatsApiResponse,
+  WinningApiResponse,
+} from "@/lib/dashboardstats";
 
+export const mockStats: StatsApiResponse = {
+  totalSales: {
+    value: 999999,
+    percent: 12,
+  },
+  totalOrders: {
+    value: 1234,
+    percent: 10,
+  },
+  productsSold: {
+    value: 123,
+    percent: 10,
+  },
+  netProfit: {
+    value: 12000,
+    percent: -10,
+  },
+};
+
+export const mockWinningStats: WinningApiResponse =
+  {
+    topSellingProduct: {
+      value: "Classic Latte",
+    },
+    peakHour: {
+      value: "10AM - 11AM",
+    },
+    bestDay: {
+      value: "Sunday",
+    },
+  };
 export const mockTopProducts: TopProduct[] = [
   {
     rank: 1,

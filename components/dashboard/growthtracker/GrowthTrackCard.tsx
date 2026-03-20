@@ -1,3 +1,5 @@
+"use client";
+import { useCurrency } from "@/lib/context/CurrencyContext";
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -7,10 +9,11 @@ import {
 
 interface GrowthTrackCardProps {
   label: string;
-  value: string;
-  prev: string;
+  value: number;
+  prev: number;
   percent: number;
   inverseColor?: boolean;
+  format?: "currency" | "number" | "percent";
 }
 
 function isGood(
@@ -27,6 +30,7 @@ export default function GrowthTrackCard({
   prev,
   percent,
   inverseColor = false,
+  format = "number",
 }: GrowthTrackCardProps) {
   const good = isGood(percent, inverseColor);
   const cardBg = good
@@ -51,6 +55,21 @@ export default function GrowthTrackCard({
     ? ArrowUpRight
     : ArrowDownRight;
 
+  const { currency } = useCurrency();
+
+  const formatValue = (value: number) => {
+    if (format === "currency") {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currency.code,
+        maximumFractionDigits: 0,
+      }).format(value);
+    }
+    if (format === "percent") {
+      return `${value}%`;
+    }
+    return value.toLocaleString();
+  };
   return (
     <div
       className={`py-4 md:py-6  px-3 md:px-4 w-full border rounded-lg transition duration-300 shadow-md ${cardBg}`}
@@ -67,10 +86,10 @@ export default function GrowthTrackCard({
       <div className="flex items-center justify-between py-2 md:py-4">
         <div>
           <p className="font-semibold text-xl">
-            {value}
+            {formatValue(value)}
           </p>
           <p className="text-sm text-gray-500">
-            prev: {prev}
+            prev: {formatValue(prev)}
           </p>
         </div>
         <div
