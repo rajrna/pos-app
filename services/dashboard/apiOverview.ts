@@ -1,4 +1,3 @@
-import { HourlyData } from "@/components/dashboard/overviewdash/HourlySalesChart";
 import {
   mockHourlySales,
   mockRecentTransactions,
@@ -6,11 +5,11 @@ import {
   mockTopProducts,
   mockWeeklyRevenue,
 } from "@/components/dashboard/overviewdash/mock-overviewdata";
+import { DataPoint } from "@/lib/types/chart";
+import { HourlyData } from "@/components/dashboard/overviewdash/HourlySalesChart";
 import { LocationData } from "@/components/dashboard/overviewdash/SalesLocationChart";
-
 import { Transaction } from "@/components/dashboard/RecentTransactions";
 import { TopProduct } from "@/components/dashboard/TopItems";
-import { DataPoint } from "@/lib/types/chart";
 
 export async function getTopProducts(): Promise<
   TopProduct[]

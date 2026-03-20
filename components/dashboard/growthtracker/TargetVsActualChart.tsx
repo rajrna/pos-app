@@ -11,13 +11,13 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import type {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
+
 import SetTargetsModal from "./SetTargetsModal";
 import { useCurrency } from "@/lib/context/CurrencyContext";
+import { CustomTooltipProps } from "@/lib/types/chart";
+import { formatCurrency } from "@/lib/utils";
+import { mockTargetActualData } from "./mock-growthtrackerdata";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
 
 // Types
 
@@ -26,67 +26,6 @@ export interface TargetActualData {
   actual: number;
   target: number;
 }
-
-// Mock data — full 12 months
-
-const MOCK_DATA: TargetActualData[] = [
-  { month: "Jan", actual: 98000, target: 95000 },
-  {
-    month: "Feb",
-    actual: 104000,
-    target: 100000,
-  },
-  {
-    month: "Mar",
-    actual: 112000,
-    target: 108000,
-  },
-  {
-    month: "Apr",
-    actual: 108000,
-    target: 112000,
-  },
-  {
-    month: "May",
-    actual: 119000,
-    target: 115000,
-  },
-  {
-    month: "Jun",
-    actual: 125000,
-    target: 120000,
-  },
-  {
-    month: "Jul",
-    actual: 131000,
-    target: 125000,
-  },
-  {
-    month: "Aug",
-    actual: 128000,
-    target: 130000,
-  },
-  {
-    month: "Sep",
-    actual: 116000,
-    target: 118000,
-  },
-  {
-    month: "Oct",
-    actual: 122000,
-    target: 115000,
-  },
-  {
-    month: "Nov",
-    actual: 118000,
-    target: 120000,
-  },
-  {
-    month: "Dec",
-    actual: 142000,
-    target: 135000,
-  },
-];
 
 // Helpers
 
@@ -102,16 +41,11 @@ const getYAxisTicks = (
 
 // Sub-components
 
-interface CustomTooltipProps {
-  active?: boolean;
-  label?: string;
-  payload?: Payload<ValueType, NameType>[];
-}
-
 const CustomTooltip = ({
   active,
   payload,
   label,
+  currency,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   const actual = payload.find(
@@ -149,10 +83,10 @@ const CustomTooltip = ({
             </span>
           </div>
           <span className="text-xs font-bold text-gray-800">
-            $
-            {(
-              entry.value as number
-            ).toLocaleString()}
+            {formatCurrency(
+              entry.value as number,
+              currency,
+            )}
           </span>
         </div>
       ))}
@@ -203,22 +137,27 @@ const CustomLegend = () => (
 // Chart
 
 export interface TargetVsActualProps {
-  initialData?: TargetActualData[];
+  data: TargetActualData[];
 }
 
 export default function TargetVsActualChart({
-  initialData = MOCK_DATA,
+  data,
 }: TargetVsActualProps) {
-  // chartData is the live data — targets can be edited via the modal
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockTargetActualData
+    : data;
   const [chartData, setChartData] =
-    useState<TargetActualData[]>(initialData);
+    useState<TargetActualData[]>(displayData);
   const [modalOpen, setModalOpen] =
     useState(false);
 
   const { currency } = useCurrency();
 
-  const formatYAxis = (v: number): string =>
-    `$${v / 1000}k`;
+  const formatYAxis = (value: number): string =>
+    value >= 1000
+      ? `${currency.symbol}${value / 1000}k`
+      : formatCurrency(value, currency);
   const yTicks = getYAxisTicks(chartData);
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 
@@ -233,7 +172,12 @@ export default function TargetVsActualChart({
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+      <div className="relative bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+        {isEmpty && (
+          <div className="mt-5 ml-10">
+            <SampleDataBadge />
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
@@ -342,7 +286,11 @@ export default function TargetVsActualChart({
               width={50}
             />
             <Tooltip
-              content={<CustomTooltip />}
+              content={
+                <CustomTooltip
+                  currency={currency}
+                />
+              }
             />
             <Legend content={<CustomLegend />} />
 

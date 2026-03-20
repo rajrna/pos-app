@@ -1,15 +1,11 @@
 import {
-  StatsApiResponse,
-  WinningApiResponse,
-} from "@/lib/dashboardstats";
-import {
+  MergedSerializableConfig,
   STATS_CONFIG,
   WINNING_STAT_CONFIG,
 } from "@/lib/config/dashboard";
 
 import TopItems from "@/components/dashboard/TopItems";
 import WinningStatBox from "@/components/dashboard/overviewdash/WinningStatBox";
-import OverviewStatBox from "@/components/dashboard/overviewdash/OverviewStatBox";
 import HourlySalesTrend from "@/components/dashboard/overviewdash/HourlySalesChart";
 import SalesLocationChart from "@/components/dashboard/overviewdash/SalesLocationChart";
 import WeeklyRevenueChart from "@/components/dashboard/overviewdash/WeeklyRevenueChart";
@@ -27,37 +23,11 @@ import {
   getWeeklyRevenueData,
 } from "@/services/dashboard/apiOverview";
 import { DataPoint } from "@/lib/types/chart";
-
-const mockStats: StatsApiResponse = {
-  totalSales: {
-    value: "$999,999",
-    percent: 12,
-  },
-  totalOrders: {
-    value: "1234",
-    percent: 10,
-  },
-  productsSold: {
-    value: "123",
-    percent: 10,
-  },
-  netProfit: {
-    value: "$12000",
-    percent: -10,
-  },
-};
-
-const mockWinningStats: WinningApiResponse = {
-  topSellingProduct: {
-    value: "Classic Latte",
-  },
-  peakHour: {
-    value: "10AM - 11AM",
-  },
-  bestDay: {
-    value: "Sunday",
-  },
-};
+import {
+  mockStats,
+  mockWinningStats,
+} from "@/components/dashboard/overviewdash/mock-overviewdata";
+import OverviewStatBoxGrid from "@/components/dashboard/overviewdash/OverviewStatGrid";
 
 function computePeakDay(
   data: DataPoint[],
@@ -68,10 +38,11 @@ function computePeakDay(
 }
 
 export default async function Page() {
-  const stats = STATS_CONFIG.map((config) => ({
-    ...config,
-    ...mockStats[config.key],
-  }));
+  const stats: MergedSerializableConfig[] =
+    STATS_CONFIG.map((config) => ({
+      ...config,
+      ...mockStats[config.key],
+    }));
   const winningStats = WINNING_STAT_CONFIG.map(
     (config) => ({
       ...config,
@@ -98,12 +69,7 @@ export default async function Page() {
       {/* ACTUAL CONTENTS */}
       <div>
         <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
-          {stats.map(({ key, ...stat }) => (
-            <OverviewStatBox
-              key={key}
-              {...stat}
-            />
-          ))}
+          <OverviewStatBoxGrid stats={stats} />
         </div>
 
         <Carousel
