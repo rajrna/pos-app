@@ -25,6 +25,7 @@ import {
   CurrencyConfig,
   useCurrency,
 } from "@/lib/context/CurrencyContext";
+import { mockRevenueVsProfit } from "./mock-salesrevenue";
 
 // Types
 
@@ -167,10 +168,13 @@ export default function RevenueVsProfitChart({
 }: Props) {
   const [range, setRange] =
     useState<DateRange>("30d");
-
+  const isEmpty = !initialData;
+  const displayData = isEmpty
+    ? mockRevenueVsProfit
+    : initialData;
   const { currency } = useCurrency();
   const {
-    data = initialData,
+    data = displayData,
     isFetching,
     isError,
   } = useQuery({

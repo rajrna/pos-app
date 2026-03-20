@@ -1,6 +1,22 @@
 import { CustomerApiResponse } from "@/lib/dashboardstats";
 import { TopCustomer } from "./top-customer-column";
 import { AtRiskCustomer } from "./AtRiskCustomer";
+import { CustomerTrendData } from "./CustomerTrendChart";
+import { TierData } from "./LoyaltyTierChart";
+import { SegmentData } from "./CustomerSegmentationChart";
+
+export const mockTierData: TierData[] = [
+  { tier: "Bronze", members: 480 },
+  { tier: "Silver", members: 220 },
+  { tier: "Gold", members: 112 },
+  { tier: "Platinum", members: 30 },
+];
+
+export const mockCustomerSegmentationData: SegmentData[] =
+  [
+    { name: "Repeat", value: 1020 },
+    { name: "New", value: 400 },
+  ];
 
 export const mockCustomerStats: CustomerApiResponse =
   {
@@ -9,6 +25,15 @@ export const mockCustomerStats: CustomerApiResponse =
     pointsRedeemed: { value: "5000" },
     pointsPerMember: { value: "120" },
   };
+export const mockCustomerTrendData: CustomerTrendData[] =
+  [
+    { month: "Sep", repeat: 150, new: 55 },
+    { month: "Oct", repeat: 160, new: 70 },
+    { month: "Nov", repeat: 162, new: 58 },
+    { month: "Dec", repeat: 170, new: 125 },
+    { month: "Jan", repeat: 175, new: 100 },
+    { month: "Feb", repeat: 210, new: 85 },
+  ];
 
 export const mockTopCustomers: TopCustomer[] = [
   {

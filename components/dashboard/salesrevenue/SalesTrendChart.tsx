@@ -16,6 +16,8 @@ import { useCurrency } from "@/lib/context/CurrencyContext";
 import { formatCurrency } from "@/lib/utils";
 import { CustomTooltipProps } from "@/lib/types/chart";
 import { mockSalesTrendData } from "./mock-salesrevenue";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
+
 // Types
 
 type ViewMode = "daily" | "weekly" | "monthly";
@@ -87,12 +89,16 @@ const VIEW_OPTIONS: {
 // Chart
 
 export interface SalesTrendsProps {
-  initialData?: SalesTrendsData;
+  data: SalesTrendsData;
 }
 
 export default function SalesTrendChart({
-  initialData = mockSalesTrendData,
+  data,
 }: SalesTrendsProps) {
+  const isEmpty = !data;
+  const displayData = isEmpty
+    ? mockSalesTrendData
+    : data;
   const [view, setView] =
     useState<ViewMode>("weekly");
   const { currency } = useCurrency();
@@ -102,12 +108,13 @@ export default function SalesTrendChart({
       ? `${currency.symbol}${value / 1000}k`
       : formatCurrency(value, currency);
 
-  const activeData = initialData[view];
+  const activeData = displayData[view];
   const yTicks = getYAxisTicks(activeData);
   const yMax = yTicks[yTicks.length - 1] * 1.08;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4">
+      {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>

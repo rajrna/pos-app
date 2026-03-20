@@ -2,34 +2,23 @@ import Link from "next/link";
 
 import { UserPlus } from "lucide-react";
 
-import { CUSTOMER_STAT_CONFIG } from "@/lib/config/dashboard";
-
-import { Button } from "@/components/ui/button";
-import TopCustomer from "@/components/dashboard/cutomerdash/TopCustomer";
-import AtRiskCustomer from "@/components/dashboard/cutomerdash/AtRiskCustomer";
-import CustomerStatBox from "@/components/dashboard/cutomerdash/CustomerStatBox";
-import LoyaltyTierChart from "@/components/dashboard/cutomerdash/LoyaltyTierChart";
-import CustomerTrendChart from "@/components/dashboard/cutomerdash/CustomerTrendChart";
-import { mockCustomerStats } from "@/components/dashboard/cutomerdash/mock-customer-data";
-import CustomerSegmentationChart from "@/components/dashboard/cutomerdash/CustomerSegmentationChart";
 import {
-  getAtRiskCustomers,
-  getTopCustomers,
-} from "@/services/dashboard/apiCustomerDash";
+  AtRiskCustomerWrapper,
+  CustomerSegmentationChartWrapper,
+  CustomerStatsWrapper,
+  CustomerTrendChartWrapper,
+  LoyaltyTierChartWrapper,
+  TopCustomersWrapper,
+} from "../_components/CustomersWrapper";
+import ChartErrorBoundary from "@/components/ui/charterrorboundary";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/ui/tableskeleton";
+import ChartSkeleton from "@/components/ui/chartskeleton";
+import PieChartSkeleton from "@/components/ui/piechartskeleton";
+import StatSkeleton from "@/components/ui/statskeleton";
+import { Button } from "@/components/ui/button";
 
 export default async function Page() {
-  const stats = CUSTOMER_STAT_CONFIG.map(
-    (config) => ({
-      ...config,
-      ...mockCustomerStats[config.key],
-    }),
-  );
-
-  const [topCustomers, atRiskCustomers] =
-    await Promise.all([
-      getTopCustomers(),
-      getAtRiskCustomers(),
-    ]);
   return (
     <div className="p-3 md:p-6">
       <div className="flex justify-between items-center w-full  py-2 border-b-2">
@@ -59,26 +48,58 @@ export default async function Page() {
 
       {/* CONTENTS */}
       <div>
-        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
-          {stats.map(({ key, ...stat }) => (
-            <CustomerStatBox
-              key={key}
-              {...stat}
-            />
-          ))}
-        </div>
-        {/* <div className="flex flex-wrap items-stretch gap-4 px-4 my-4"> */}
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
+              {Array.from({ length: 4 }).map(
+                (_, i) => (
+                  <StatSkeleton key={i} />
+                ),
+              )}
+            </div>
+          }
+        >
+          <CustomerStatsWrapper />
+        </Suspense>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CustomerSegmentationChart />
-          <LoyaltyTierChart />
+          {/* <CustomerSegmentationChart /> */}
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<PieChartSkeleton />}
+            >
+              <CustomerSegmentationChartWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
+
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<ChartSkeleton />}
+            >
+              <LoyaltyTierChartWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
-        <CustomerTrendChart />
-        <AtRiskCustomer
-          riskCustomers={atRiskCustomers}
-        />
-        <TopCustomer
-          topCustomers={topCustomers}
-        />
+        <ChartErrorBoundary>
+          <Suspense fallback={<ChartSkeleton />}>
+            <CustomerTrendChartWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
+
+        <ChartErrorBoundary>
+          <Suspense
+            fallback={<TableSkeleton rows={5} />}
+          >
+            <AtRiskCustomerWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
+
+        <ChartErrorBoundary>
+          <Suspense
+            fallback={<TableSkeleton rows={5} />}
+          >
+            <TopCustomersWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
       </div>
     </div>
   );

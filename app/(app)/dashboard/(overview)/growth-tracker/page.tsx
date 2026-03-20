@@ -8,23 +8,6 @@ import {
 import ChartErrorBoundary from "@/components/ui/charterrorboundary";
 
 export default async function Page() {
-  // const [
-  //   targetVsActualData,
-  //   yoyData,
-  //   growthStat,
-  // ] = await Promise.all([
-  //   getTargetActualData(),
-  //   getYoYData(),
-  //   getGrowthData(),
-  // ]);
-
-  // const stats = GROWTH_STAT_CONFIG.map(
-  //   (config) => ({
-  //     ...config,
-  //     ...growthStat[config.key],
-  //   }),
-  // );
-
   return (
     <div className="py-4 md:py-8 px-2 md:px-4">
       <h1 className="font-bold text-xl md:text-2xl truncate">
