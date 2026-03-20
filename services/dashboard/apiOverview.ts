@@ -2,14 +2,28 @@ import {
   mockHourlySales,
   mockRecentTransactions,
   mockSalesLocation,
+  mockStats,
   mockTopProducts,
   mockWeeklyRevenue,
+  mockWinningStats,
 } from "@/components/dashboard/overviewdash/mock-overviewdata";
 import { DataPoint } from "@/lib/types/chart";
 import { HourlyData } from "@/components/dashboard/overviewdash/HourlySalesChart";
 import { LocationData } from "@/components/dashboard/overviewdash/SalesLocationChart";
 import { Transaction } from "@/components/dashboard/RecentTransactions";
 import { TopProduct } from "@/components/dashboard/TopItems";
+import {
+  StatsApiResponse,
+  WinningApiResponse,
+} from "@/lib/dashboardstats";
+
+export async function getStatsData(): Promise<StatsApiResponse> {
+  return mockStats;
+}
+
+export async function getWinningStats(): Promise<WinningApiResponse> {
+  return mockWinningStats;
+}
 
 export async function getTopProducts(): Promise<
   TopProduct[]

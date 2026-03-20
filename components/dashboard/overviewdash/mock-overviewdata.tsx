@@ -1,8 +1,9 @@
-import { DataPoint } from "@/lib/types/chart";
-import { Transaction } from "../RecentTransactions";
 import { TopProduct } from "../TopItems";
-import { LocationData } from "./SalesLocationChart";
 import { HourlyData } from "./HourlySalesChart";
+import { Transaction } from "../RecentTransactions";
+import { LocationData } from "./SalesLocationChart";
+
+import { DataPoint } from "@/lib/types/chart";
 import {
   StatsApiResponse,
   WinningApiResponse,
