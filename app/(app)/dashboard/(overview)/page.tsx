@@ -1,120 +1,96 @@
-import {
-  MergedSerializableConfig,
-  STATS_CONFIG,
-  WINNING_STAT_CONFIG,
-} from "@/lib/config/dashboard";
+import { Suspense } from "react";
 
-import TopItems from "@/components/dashboard/TopItems";
-import WinningStatBox from "@/components/dashboard/overviewdash/WinningStatBox";
-import HourlySalesTrend from "@/components/dashboard/overviewdash/HourlySalesChart";
-import SalesLocationChart from "@/components/dashboard/overviewdash/SalesLocationChart";
-import WeeklyRevenueChart from "@/components/dashboard/overviewdash/WeeklyRevenueChart";
-import RecentTransactions from "@/components/dashboard/RecentTransactions";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import {
-  getHourlySalesData,
-  getRecentTransactions,
-  getSalesLocations,
-  getTopProducts,
-  getWeeklyRevenueData,
-} from "@/services/dashboard/apiOverview";
-import { DataPoint } from "@/lib/types/chart";
-import {
-  mockStats,
-  mockWinningStats,
-} from "@/components/dashboard/overviewdash/mock-overviewdata";
-import OverviewStatBoxGrid from "@/components/dashboard/overviewdash/OverviewStatGrid";
+  HourlySalesTrendWrapper,
+  OverviewStatsWrapper,
+  RecentTransactionWrapper,
+  SalesLocationChartWrapper,
+  TopItemsWrapper,
+  WeeklyRevenueChartWrapper,
+  WinningStatsWrapper,
+} from "../_components/OverviewWrapper";
 
-function computePeakDay(
-  data: DataPoint[],
-): string {
-  return data.reduce((peak, curr) =>
-    curr.revenue > peak.revenue ? curr : peak,
-  ).day;
-}
+import StatSkeleton from "@/components/ui/statskeleton";
+import ChartSkeleton from "@/components/ui/chartskeleton";
+import TableSkeleton from "@/components/ui/tableskeleton";
+import PieChartSkeleton from "@/components/ui/piechartskeleton";
+import ChartErrorBoundary from "@/components/ui/charterrorboundary";
 
 export default async function Page() {
-  const stats: MergedSerializableConfig[] =
-    STATS_CONFIG.map((config) => ({
-      ...config,
-      ...mockStats[config.key],
-    }));
-  const winningStats = WINNING_STAT_CONFIG.map(
-    (config) => ({
-      ...config,
-      ...mockWinningStats[config.key],
-    }),
-  );
-
-  const [
-    topProducts,
-    recentTransactions,
-    weeklyRevenue,
-    locationData,
-    hourlySalesData,
-  ] = await Promise.all([
-    getTopProducts(),
-    getRecentTransactions(),
-    getWeeklyRevenueData(),
-    getSalesLocations(),
-    getHourlySalesData(),
-  ]);
-  const peakDay = computePeakDay(weeklyRevenue);
   return (
     <div className="w-full px-4">
       {/* ACTUAL CONTENTS */}
       <div>
-        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
-          <OverviewStatBoxGrid stats={stats} />
-        </div>
-
-        <Carousel
-          opts={{
-            align: "start",
-            dragFree: true,
-          }}
-          className="w-full my-4"
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
+              {Array.from({ length: 4 }).map(
+                (_, i) => (
+                  <StatSkeleton key={i} />
+                ),
+              )}
+            </div>
+          }
         >
-          <CarouselContent className="-ml-3">
-            {winningStats.map(
-              ({ key, ...stat }) => (
-                <CarouselItem
-                  key={key}
-                  className="pl-3 basis-full sm:basis-1/2 lg:basis-1/3"
-                >
-                  <WinningStatBox
-                    key={key}
-                    {...stat}
-                  />
-                </CarouselItem>
-              ),
-            )}
-          </CarouselContent>
-        </Carousel>
+          <OverviewStatsWrapper />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
+              {Array.from({ length: 3 }).map(
+                (_, i) => (
+                  <StatSkeleton key={i} />
+                ),
+              )}
+            </div>
+          }
+        >
+          <WinningStatsWrapper />
+        </Suspense>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
-          <TopItems topProducts={topProducts} />
-          <RecentTransactions
-            transactions={recentTransactions}
-          />
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={
+                <TableSkeleton rows={3} />
+              }
+            >
+              <TopItemsWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={
+                <TableSkeleton rows={3} />
+              }
+            >
+              <RecentTransactionWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-4">
-          <WeeklyRevenueChart
-            data={weeklyRevenue}
-            peakDay={peakDay}
-          />
-          <SalesLocationChart
-            data={locationData}
-          />
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<ChartSkeleton />}
+            >
+              <WeeklyRevenueChartWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<PieChartSkeleton />}
+            >
+              <SalesLocationChartWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
 
-        <HourlySalesTrend
-          data={hourlySalesData}
-        />
+        <ChartErrorBoundary>
+          <Suspense fallback={<ChartSkeleton />}>
+            <HourlySalesTrendWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
       </div>
     </div>
   );
