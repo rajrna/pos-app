@@ -1,9 +1,11 @@
 import Heatmap from "@/components/dashboard/heatmap/Heatmap";
+import { getHeatmapData } from "@/services/dashboard/apiHeatmap";
 
-export default function Page() {
+export default async function Page() {
+  const heatmapData = await getHeatmapData();
   return (
     <div className="w-full px-4">
-      <Heatmap />
+      <Heatmap data={heatmapData} />
     </div>
   );
 }

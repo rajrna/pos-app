@@ -16,18 +16,16 @@ import type {
   Payload,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { mockTierData } from "./mock-customer-data";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
 
-interface TierData {
+export interface TierData {
   tier: string;
   members: number;
 }
-
-const data: TierData[] = [
-  { tier: "Bronze", members: 480 },
-  { tier: "Silver", members: 220 },
-  { tier: "Gold", members: 112 },
-  { tier: "Platinum", members: 30 },
-];
+export interface TierDataProps {
+  data: TierData[];
+}
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -67,9 +65,16 @@ const CustomBar = (props: BarShapeProps) => (
   />
 );
 
-export default function LoyaltyTierChart() {
+export default function LoyaltyTierChart({
+  data,
+}: TierDataProps) {
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockTierData
+    : data;
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full min-w-0">
+      {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-4 md:mb-6">
         <h2 className="text-base md:text-lg font-bold text-gray-900">
@@ -87,7 +92,7 @@ export default function LoyaltyTierChart() {
           height="100%"
         >
           <BarChart
-            data={data}
+            data={displayData}
             layout="vertical"
             margin={{
               top: 0,

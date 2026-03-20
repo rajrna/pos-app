@@ -16,6 +16,8 @@ import type {
   Payload,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { mockCustomerTrendData } from "./mock-customer-data";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
 
 // Types
 
@@ -24,17 +26,6 @@ export interface CustomerTrendData {
   repeat: number;
   new: number;
 }
-
-// Mock data
-
-const MOCK_DATA: CustomerTrendData[] = [
-  { month: "Sep", repeat: 150, new: 55 },
-  { month: "Oct", repeat: 160, new: 70 },
-  { month: "Nov", repeat: 162, new: 58 },
-  { month: "Dec", repeat: 170, new: 125 },
-  { month: "Jan", repeat: 175, new: 100 },
-  { month: "Feb", repeat: 210, new: 85 },
-];
 
 // Helpers
 
@@ -151,17 +142,22 @@ const CustomTooltip = ({
 // Chart
 
 export interface CustomerTrendProps {
-  initialData?: CustomerTrendData[];
+  data: CustomerTrendData[];
 }
 
 export default function CustomerTrendChart({
-  initialData = MOCK_DATA,
+  data,
 }: CustomerTrendProps) {
-  const yTicks = getYAxisTicks(initialData);
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockCustomerTrendData
+    : data;
+  const yTicks = getYAxisTicks(data);
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4">
+      {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-4 md:mb-6">
         <h2 className="text-base md:text-lg font-bold text-gray-900">
@@ -178,7 +174,7 @@ export default function CustomerTrendChart({
         height={240}
       >
         <BarChart
-          data={initialData}
+          data={displayData}
           margin={{
             top: 10,
             right: 10,

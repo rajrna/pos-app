@@ -1,4 +1,5 @@
 "use client";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
 import {
   PieChart,
   Pie,
@@ -12,33 +13,40 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-interface SegmentData {
+// Raw shape from backend — no color
+export interface SegmentData {
   name: string;
   value: number;
+}
+
+// Internal shape with color assigned client-side
+interface SegmentDataWithColor extends SegmentData {
   color: string;
 }
 
-const data: SegmentData[] = [
-  {
-    name: "Repeat",
-    value: 1020,
-    color: "#60a5fa",
-  },
-  { name: "New", value: 400, color: "#34d399" },
-];
-
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Payload<ValueType, NameType>[];
+interface CustomerSegmentationChartProps {
+  data: SegmentData[];
 }
+
+const COLOR_PALETTE = [
+  "#60a5fa",
+  "#34d399",
+  "#a78bfa",
+  "#f59e0b",
+  "#f87171",
+  "#ec4899",
+];
 
 const CustomTooltip = ({
   active,
   payload,
-}: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
+}: {
+  active?: boolean;
+  payload?: Payload<ValueType, NameType>[];
+}) => {
+  if (active && payload?.length) {
     const entry = payload[0]
-      .payload as SegmentData;
+      .payload as SegmentDataWithColor;
     return (
       <div className="bg-white rounded-xl px-4 py-2 shadow-lg border border-gray-100">
         <p className="text-gray-500 text-xs">
@@ -56,15 +64,27 @@ const CustomTooltip = ({
   return null;
 };
 
-export default function CustomerSegmentationChart() {
-  const total = data.reduce(
-    (sum, d) => sum + d.value,
-    0,
-  );
+export default function CustomerSegmentationChart({
+  data,
+}: CustomerSegmentationChartProps) {
+  const isEmpty = !data || data.length === 0;
+  const coloredData: SegmentDataWithColor[] = (
+    isEmpty
+      ? [
+          { name: "Repeat", value: 1020 },
+          { name: "New", value: 400 },
+        ]
+      : data
+  ).map((entry, i) => ({
+    ...entry,
+    color:
+      COLOR_PALETTE[i % COLOR_PALETTE.length],
+  }));
 
   return (
-    <div className="bg-white rounded-2xl px-4 py-3 border min-w-0 border-gray-100 shadow-md">
-      {/* Header */}
+    <div className="relative bg-white rounded-2xl px-4 py-3 border min-w-0 border-gray-100 shadow-md">
+      {isEmpty && <SampleDataBadge />}
+
       <div>
         <h2 className="text-base md:text-lg font-bold text-gray-900">
           Customer Segmentation
@@ -74,7 +94,6 @@ export default function CustomerSegmentationChart() {
         </p>
       </div>
 
-      {/* Donut Chart */}
       <div className="h-44 sm:h-56 md:h-64">
         <ResponsiveContainer
           width="100%"
@@ -82,7 +101,7 @@ export default function CustomerSegmentationChart() {
         >
           <PieChart>
             <Pie
-              data={data}
+              data={coloredData}
               cx="50%"
               cy="50%"
               innerRadius="45%"
@@ -92,7 +111,7 @@ export default function CustomerSegmentationChart() {
               startAngle={90}
               endAngle={-270}
             >
-              {data.map((entry) => (
+              {coloredData.map((entry) => (
                 <Cell
                   key={entry.name}
                   fill={entry.color}
@@ -107,9 +126,8 @@ export default function CustomerSegmentationChart() {
         </ResponsiveContainer>
       </div>
 
-      {/* Legend */}
       <div className="flex items-center justify-center gap-4 md:gap-6 mt-1 mb-1">
-        {data.map((entry) => (
+        {coloredData.map((entry) => (
           <div
             key={entry.name}
             className="flex items-center gap-1.5 md:gap-2"

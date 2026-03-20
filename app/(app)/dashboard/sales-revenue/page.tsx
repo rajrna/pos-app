@@ -1,27 +1,17 @@
-import TopProducts from "@/components/dashboard/salesrevenue/TopProducts";
-import SlowProducts from "@/components/dashboard/salesrevenue/SlowProducts";
-import SalesTrendChart from "@/components/dashboard/salesrevenue/SalesTrendChart";
-import RevenueVsProfitChart from "@/components/dashboard/salesrevenue/RevenueVsProfitChart";
-import { mockSalesTrendData } from "@/components/dashboard/salesrevenue/mock-salesrevenue";
+import { Suspense } from "react";
+
+import TableSkeleton from "@/components/ui/tableskeleton";
+import ChartSkeleton from "@/components/ui/chartskeleton";
+import ChartErrorBoundary from "@/components/ui/charterrorboundary";
 
 import {
-  getRevenueVsProfitData,
-  getSalesTrends,
-  getSlowProducts,
-  getTopProducts,
-} from "@/services/dashboard/apiSalesRevenue";
+  RevenueVsProfitChartWrapper,
+  SalesTrendChartWrapper,
+  SlowProductsWrapper,
+  TopProductsWrapper,
+} from "../_components/SalesRevenueWrapper";
 
 export default async function Page() {
-  const [
-    revenueVsProfitData,
-    topProducts,
-    slowProducts,
-  ] = await Promise.all([
-    getRevenueVsProfitData(),
-    getTopProducts(),
-    getSlowProducts(),
-    getSalesTrends(),
-  ]);
   return (
     <div className="p-3 md:p-6">
       <div className="border-b border-gray-200 py-2">
@@ -43,17 +33,33 @@ export default async function Page() {
 
       {/* Actual COntent */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-        <TopProducts topProducts={topProducts} />
-        <SlowProducts
-          slowProducts={slowProducts}
-        />
+        <ChartErrorBoundary>
+          <Suspense
+            fallback={<TableSkeleton rows={5} />}
+          >
+            <TopProductsWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
+
+        <ChartErrorBoundary>
+          <Suspense
+            fallback={<TableSkeleton rows={5} />}
+          >
+            <SlowProductsWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
       </div>
-      <RevenueVsProfitChart
-        initialData={revenueVsProfitData}
-      />
-      <SalesTrendChart
-        initialData={mockSalesTrendData}
-      />
+      <ChartErrorBoundary>
+        <Suspense fallback={<ChartSkeleton />}>
+          <RevenueVsProfitChartWrapper />
+        </Suspense>
+      </ChartErrorBoundary>
+
+      <ChartErrorBoundary>
+        <Suspense fallback={<ChartSkeleton />}>
+          <SalesTrendChartWrapper />
+        </Suspense>
+      </ChartErrorBoundary>
     </div>
   );
 }
