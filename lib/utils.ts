@@ -1,9 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import {
   ArrowDownRight,
   ArrowUpRight,
 } from "lucide-react";
-import { twMerge } from "tailwind-merge";
 import { CurrencyConfig } from "./context/CurrencyContext";
 
 export function cn(...inputs: ClassValue[]) {
@@ -19,6 +19,16 @@ export function formatCurrency(
     currency: currency.code,
   }).format(amount);
 }
+export const formatDuration = (
+  seconds: number,
+): string => {
+  if (seconds < 60) return `${seconds}s`;
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return secs > 0
+    ? `${mins}m ${secs}s`
+    : `${mins}m`;
+};
 
 export function getPercentColor(percent: number) {
   return percent >= 0

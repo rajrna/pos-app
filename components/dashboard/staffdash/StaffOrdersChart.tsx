@@ -15,131 +15,31 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-interface StaffHourlyData {
-  hour: string;
-  Arthur: number | null;
-  John: number | null;
-  Dutch: number | null;
-  Charles: number | null;
-  Micah: number | null;
+import { mockStaffHourlyOrderData } from "./mock-staffdata";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
+
+export interface StaffDataPoint {
+  name: string;
+  value: number | null;
 }
 
-const data: StaffHourlyData[] = [
-  {
-    hour: "7am",
-    Arthur: 22,
-    John: 18,
-    Dutch: 0,
-    Charles: 15,
-    Micah: null,
-  },
-  {
-    hour: "8am",
-    Arthur: 32,
-    John: 28,
-    Dutch: 0,
-    Charles: 25,
-    Micah: null,
-  },
-  {
-    hour: "9am",
-    Arthur: 46,
-    John: 42,
-    Dutch: 0,
-    Charles: 38,
-    Micah: null,
-  },
-  {
-    hour: "10am",
-    Arthur: 55,
-    John: 52,
-    Dutch: 0,
-    Charles: 46,
-    Micah: null,
-  },
-  {
-    hour: "11am",
-    Arthur: 54,
-    John: 50,
-    Dutch: 0,
-    Charles: 44,
-    Micah: null,
-  },
-  {
-    hour: "12pm",
-    Arthur: 35,
-    John: 32,
-    Dutch: 2,
-    Charles: 30,
-    Micah: null,
-  },
-  {
-    hour: "1pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 24,
-    Charles: 0,
-    Micah: 30,
-  },
-  {
-    hour: "2pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 22,
-    Charles: 0,
-    Micah: 26,
-  },
-  {
-    hour: "3pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 19,
-    Charles: 0,
-    Micah: 24,
-  },
-  {
-    hour: "4pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 22,
-    Charles: 0,
-    Micah: 28,
-  },
-  {
-    hour: "5pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 28,
-    Charles: 0,
-    Micah: 36,
-  },
-  {
-    hour: "6pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 31,
-    Charles: 0,
-    Micah: 40,
-  },
-  {
-    hour: "7pm",
-    Arthur: 0,
-    John: 0,
-    Dutch: 28,
-    Charles: 0,
-    Micah: 33,
-  },
-];
+export interface StaffHourlyData {
+  hour: string;
+  staff: StaffDataPoint[];
+}
 
-const STAFF_LINES: {
-  key: keyof Omit<StaffHourlyData, "hour">;
-  color: string;
-}[] = [
-  { key: "Arthur", color: "#f472b6" }, // pink
-  { key: "John", color: "#60a5fa" }, // blue
-  { key: "Dutch", color: "#f59e0b" }, // amber
-  { key: "Charles", color: "#34d399" }, // green
-  { key: "Micah", color: "#a78bfa" }, // purple
+interface StaffOrdersChartProps {
+  data: StaffHourlyData[];
+}
+
+const COLOR_PALETTE = [
+  "#f472b6",
+  "#60a5fa",
+  "#f59e0b",
+  "#34d399",
+  "#a78bfa",
+  "#fb923c",
+  "#22d3ee",
 ];
 
 interface CustomTooltipProps {
@@ -153,47 +53,52 @@ const CustomTooltip = ({
   payload,
   label,
 }: CustomTooltipProps) => {
-  if (active && payload && payload.length) {
-    const active_entries = payload.filter(
-      (p) => (p.value as number) > 0,
-    );
-    if (!active_entries.length) return null;
-    return (
-      <div className="bg-white rounded-xl px-4 py-3 shadow-lg border border-gray-100 min-w-32">
-        <p className="text-gray-400 text-xs mb-2 font-medium">
-          {label}
-        </p>
-        {active_entries.map((entry) => (
-          <div
-            key={entry.name}
-            className="flex items-center justify-between gap-4"
-          >
-            <div className="flex items-center gap-1.5">
-              <span
-                className="w-2 h-2 rounded-full shrink-0"
-                style={{
-                  backgroundColor:
-                    entry.color as string,
-                }}
-              />
-              <span className="text-xs text-gray-600">
-                {entry.name}
-              </span>
-            </div>
-            <span className="text-xs font-bold text-gray-800">
-              {entry.value as number}
+  if (!active || !payload?.length) return null;
+  const activeEntries = payload.filter(
+    (p) => (p.value as number) > 0,
+  );
+  if (!activeEntries.length) return null;
+
+  return (
+    <div className="bg-white rounded-xl px-4 py-3 shadow-lg border border-gray-100 min-w-32">
+      <p className="text-gray-400 text-xs mb-2 font-medium">
+        {label}
+      </p>
+      {activeEntries.map((entry) => (
+        <div
+          key={entry.name}
+          className="flex items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-1.5">
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{
+                backgroundColor:
+                  entry.color as string,
+              }}
+            />
+            <span className="text-xs text-gray-600">
+              {entry.name}
             </span>
           </div>
-        ))}
-      </div>
-    );
-  }
-  return null;
+          <span className="text-xs font-bold text-gray-800">
+            {entry.value as number}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
 };
 
-const CustomLegend = () => (
+interface CustomLegendProps {
+  staffLines: { key: string; color: string }[];
+}
+
+const CustomLegend = ({
+  staffLines,
+}: CustomLegendProps) => (
   <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-2">
-    {STAFF_LINES.map(({ key, color }) => (
+    {staffLines.map(({ key, color }) => (
       <div
         key={key}
         className="flex items-center gap-1.5"
@@ -210,10 +115,33 @@ const CustomLegend = () => (
   </div>
 );
 
-export default function StaffOrdersChart() {
+export default function StaffOrdersChart({
+  data,
+}: StaffOrdersChartProps) {
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockStaffHourlyOrderData
+    : data;
+  const staffLines = (
+    displayData[0]?.staff ?? []
+  ).map((s, i) => ({
+    key: s.name,
+    color:
+      COLOR_PALETTE[i % COLOR_PALETTE.length],
+  }));
+
+  const flatData = displayData.map(
+    ({ hour, staff }) => ({
+      hour,
+      ...Object.fromEntries(
+        staff.map((s) => [s.name, s.value]),
+      ),
+    }),
+  );
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
-      {/* Header */}
+      {isEmpty && <SampleDataBadge />}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">
           Orders Per Hour by Staff
@@ -224,14 +152,13 @@ export default function StaffOrdersChart() {
         </p>
       </div>
 
-      {/* Chart */}
       <div className="h-55 md:h-75">
         <ResponsiveContainer
           width="100%"
           height="100%"
         >
           <LineChart
-            data={data}
+            data={flatData}
             margin={{
               top: 10,
               right: 20,
@@ -243,7 +170,6 @@ export default function StaffOrdersChart() {
               vertical={false}
               stroke="#f3f4f6"
             />
-
             <XAxis
               dataKey="hour"
               axisLine={false}
@@ -254,7 +180,6 @@ export default function StaffOrdersChart() {
               }}
               dy={8}
             />
-
             <YAxis
               axisLine={false}
               tickLine={false}
@@ -266,14 +191,17 @@ export default function StaffOrdersChart() {
               domain={[0, 65]}
               width={30}
             />
-
             <Tooltip
               content={<CustomTooltip />}
             />
-
-            <Legend content={<CustomLegend />} />
-
-            {STAFF_LINES.map(({ key, color }) => (
+            <Legend
+              content={
+                <CustomLegend
+                  staffLines={staffLines}
+                />
+              }
+            />
+            {staffLines.map(({ key, color }) => (
               <Line
                 key={key}
                 type="monotone"

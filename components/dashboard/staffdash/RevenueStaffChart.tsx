@@ -10,38 +10,23 @@ import {
   Rectangle,
 } from "recharts";
 import type { BarShapeProps } from "recharts";
-import type {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
 
-interface StaffRevenue {
+import { mockStaffRevenue } from "./mock-staffdata";
+import { CustomTooltipProps } from "@/lib/types/chart";
+import { formatCurrency } from "@/lib/utils";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
+
+export interface StaffRevenue {
   name: string;
   revenue: number;
-}
-
-const data: StaffRevenue[] = [
-  { name: "Emma", revenue: 5900 },
-  { name: "Liam", revenue: 5000 },
-  { name: "Sophia", revenue: 4600 },
-  { name: "James", revenue: 4000 },
-  { name: "Aisha", revenue: 6100 },
-];
-
-const formatYAxis = (value: number): string =>
-  `$${(value / 1000).toFixed(1)}k`;
-
-interface CustomTooltipProps {
-  active?: boolean;
-  label?: string;
-  payload?: Payload<ValueType, NameType>[];
 }
 
 const CustomTooltip = ({
   active,
   payload,
   label,
+  currency,
 }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
@@ -50,10 +35,10 @@ const CustomTooltip = ({
           {label}
         </p>
         <p className="text-blue-500 font-bold text-sm">
-          $
-          {(
-            payload[0].value as number
-          ).toLocaleString()}
+          {formatCurrency(
+            payload[0].value as number,
+            currency,
+          )}
         </p>
       </div>
     );
@@ -69,9 +54,25 @@ const CustomBar = (props: BarShapeProps) => (
   />
 );
 
-export default function RevenueStaffChart() {
+export interface StaffRevenueProps {
+  data: StaffRevenue[];
+}
+
+export default function RevenueStaffChart({
+  data,
+}: StaffRevenueProps) {
+  const { currency } = useCurrency();
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockStaffRevenue
+    : data;
+  const formatYAxis = (value: number): string =>
+    value >= 1000
+      ? `${currency.symbol}${value / 1000}k`
+      : formatCurrency(value, currency);
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm md:p-6 w-full">
+      {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-lg font-bold text-gray-900">
@@ -88,7 +89,7 @@ export default function RevenueStaffChart() {
         height={200}
       >
         <BarChart
-          data={data}
+          data={displayData}
           margin={{
             top: 0,
             right: 20,
@@ -127,7 +128,11 @@ export default function RevenueStaffChart() {
           />
 
           <Tooltip
-            content={<CustomTooltip />}
+            content={
+              <CustomTooltip
+                currency={currency}
+              />
+            }
             cursor={{
               fill: "rgba(96,165,250,0.05)",
             }}

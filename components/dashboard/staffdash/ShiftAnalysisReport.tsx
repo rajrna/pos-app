@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -7,11 +9,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type Shift = {
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import {
+  formatCurrency,
+  formatDuration,
+} from "@/lib/utils";
+
+export type Shift = {
   label: string;
   orders: number;
-  avgTime: string;
-  revenue: string;
+  avgTime: number;
+  revenue: number;
   staff: number;
 };
 
@@ -26,6 +34,7 @@ export default function ShiftAnalysisReport({
   description = "Performance comparison across morning, afternoon, and evening",
   shifts,
 }: ShiftAnalysisReportProps) {
+  const { currency } = useCurrency();
   return (
     <div className="border w-full px-4 md:px-10 py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <h1 className="font-semibold">{title}</h1>
@@ -57,10 +66,17 @@ export default function ShiftAnalysisReport({
                   {shift.orders}
                 </TableCell>
                 <TableCell className="text-gray-600">
-                  {shift.avgTime}
+                  {shift.avgTime != null
+                    ? formatDuration(
+                        shift.avgTime,
+                      )
+                    : "—"}
                 </TableCell>
                 <TableCell className="text-green-600 font-semibold">
-                  {shift.revenue}
+                  {formatCurrency(
+                    shift.revenue as number,
+                    currency,
+                  )}
                 </TableCell>
                 <TableCell>
                   {shift.staff}

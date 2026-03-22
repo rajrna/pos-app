@@ -1,75 +1,20 @@
-import RevenueStaffChart from "@/components/dashboard/staffdash/RevenueStaffChart";
-import ShiftAnalysisReport from "@/components/dashboard/staffdash/ShiftAnalysisReport";
-import StaffOrdersChart from "@/components/dashboard/staffdash/StaffOrdersChart";
-import StaffStatBox from "@/components/dashboard/staffdash/StaffStatBox";
-import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import { UserPlus } from "lucide-react";
+import { Suspense } from "react";
 import Link from "next/link";
 
-// async function getShifts(): Promise<Shift[]> {
-//   const res = await fetch("https://api", {
-//     next: { revalidate: 3600 }
-//   });
-//   if (!res.ok) throw new Error("Failed to fetch shifts");
-//   return res.json();
-// }
-const staffData = [
-  {
-    staffInitials: "AM",
-    staffName: "Arthur Morgan",
-    staffPosition: "Senior Barista",
-    ordersTaken: 5,
-    avgTime: 4.5,
-    rating: 4.9,
-    shiftTime: "Morning",
-    amount: 5000,
-  },
-  {
-    staffInitials: "DV",
-    staffName: "Dutch Vadrlind",
-    staffPosition: "Senior Barista",
-    ordersTaken: 3,
-    avgTime: 4.8,
-    rating: 4.2,
-    shiftTime: "Morning",
-    amount: 2000,
-  },
-  {
-    staffInitials: "JM",
-    staffName: "John Marston",
-    staffPosition: "Barista",
-    ordersTaken: 6,
-    avgTime: 4.3,
-    rating: 4.7,
-    shiftTime: "Afternoon",
-    amount: 3000,
-  },
-  {
-    staffInitials: "CC",
-    staffName: "Charles",
-    staffPosition: "Barista",
-    ordersTaken: 7,
-    avgTime: 4.3,
-    rating: 4.7,
-    shiftTime: "Evening",
-    amount: 2000,
-  },
-  {
-    staffInitials: "MM",
-    staffName: "Micah",
-    staffPosition: "Barista",
-    ordersTaken: 2,
-    avgTime: 5,
-    rating: 2.5,
-    shiftTime: "Evening",
-    amount: 1000,
-  },
-];
+import { UserPlus } from "lucide-react";
+
+import {
+  ShiftAnalysisWrapper,
+  StaffOrdersChartWrapper,
+  StaffRevenueWrapper,
+  StaffStatWrapper,
+} from "../_components/StaffWrapper";
+
+import { Button } from "@/components/ui/button";
+import StatSkeleton from "@/components/ui/statskeleton";
+import ChartSkeleton from "@/components/ui/chartskeleton";
+import TableSkeleton from "@/components/ui/tableskeleton";
+import ChartErrorBoundary from "@/components/ui/charterrorboundary";
 
 export default function Page() {
   return (
@@ -98,56 +43,49 @@ export default function Page() {
 
       {/* CONTENTS */}
       <div>
-        <Carousel
-          opts={{
-            align: "start",
-            dragFree: true,
-          }}
-          className="w-full my-4"
-        >
-          <CarouselContent className="-ml-3">
-            {staffData.map((staff) => (
-              <CarouselItem
-                key={staff.staffName}
-                className="pl-3 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-              >
-                <StaffStatBox {...staff} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <ChartErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
+                {Array.from({ length: 4 }).map(
+                  (_, i) => (
+                    <StatSkeleton key={i} />
+                  ),
+                )}
+              </div>
+            }
+          >
+            <StaffStatWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
 
         <div className=" my-4">
-          <StaffOrdersChart />
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<ChartSkeleton />}
+            >
+              <StaffOrdersChartWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
-          <ShiftAnalysisReport
-            shifts={[
-              {
-                label: "Morning (7–1pm)",
-                orders: 680,
-                avgTime: "4.2m",
-                revenue: "$1600",
-                staff: 3,
-              },
-              {
-                label: "Afternoon (1–5pm)",
-                orders: 520,
-                avgTime: "3.8m",
-                revenue: "$1200",
-                staff: 2,
-              },
-              {
-                label: "Evening (5–9pm)",
-                orders: 310,
-                avgTime: "5.1m",
-                revenue: "$900",
-                staff: 2,
-              },
-            ]}
-          />
-          <RevenueStaffChart />
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={
+                <TableSkeleton rows={3} />
+              }
+            >
+              <ShiftAnalysisWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<ChartSkeleton />}
+            >
+              <StaffRevenueWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
       </div>
     </div>
