@@ -1,19 +1,39 @@
-import { LucideIcon } from "lucide-react";
+"use client";
+import { ICON_MAP } from "@/lib/config/dashboard";
+import { useCurrency } from "@/lib/context/CurrencyContext";
 
 export interface StatBoxProps {
+  key: string;
   label: string;
-  value: string;
-  icon: LucideIcon;
+  value: number;
+  iconName: string;
   iconColor?: string;
   bgColor?: string;
+  format?: "currency" | "number" | "percent";
 }
 export default function StatBox({
   label,
   value,
-  icon: Icon,
+  iconName,
   iconColor,
   bgColor,
+  format = "number",
 }: StatBoxProps) {
+  const { currency } = useCurrency();
+  const formatValue = (value: number) => {
+    if (format === "currency") {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currency.code,
+        maximumFractionDigits: 0,
+      }).format(value);
+    }
+    if (format === "percent") {
+      return `${value}%`;
+    }
+    return value.toLocaleString();
+  };
+  const Icon = ICON_MAP[iconName];
   return (
     <div className="border w-full px-3 py-4 md:px-6 md:py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <div className="flex justify-between items-end ">
@@ -28,7 +48,7 @@ export default function StatBox({
       </div>
       <div className="py-2 md:py-4 mt-1 md:mt-2">
         <span className="font-bold text-lg md:text-2xl">
-          {value}
+          {formatValue(value)}
         </span>
       </div>
     </div>

@@ -1,4 +1,14 @@
-import { StatBoxProps } from "../StatBox";
+import { LucideIcon } from "lucide-react";
+
+export interface StatBoxProps {
+  key: string;
+  label: string;
+  value: number;
+  icon: LucideIcon;
+  iconColor?: string;
+  bgColor?: string;
+  format?: "currency" | "number" | "percent";
+}
 
 export default function CustomerStatBox({
   label,
