@@ -1,12 +1,14 @@
+import { ICON_MAP } from "@/lib/config/dashboard";
 import { StatBoxProps } from "../StatBox";
 
 export default function ExpenseStatBox({
   label,
   value,
-  icon: Icon,
+  iconName,
   iconColor,
   bgColor,
 }: StatBoxProps) {
+  const Icon = ICON_MAP[iconName];
   return (
     <div className="border w-full px-3 py-4 md:px-6 md:py-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
       <div className="flex justify-between items-end ">
