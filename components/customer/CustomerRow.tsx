@@ -10,7 +10,10 @@ import {
 } from "../ui/dropdown-menu";
 import { TableCell, TableRow } from "../ui/table";
 
-import { formatCurrency } from "@/utils/helper";
+import {
+  formatCurrency,
+  formatCurrencyChangeLater,
+} from "@/utils/helper";
 import { CustomerRowProps } from "@/lib/types/customer";
 import { useDeleteCustomer } from "@/hooks/useCustomers";
 
@@ -70,11 +73,12 @@ export default function CustomerRow({
       <TableCell>
         <div className="flex flex-col">
           <span className="font-semibold text-gray-900">
-            {formatCurrency(balance)}
+            {formatCurrencyChangeLater(balance)}
           </span>
           {overdue > 0 && (
             <span className="text-sm text-red-600">
-              {formatCurrency(overdue)} overdue
+              {formatCurrencyChangeLater(overdue)}{" "}
+              overdue
             </span>
           )}
         </div>
