@@ -31,21 +31,18 @@ const CurrencyContext =
 
 export function CurrencyProvider({
   children,
+  initialCurrencyCode,
 }: {
   children: React.ReactNode;
+  initialCurrencyCode?: string;
 }) {
   const [currency, setCurrencyState] =
-    useState<CurrencyConfig>(() => {
-      if (typeof window === "undefined")
-        return storeConfig.currency;
-      const saved =
-        localStorage.getItem("currency");
-      return (
+    useState<CurrencyConfig>(
+      () =>
         CURRENCIES.find(
-          (c) => c.code === saved,
-        ) ?? storeConfig.currency
-      );
-    });
+          (c) => c.code === initialCurrencyCode,
+        ) ?? storeConfig.currency,
+    );
 
   const setCurrency = (code: string) => {
     const found = CURRENCIES.find(
@@ -53,9 +50,11 @@ export function CurrencyProvider({
     );
     if (found) {
       setCurrencyState(found);
+      document.cookie = `currency=${code}; path=/; max-age=${60 * 60 * 24 * 365}`;
       localStorage.setItem("currency", code);
     }
   };
+
   return (
     <CurrencyContext.Provider
       value={{

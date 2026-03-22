@@ -1,11 +1,17 @@
+"use client";
 import {
   Clock,
   ShoppingCart,
   Star,
 } from "lucide-react";
 
-interface StatBoxProps {
-  staffInitials: string;
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import {
+  formatCurrency,
+  formatDuration,
+} from "@/lib/utils";
+
+export interface StaffBoxProps {
   staffName: string;
   staffPosition: string;
   ordersTaken: number;
@@ -29,8 +35,14 @@ const avatarColors = [
   "bg-orange-600",
 ];
 
+const getInitials = (name: string): string =>
+  name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 export default function StaffStatBox({
-  staffInitials,
   staffName,
   staffPosition,
   ordersTaken,
@@ -39,15 +51,19 @@ export default function StaffStatBox({
 
   shiftTime,
   amount,
-}: StatBoxProps) {
+}: StaffBoxProps) {
   const shiftClass =
     shiftStyles[shiftTime] ??
     "bg-gray-100 text-gray-600";
+
+  const staffInitials = getInitials(staffName);
 
   const colorIndex =
     staffInitials.charCodeAt(0) %
     avatarColors.length;
   const avatarColor = avatarColors[colorIndex];
+
+  const { currency } = useCurrency();
   return (
     <div className="border px-6 py-6  rounded-lg shadow-md hover:shadow-lg transition duration-300">
       {/* TOTAL SALES */}
@@ -89,7 +105,9 @@ export default function StaffStatBox({
           />
 
           <p className="font-bold text-[16px] ">
-            {avgTime}m
+            {avgTime != null
+              ? formatDuration(avgTime)
+              : "—"}
           </p>
           <p className="text-[12px] text-gray-400">
             Avg Time
@@ -103,7 +121,7 @@ export default function StaffStatBox({
           />
 
           <p className="font-bold text-[16px] ">
-            {rating}
+            {rating != null ? rating : "—"}
           </p>
           <p className="text-[12px] text-gray-400">
             Rating
@@ -112,9 +130,6 @@ export default function StaffStatBox({
       </div>
       <div className="flex items-center justify-between">
         <div className=" w-11">
-          {/* <span className="text-amber-600 text-[10px] rounded-lg p-1 bg-yellow-200">
-            {shiftTime}
-          </span> */}
           <span
             className={`text-[10px] rounded-lg p-1 ${shiftClass}`}
           >
@@ -122,7 +137,10 @@ export default function StaffStatBox({
           </span>
         </div>
         <span className="text-green-500 font-semibold">
-          ${amount}
+          {formatCurrency(
+            amount as number,
+            currency,
+          )}
         </span>
       </div>
     </div>

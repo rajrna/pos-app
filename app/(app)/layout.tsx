@@ -13,6 +13,7 @@ import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import MainContent from "@/components/layout/MainContent";
 import MobileSidebarOverlay from "@/components/layout/MobileSidebarOverlay";
+import { cookies } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +30,14 @@ export const metadata: Metadata = {
   description: "Track your sales",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const currencyCode =
+    cookieStore.get("currency")?.value;
   return (
     <div
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -51,7 +55,9 @@ export default function RootLayout({
 
         <MainContent>
           <QueryProvider>
-            <CurrencyProvider>
+            <CurrencyProvider
+              initialCurrencyCode={currencyCode}
+            >
               {children}
             </CurrencyProvider>
           </QueryProvider>
