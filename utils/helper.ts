@@ -1,5 +1,14 @@
 import { CurrencyConfig } from "@/lib/config/store";
 
+// Remove this later
+export const formatCurrencyChangeLater = (
+  amount: number,
+) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+};
 export const formatCurrency = (
   amount: number,
   currency: CurrencyConfig,
