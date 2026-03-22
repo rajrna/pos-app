@@ -26,6 +26,11 @@ export const ICON_MAP: Record<
   ShoppingBag,
   Package,
   CreditCard,
+  TrendingUp,
+  RefreshCcw,
+  Percent,
+  ChartPie,
+  ArrowUpDown,
 };
 // For dashboard overview stats
 export interface SerializableStatConfig {
@@ -35,7 +40,7 @@ export interface SerializableStatConfig {
   iconName: string;
   iconColor: string;
   bgColor?: string;
-  format?: "currency" | "number";
+  format?: "currency" | "number" | "percent";
 }
 
 export interface ClientStatConfig {
@@ -51,6 +56,10 @@ export interface ClientStatConfig {
 export interface MergedSerializableConfig extends SerializableStatConfig {
   value: number;
   percent: number;
+}
+
+export interface MergedSerializableConfigCostExpense extends SerializableStatConfig {
+  value: number;
 }
 
 export interface MergedClientConfig extends ClientStatConfig {
@@ -150,67 +159,76 @@ export const CUSTOMER_STAT_CONFIG: ClientStatConfig[] =
   ];
 
 // For Profit & Cost Stats
-export const PROFIT_COST_STAT_CONFIG = [
-  {
-    key: "grossRevenue",
-    label: "Gross Revenue",
-    icon: DollarSign,
-    iconColor: "text-blue-500",
-    bgColor: "bg-blue-100",
-  },
-  {
-    key: "netProfit",
-    label: "Net Profit",
-    icon: TrendingUp,
-    iconColor: "text-green-500",
-    bgColor: "bg-green-100",
-  },
-  {
-    key: "totalRefunds",
-    label: "Total Refunds",
-    icon: RefreshCcw,
-    iconColor: "text-red-500",
-    bgColor: "bg-red-100",
-  },
-  {
-    key: "avgMargin",
-    label: "Avg Margin",
-    icon: Percent,
-    iconColor: "text-purple-500",
-    bgColor: "bg-purple-100",
-  },
-];
+export const PROFIT_COST_STAT_CONFIG: SerializableStatConfig[] =
+  [
+    {
+      key: "grossRevenue",
+      label: "Gross Revenue",
+      iconName: "DollarSign",
+      iconColor: "text-blue-500",
+      bgColor: "bg-blue-100",
+      format: "currency",
+    },
+    {
+      key: "netProfit",
+      label: "Net Profit",
+      iconName: "TrendingUp",
+      iconColor: "text-green-500",
+      bgColor: "bg-green-100",
+      format: "currency",
+    },
+    {
+      key: "totalRefunds",
+      label: "Total Refunds",
+      iconName: "RefreshCcw",
+      iconColor: "text-red-500",
+      bgColor: "bg-red-100",
+    },
+    {
+      key: "avgMargin",
+      label: "Avg Margin",
+      iconName: "Percent",
+      iconColor: "text-purple-500",
+      bgColor: "bg-purple-100",
+      format: "percent",
+    },
+  ];
 // For Expenses Stats
-export const EXPENSE_STAT_CONFIG = [
-  {
-    key: "totalExpenses",
-    label: "Total Expenses",
-    icon: DollarSign,
-    iconColor: "text-red-500",
-    bgColor: "bg-red-100",
-  },
-  {
-    key: "totalBudget",
-    label: "Total Budget",
-    icon: ChartPie,
-    iconColor: "text-grey-500",
-    bgColor: "bg-grey-100",
-  },
-  {
-    key: "budgetVariance",
-    label: "Budget Variance",
-    icon: ArrowUpDown,
-    iconColor: "text-yellow-500",
-    bgColor: "bg-yellow-100",
-  },
-  {
-    key: "revenueMargin",
-    label: "% of Revenue",
-    icon: Percent,
-    iconColor: "text-purple-500",
-    bgColor: "bg-purple-100",
-  },
-];
+export const EXPENSE_STAT_CONFIG: SerializableStatConfig[] =
+  [
+    {
+      key: "totalExpenses",
+      label: "Total Expenses",
+      iconName: "DollarSign",
+      iconColor: "text-red-500",
+      bgColor: "bg-red-100",
+      format: "currency",
+    },
+    {
+      key: "totalBudget",
+      label: "Total Budget",
+      iconName: "ChartPie",
+      iconColor: "text-grey-500",
+      bgColor: "bg-grey-100",
+      format: "currency",
+    },
+    {
+      key: "budgetVariance",
+      label: "Budget Variance",
+      iconName: "ArrowUpDown",
+      iconColor: "text-yellow-500",
+      bgColor: "bg-yellow-100",
+      format: "currency",
+    },
+    {
+      key: "revenueMargin",
+      label: "% of Revenue",
+      iconName: "Percent",
+      iconColor: "text-purple-500",
+      bgColor: "bg-purple-100",
+      format: "percent",
+    },
+  ];
 // For Growth Stats
 export const GROWTH_STAT_CONFIG = [
   {

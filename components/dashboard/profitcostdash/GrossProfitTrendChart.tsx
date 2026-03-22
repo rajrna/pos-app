@@ -1,4 +1,6 @@
 "use client";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { formatCurrency } from "@/lib/utils";
 import {
   LineChart,
   Line,
@@ -9,11 +11,10 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import type {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent";
+
+import { mockGrossProfitTrendData } from "./mock-profitcostdata";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
+import { CustomTooltipProps } from "@/lib/types/chart";
 
 // Types
 
@@ -23,75 +24,7 @@ export interface ProfitTrendData {
   netProfit: number;
 }
 
-// Mock data — full 12 months
-
-const MOCK_DATA: ProfitTrendData[] = [
-  {
-    month: "Jan",
-    grossRevenue: 98000,
-    netProfit: 62000,
-  },
-  {
-    month: "Feb",
-    grossRevenue: 104000,
-    netProfit: 67000,
-  },
-  {
-    month: "Mar",
-    grossRevenue: 112000,
-    netProfit: 71000,
-  },
-  {
-    month: "Apr",
-    grossRevenue: 108000,
-    netProfit: 68000,
-  },
-  {
-    month: "May",
-    grossRevenue: 119000,
-    netProfit: 74000,
-  },
-  {
-    month: "Jun",
-    grossRevenue: 125000,
-    netProfit: 79000,
-  },
-  {
-    month: "Jul",
-    grossRevenue: 131000,
-    netProfit: 83000,
-  },
-  {
-    month: "Aug",
-    grossRevenue: 128000,
-    netProfit: 80000,
-  },
-  {
-    month: "Sep",
-    grossRevenue: 116000,
-    netProfit: 72000,
-  },
-  {
-    month: "Oct",
-    grossRevenue: 122000,
-    netProfit: 76000,
-  },
-  {
-    month: "Nov",
-    grossRevenue: 118000,
-    netProfit: 69000,
-  },
-  {
-    month: "Dec",
-    grossRevenue: 142000,
-    netProfit: 91000,
-  },
-];
-
 // Helpers
-
-const formatYAxis = (value: number): string =>
-  `$${value / 1000}k`;
 
 const getYAxisTicks = (
   data: ProfitTrendData[],
@@ -105,16 +38,11 @@ const getYAxisTicks = (
 
 // Sub-components
 
-interface CustomTooltipProps {
-  active?: boolean;
-  label?: string;
-  payload?: Payload<ValueType, NameType>[];
-}
-
 const CustomTooltip = ({
   active,
   payload,
   label,
+  currency,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
@@ -140,10 +68,10 @@ const CustomTooltip = ({
             </span>
           </div>
           <span className="text-xs font-bold text-gray-800">
-            $
-            {(
-              entry.value as number
-            ).toLocaleString()}
+            {formatCurrency(
+              entry.value as number,
+              currency,
+            )}
           </span>
         </div>
       ))}
@@ -182,17 +110,27 @@ const CustomLegend = () => (
 // Chart
 
 export interface GrossProfitTrendProps {
-  initialData?: ProfitTrendData[];
+  data: ProfitTrendData[];
 }
 
 export default function GrossProfitTrendChart({
-  initialData = MOCK_DATA,
+  data,
 }: GrossProfitTrendProps) {
-  const yTicks = getYAxisTicks(initialData);
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockGrossProfitTrendData
+    : data;
+  const { currency } = useCurrency();
+  const formatYAxis = (value: number): string =>
+    value >= 1000
+      ? `${currency.symbol}${value / 1000}k`
+      : formatCurrency(value, currency);
+  const yTicks = getYAxisTicks(displayData);
   const yMax = yTicks[yTicks.length - 1] * 1.05;
 
   return (
     <div className="bg-white rounded-2xl px-4 py-3 border min-w-0 border-gray-100 shadow-md">
+      {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div>
         <h2 className="text-base md:text-lg font-bold text-gray-900">
@@ -211,7 +149,7 @@ export default function GrossProfitTrendChart({
           height="100%"
         >
           <LineChart
-            data={initialData}
+            data={displayData}
             margin={{
               top: 10,
               right: 20,
@@ -249,7 +187,11 @@ export default function GrossProfitTrendChart({
             />
 
             <Tooltip
-              content={<CustomTooltip />}
+              content={
+                <CustomTooltip
+                  currency={currency}
+                />
+              }
             />
 
             <Legend content={<CustomLegend />} />

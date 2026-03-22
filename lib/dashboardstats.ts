@@ -31,7 +31,7 @@ export type WinningApiResponse = Record<
 >;
 // For customer stats
 export interface CustomerStat {
-  value: string;
+  value: number;
 }
 export type CustomerStatKey =
   (typeof CUSTOMER_STAT_CONFIG)[number]["key"];
@@ -42,7 +42,7 @@ export type CustomerApiResponse = Record<
 
 // For profit cost stats
 export interface ProfitCostStat {
-  value: string;
+  value: number;
 }
 export type ProfitCostStatKey =
   (typeof PROFIT_COST_STAT_CONFIG)[number]["key"];
@@ -53,7 +53,7 @@ export type ProfitCostApiResponse = Record<
 
 // For expense stats
 export interface ExpenseStat {
-  value: string;
+  value: number;
 }
 export type ExpenseStatKey =
   (typeof EXPENSE_STAT_CONFIG)[number]["key"];

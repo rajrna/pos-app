@@ -20,10 +20,10 @@ export const mockCustomerSegmentationData: SegmentData[] =
 
 export const mockCustomerStats: CustomerApiResponse =
   {
-    totalMembers: { value: "50" },
-    activeCustomers: { value: "100" },
-    pointsRedeemed: { value: "5000" },
-    pointsPerMember: { value: "120" },
+    totalMembers: { value: 50 },
+    activeCustomers: { value: 100 },
+    pointsRedeemed: { value: 5000 },
+    pointsPerMember: { value: 120 },
   };
 export const mockCustomerTrendData: CustomerTrendData[] =
   [

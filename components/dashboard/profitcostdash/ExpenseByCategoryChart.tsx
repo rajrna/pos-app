@@ -17,53 +17,27 @@ import type {
   Payload,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { mockExpenseByCategoryData } from "./mock-profitcostdata";
+import SampleDataBadge from "@/components/ui/sampledatabadge";
 
 // Types
 
 export interface ExpenseCategory {
   name: string;
   value: number;
+}
+interface ExpenseCategoryWithColor extends ExpenseCategory {
   color: string;
 }
 
-// Mock data
-
-const MOCK_DATA: ExpenseCategory[] = [
-  {
-    name: "Labor",
-    value: 32000,
-    color: "#60a5fa",
-  }, // blue
-  {
-    name: "COGS",
-    value: 24000,
-    color: "#a78bfa",
-  }, // purple
-  {
-    name: "Rent",
-    value: 12000,
-    color: "#f472b6",
-  }, // pink
-  {
-    name: "Utilities",
-    value: 5000,
-    color: "#fb923c",
-  }, // orange
-  {
-    name: "Marketing",
-    value: 6500,
-    color: "#34d399",
-  }, // green
-  {
-    name: "Supplies",
-    value: 3500,
-    color: "#22d3ee",
-  }, // cyan
-  {
-    name: "Maintenance",
-    value: 2000,
-    color: "#818cf8",
-  }, // indigo
+const COLOR_PALETTE = [
+  "#60a5fa", // blue
+  "#a78bfa", // purple
+  "#f472b6", // pink
+  "#fb923c", // orange
+  "#34d399", // green
+  "#22d3ee", // cyan
+  "#818cf8", // indigo
 ];
 
 // Tooltip
@@ -72,20 +46,19 @@ interface CustomTooltipProps {
   active?: boolean;
   payload?: Payload<ValueType, NameType>[];
   currency: CurrencyConfig;
+  total: number;
 }
 
 const CustomTooltip = ({
   active,
   payload,
   currency,
+  total,
 }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   const entry = payload[0]
-    .payload as ExpenseCategory;
-  const total = MOCK_DATA.reduce(
-    (s, d) => s + d.value,
-    0,
-  );
+    .payload as ExpenseCategoryWithColor;
+
   const pct = (
     (entry.value / total) *
     100
@@ -120,7 +93,7 @@ const CustomTooltip = ({
 const CustomLegend = ({
   data,
 }: {
-  data: ExpenseCategory[];
+  data: ExpenseCategoryWithColor[];
 }) => (
   <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 mt-3 px-1">
     {data.map((entry) => (
@@ -143,21 +116,31 @@ const CustomLegend = ({
 // Chart
 
 export interface ExpensesByCategoryProps {
-  initialData?: ExpenseCategory[];
+  data: ExpenseCategory[];
 }
 
 export default function ExpensesByCategoryChart({
-  initialData = MOCK_DATA,
+  data,
 }: ExpensesByCategoryProps) {
-  const total = initialData.reduce(
+  const isEmpty = !data || data.length === 0;
+  const displayData = isEmpty
+    ? mockExpenseByCategoryData
+    : data;
+  const { currency } = useCurrency();
+  const coloredData: ExpenseCategoryWithColor[] =
+    displayData.map((entry, i) => ({
+      ...entry,
+      color:
+        COLOR_PALETTE[i % COLOR_PALETTE.length],
+    }));
+  const total = data.reduce(
     (s, d) => s + d.value,
     0,
   );
 
-  const { currency } = useCurrency();
-
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full">
+      {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900">
@@ -176,7 +159,7 @@ export default function ExpensesByCategoryChart({
         >
           <PieChart>
             <Pie
-              data={initialData}
+              data={coloredData}
               cx="50%"
               cy="50%"
               innerRadius={72}
@@ -186,7 +169,7 @@ export default function ExpensesByCategoryChart({
               startAngle={90}
               endAngle={-270}
             >
-              {initialData.map((entry) => (
+              {coloredData.map((entry) => (
                 <Cell
                   key={entry.name}
                   fill={entry.color}
@@ -198,6 +181,7 @@ export default function ExpensesByCategoryChart({
               content={
                 <CustomTooltip
                   currency={currency}
+                  total={total}
                 />
               }
             />
@@ -217,7 +201,7 @@ export default function ExpensesByCategoryChart({
       </div>
 
       {/* Legend */}
-      <CustomLegend data={initialData} />
+      <CustomLegend data={coloredData} />
     </div>
   );
 }

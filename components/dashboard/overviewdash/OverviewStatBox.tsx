@@ -9,7 +9,7 @@ interface StatBoxProps {
   percent: number;
   iconName: string;
   iconColor?: string;
-  format?: "currency" | "number";
+  format?: "currency" | "number" | "percent";
 }
 
 export default function OverviewStatBox({

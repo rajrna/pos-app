@@ -1,15 +1,84 @@
-import { ProfitCostApiResponse } from "@/lib/dashboardstats";
+import {
+  ExpenseApiResponse,
+  ProfitCostApiResponse,
+} from "@/lib/dashboardstats";
 import { BudgetItem } from "./budget-column";
 import { Product } from "./profit-per-product-column";
 import { RefundReason } from "./refund-analysis-column";
+import { ProfitTrendData } from "./GrossProfitTrendChart";
+import { ExpenseCategory } from "./ExpenseByCategoryChart";
 
 export const mockProfitStats: ProfitCostApiResponse =
   {
-    grossRevenue: { value: "$50,000" },
-    netProfit: { value: "$30,000" },
-    totalRefunds: { value: "50" },
-    avgMargin: { value: "60%" },
+    grossRevenue: { value: 50000 },
+    netProfit: { value: 30000 },
+    totalRefunds: { value: 50 },
+    avgMargin: { value: 60 },
   };
+
+export const mockGrossProfitTrendData: ProfitTrendData[] =
+  [
+    {
+      month: "Jan",
+      grossRevenue: 98000,
+      netProfit: 62000,
+    },
+    {
+      month: "Feb",
+      grossRevenue: 104000,
+      netProfit: 67000,
+    },
+    {
+      month: "Mar",
+      grossRevenue: 112000,
+      netProfit: 71000,
+    },
+    {
+      month: "Apr",
+      grossRevenue: 108000,
+      netProfit: 68000,
+    },
+    {
+      month: "May",
+      grossRevenue: 119000,
+      netProfit: 74000,
+    },
+    {
+      month: "Jun",
+      grossRevenue: 125000,
+      netProfit: 79000,
+    },
+    {
+      month: "Jul",
+      grossRevenue: 131000,
+      netProfit: 83000,
+    },
+    {
+      month: "Aug",
+      grossRevenue: 128000,
+      netProfit: 80000,
+    },
+    {
+      month: "Sep",
+      grossRevenue: 116000,
+      netProfit: 72000,
+    },
+    {
+      month: "Oct",
+      grossRevenue: 122000,
+      netProfit: 76000,
+    },
+    {
+      month: "Nov",
+      grossRevenue: 118000,
+      netProfit: 69000,
+    },
+    {
+      month: "Dec",
+      grossRevenue: 142000,
+      netProfit: 91000,
+    },
+  ];
 
 export const mockRefundReason: RefundReason[] = [
   {
@@ -71,7 +140,37 @@ export const mockProfitPerProduct: Product[] = [
     margin: 65,
   },
 ];
-
+export const mockExpenseByCategoryData: ExpenseCategory[] =
+  [
+    {
+      name: "Labor",
+      value: 32000,
+    },
+    {
+      name: "COGS",
+      value: 24000,
+    },
+    {
+      name: "Rent",
+      value: 12000,
+    },
+    {
+      name: "Utilities",
+      value: 5000,
+    },
+    {
+      name: "Marketing",
+      value: 6500,
+    },
+    {
+      name: "Supplies",
+      value: 3500,
+    },
+    {
+      name: "Maintenance",
+      value: 2000,
+    },
+  ];
 export const mockBudgetData: BudgetItem[] = [
   {
     category: "Labor",
@@ -109,3 +208,10 @@ export const mockBudgetData: BudgetItem[] = [
     budget: 2000,
   },
 ];
+
+export const mockCostStats: ExpenseApiResponse = {
+  totalExpenses: { value: 50000 },
+  totalBudget: { value: 47000 },
+  budgetVariance: { value: 3000 },
+  revenueMargin: { value: 60 },
+};

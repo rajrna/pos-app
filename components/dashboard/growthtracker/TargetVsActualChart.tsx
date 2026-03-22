@@ -98,8 +98,11 @@ const CustomTooltip = ({
           <span
             className={`text-xs font-bold ${variance >= 0 ? "text-green-500" : "text-red-400"}`}
           >
-            {variance >= 0 ? "+" : ""}$
-            {variance.toLocaleString()}
+            {variance >= 0 ? "+" : ""}
+            {formatCurrency(
+              variance as number,
+              currency,
+            )}
           </span>
         </div>
       )}

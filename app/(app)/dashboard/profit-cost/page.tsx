@@ -1,68 +1,23 @@
+import { Suspense } from "react";
 import { TrendingUp } from "lucide-react";
 
 import {
-  EXPENSE_STAT_CONFIG,
-  PROFIT_COST_STAT_CONFIG,
-} from "@/lib/config/dashboard";
-import {
-  ExpenseApiResponse,
-  ProfitCostApiResponse,
-} from "@/lib/dashboardstats";
-
-import {
-  getBudgetData,
-  getProfitPerProduct,
-  getProfitStats,
-  getRefundReason,
-} from "@/services/dashboard/apiProfitCost";
-
+  BudgetTableWrapper,
+  ExpenseByCategoryChartWrapper,
+  ExpenseStatsWrapper,
+  GrossProfitTrendChartWrapper,
+  ProfitPerProductWrapper,
+  ProfitStatsWrapper,
+  RefundAnalysisWrapper,
+} from "../_components/ProfitCostWrapper";
 import { Button } from "@/components/ui/button";
-import BudgetTable from "@/components/dashboard/profitcostdash/BudgetTable";
-import RefundAnalysis from "@/components/dashboard/profitcostdash/RefundAnalysis";
-import ProfitPerProduct from "@/components/dashboard/profitcostdash/ProfitPerProduct";
-import GrossProfitTrendChart from "@/components/dashboard/profitcostdash/GrossProfitTrendChart";
-import ExpensesByCategoryChart from "@/components/dashboard/profitcostdash/ExpenseByCategoryChart";
-import StatBox from "@/components/dashboard/StatBox";
-
-const mockStats: ProfitCostApiResponse = {
-  grossRevenue: { value: "$50,000" },
-  netProfit: { value: "$30,000" },
-  totalRefunds: { value: "50" },
-  avgMargin: { value: "60%" },
-};
-const mockCostStats: ExpenseApiResponse = {
-  totalExpenses: { value: "$50,000" },
-  totalBudget: { value: "$47,000" },
-  budgetVariance: { value: "3000 under" },
-  revenueMargin: { value: "60%" },
-};
-const [
-  refundReason,
-  profitPerProduct,
-  budgetData,
-  profitStats,
-] = await Promise.all([
-  getRefundReason(),
-  getProfitPerProduct(),
-  getBudgetData(),
-  getProfitStats,
-]);
+import StatSkeleton from "@/components/ui/statskeleton";
+import ChartSkeleton from "@/components/ui/chartskeleton";
+import TableSkeleton from "@/components/ui/tableskeleton";
+import PieChartSkeleton from "@/components/ui/piechartskeleton";
+import ChartErrorBoundary from "@/components/ui/charterrorboundary";
 
 export default async function Page() {
-  const stats = PROFIT_COST_STAT_CONFIG.map(
-    (config) => ({
-      ...config,
-      ...mockStats[config.key],
-    }),
-  );
-
-  const expenseStats = EXPENSE_STAT_CONFIG.map(
-    (config) => ({
-      ...config,
-      ...mockCostStats[config.key],
-    }),
-  );
-
   return (
     <div className="p-3 md:p-6">
       <div className="flex justify-between items-center w-full  py-2 border-b-2">
@@ -85,20 +40,45 @@ export default async function Page() {
       </div>
 
       <div>
-        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
-          {stats.map(({ key, ...stat }) => (
-            <StatBox key={key} {...stat} />
-          ))}
-        </div>
-        <GrossProfitTrendChart />
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
+              {Array.from({ length: 4 }).map(
+                (_, i) => (
+                  <StatSkeleton key={i} />
+                ),
+              )}
+            </div>
+          }
+        >
+          <ProfitStatsWrapper />
+        </Suspense>
+        <ChartErrorBoundary>
+          <Suspense fallback={<ChartSkeleton />}>
+            <GrossProfitTrendChartWrapper />
+          </Suspense>
+        </ChartErrorBoundary>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ProfitPerProduct
-            products={profitPerProduct}
-          />
-          <RefundAnalysis
-            refundReasons={refundReason}
-          />
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={
+                <TableSkeleton rows={4} />
+              }
+            >
+              <ProfitPerProductWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
+
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={
+                <TableSkeleton rows={4} />
+              }
+            >
+              <RefundAnalysisWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
       </div>
 
@@ -111,17 +91,37 @@ export default async function Page() {
             Expenses and budget analysis.
           </p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
-          {expenseStats.map(
-            ({ key, ...stat }) => (
-              <StatBox key={key} {...stat} />
-            ),
-          )}
-        </div>
 
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-2 md:gap-3 my-4">
+              {Array.from({ length: 4 }).map(
+                (_, i) => (
+                  <StatSkeleton key={i} />
+                ),
+              )}
+            </div>
+          }
+        >
+          <ExpenseStatsWrapper />
+        </Suspense>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ExpensesByCategoryChart />
-          <BudgetTable budgetData={budgetData} />
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={<PieChartSkeleton />}
+            >
+              <ExpenseByCategoryChartWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
+          <ChartErrorBoundary>
+            <Suspense
+              fallback={
+                <TableSkeleton rows={4} />
+              }
+            >
+              <BudgetTableWrapper />
+            </Suspense>
+          </ChartErrorBoundary>
         </div>
       </div>
     </div>
