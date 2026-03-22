@@ -7,7 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { TableCell, TableRow } from "../ui/table";
-import { formatCurrency } from "@/utils/helper";
+import {
+  formatCurrency,
+  formatCurrencyChangeLater,
+} from "@/utils/helper";
 
 import toast from "react-hot-toast";
 import { ProductRowProps } from "@/lib/types/product";
@@ -63,7 +66,7 @@ export default function ProductRow({
       <TableCell>
         <div className="flex flex-col">
           <span className="font-semibold text-gray-900">
-            {formatCurrency(price)}
+            {formatCurrencyChangeLater(price)}
           </span>
         </div>
       </TableCell>
