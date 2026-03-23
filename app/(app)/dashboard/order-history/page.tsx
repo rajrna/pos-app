@@ -8,7 +8,7 @@ export default async function Page() {
   return (
     <div className="p-4">
       <div className="py-2 min-w-0 border-b-2">
-        <h1 className="text-xl md:text-3xl font-bold truncate">
+        <h1 className="text-[16px] md:text-xl font-bold truncate">
           Order History
         </h1>
         <p className="text-gray-400 text-sm md:text-base">

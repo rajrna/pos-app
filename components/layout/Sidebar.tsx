@@ -16,6 +16,7 @@ import { useSidebar } from "@/providers/SidebarProvider";
 import { Button } from "../ui/button";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
+import { TooltipProvider } from "../ui/tooltip";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -68,17 +69,14 @@ export default function Sidebar() {
           onClick={toggle}
         >
           {isCollapsed ? (
-            <PanelLeftOpen className="h-4 w-4" />
+            <PanelLeftOpen className="h-4 w-4 hidden md:block" />
           ) : (
-            <PanelLeftClose className="h-4 w-4" />
+            <PanelLeftClose className="h-4 w-4 hidden md:block" />
           )}
         </Button>
       </div>
 
-      <nav
-        className="flex-1 overflow-y-auto p-2"
-        onClick={closeMobile}
-      >
+      <nav className="flex-1 overflow-y-auto p-2">
         <div className="space-y-1">
           {navigationConfig.map((item) => {
             const isSectionActive =

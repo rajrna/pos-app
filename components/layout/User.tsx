@@ -9,19 +9,19 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
 export default function User() {
   return (
-    <div className="bg-blue-100 rounded-[8px]">
+    <div className="bg-blue-100 rounded-xl">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="flex items-center gap-2 px-3"
+            className="flex items-center gap-2 md:px-3 px-1 "
           >
             <span className="font-medium text-gray-900">
               Meowtrix
             </span>
             <Badge
               variant="secondary"
-              className="bg-gray-100 text-gray-700 hover:bg-gray-100"
+              className="bg-gray-100 text-gray-700 hover:bg-gray-100 hidden md:block"
             >
               STARTER
             </Badge>

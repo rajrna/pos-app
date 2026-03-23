@@ -14,6 +14,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import MainContent from "@/components/layout/MainContent";
 import MobileSidebarOverlay from "@/components/layout/MobileSidebarOverlay";
 import { cookies } from "next/headers";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,27 +43,29 @@ export default async function RootLayout({
     <div
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <SidebarProvider>
-        <div className="fixed top-0 left-0 right-0 z-50 md:h-(--navbar-height)">
-          <Navbar />
-        </div>
+      <TooltipProvider delayDuration={200}>
+        <SidebarProvider>
+          <div className="fixed top-0 left-0 right-0 z-50 md:h-(--navbar-height)">
+            <Navbar />
+          </div>
 
-        <div className="fixed top-(--navbar-height) left-0 bottom-0  z-40 hidden md:block">
-          <Sidebar />
-        </div>
+          <div className="fixed top-(--navbar-height) left-0 bottom-0  z-40 hidden md:block">
+            <Sidebar />
+          </div>
 
-        <MobileSidebarOverlay />
+          <MobileSidebarOverlay />
 
-        <MainContent>
-          <QueryProvider>
-            <CurrencyProvider
-              initialCurrencyCode={currencyCode}
-            >
-              {children}
-            </CurrencyProvider>
-          </QueryProvider>
-        </MainContent>
-      </SidebarProvider>
+          <MainContent>
+            <QueryProvider>
+              <CurrencyProvider
+                initialCurrencyCode={currencyCode}
+              >
+                {children}
+              </CurrencyProvider>
+            </QueryProvider>
+          </MainContent>
+        </SidebarProvider>
+      </TooltipProvider>
     </div>
   );
 }
