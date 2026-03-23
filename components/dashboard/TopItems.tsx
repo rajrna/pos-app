@@ -66,10 +66,10 @@ export default function TopItems({
 }: TopProductProps) {
   return (
     <div className="rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-2 md:p-4  flex-2">
-      <h1 className="text-[16px] md:text-xl mt-1 font-semibold">
+      <h1 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
         Top 3 Items Today
       </h1>
-      <p className="sm:text-[12px]">
+      <p className="text-[12px] mt-0.5 md:text-sm text-gray-400  ">
         Best performers in today&apos;s session
       </p>
       {!topProducts ||

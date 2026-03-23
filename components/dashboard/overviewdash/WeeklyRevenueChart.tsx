@@ -84,10 +84,10 @@ export default function WeeklyRevenueChart({
   return (
     <div className="w-full bg-white rounded-2xl border border-gray-100 p-4 md:p-8 shadow-md hover:shadow-lg transition duration-300">
       <div className="mb-4 md:mb-6">
-        <h2 className="text-lg md:text-xl font-bold text-gray-900">
+        <h1 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
           Daily Sales Trend
-        </h2>
-        <p className="text-sm text-gray-400 mt-1">
+        </h1>
+        <p className="text-sm text-gray-400 mt-0.5">
           Revenue performance – current week
         </p>
       </div>

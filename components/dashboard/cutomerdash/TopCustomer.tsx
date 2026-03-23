@@ -11,10 +11,10 @@ export default function TopCustomer({
   const columns = getTopCustomerColumns(currency);
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4 overflow-hidden">
-      <h1 className="font-semibold text-base md:text-[17px]">
+      <h1 className="font-bold text-[16px] md:text-xl">
         Top Customers & Loyalty Points
       </h1>
-      <p className="text-gray-400 text-xs md:text-sm mt-0.5">
+      <p className="text-gray-400 text-sm mt-0.5">
         Highest value contributors this month
       </p>
 

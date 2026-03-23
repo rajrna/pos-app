@@ -10,10 +10,10 @@ import ChartErrorBoundary from "@/components/ui/charterrorboundary";
 export default async function Page() {
   return (
     <div className="py-4 md:py-8 px-2 md:px-4">
-      <h1 className="font-bold text-xl md:text-2xl truncate">
+      <h1 className="font-bold text-[16px] md:text-xl text-gray-900 truncate">
         Growth Tracker
       </h1>
-      <p className="text-gray-500 text-sm md:text-base">
+      <p className="text-gray-400 mt-0.5 text-sm md:text-base">
         Month-over-month and year-over-year
         performance analysis
       </p>

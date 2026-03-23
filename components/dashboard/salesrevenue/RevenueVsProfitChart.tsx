@@ -201,7 +201,7 @@ export default function RevenueVsProfitChart({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
             Revenue vs Profit by Product
           </h2>
           <p className="text-sm text-gray-400 mt-0.5">

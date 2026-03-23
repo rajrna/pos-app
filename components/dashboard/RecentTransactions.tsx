@@ -38,13 +38,13 @@ export default function RecentTransactions({
 }: RecentTransactionsProps) {
   const { currency } = useCurrency();
   return (
-    <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-4">
+    <div className="flex-2  bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 p-4">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h1 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
             {title}
-          </h2>
-          <p className="text-sm mt-1">
+          </h1>
+          <p className="text-sm mt-0.5 text-gray-400">
             {description}
           </p>
         </div>
@@ -79,9 +79,9 @@ export default function RecentTransactions({
                   <p className="text-[12px] font-semibold">
                     {tx.id}
                   </p>
-                  <p className="text-[10px]">
+                  {/* <p className="text-[10px]">
                     {tx.timestamp}
-                  </p>
+                  </p> */}
                 </TableCell>
                 <TableCell>
                   {tx.customer}

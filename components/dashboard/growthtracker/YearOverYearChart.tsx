@@ -185,9 +185,9 @@ export default function YearOverYearChart({
 
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h1 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
           Year-over-Year Revenue
-        </h2>
+        </h1>
         <p className="text-sm text-gray-400 mt-0.5">
           This year vs last year — monthly
           comparison

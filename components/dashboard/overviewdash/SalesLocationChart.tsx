@@ -73,10 +73,10 @@ export default function SalesLocationChart({
   return (
     <div className="w-full bg-white rounded-2xl border border-gray-100 p-4 md:p-8 shadow-md hover:shadow-lg transition duration-300">
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h1 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
           Sales by Location
-        </h2>
-        <p className="text-sm text-gray-400 mt-0.5">
+        </h1>
+        <p className="text-sm mt-0.5 text-gray-400 ">
           Revenue share across branches
         </p>
       </div>

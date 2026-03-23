@@ -133,10 +133,10 @@ export default function GrossProfitTrendChart({
       {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div>
-        <h2 className="text-base md:text-lg font-bold text-gray-900">
+        <h2 className="text-[16px] md:text-xl font-bold text-gray-900">
           Gross vs Net Profit Trend
         </h2>
-        <p className="text-xs md:text-sm text-gray-400 mt-0.5">
+        <p className="text-sm text-gray-400 mt-0.5">
           Monthly comparison of revenue and net
           profit
         </p>
