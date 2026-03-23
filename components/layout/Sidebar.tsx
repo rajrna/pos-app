@@ -16,7 +16,6 @@ import { useSidebar } from "@/providers/SidebarProvider";
 import { Button } from "../ui/button";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
-import { TooltipProvider } from "../ui/tooltip";
 
 export default function Sidebar() {
   const pathname = usePathname();

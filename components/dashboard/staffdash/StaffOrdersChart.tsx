@@ -148,7 +148,7 @@ export default function StaffOrdersChart({
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">
           Throughput breakdown across the day per
-          team member
+          team member.
         </p>
       </div>
 

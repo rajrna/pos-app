@@ -75,7 +75,7 @@ export default function RevenueStaffChart({
       {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-[16px] md:text-xl font-bold text-gray-900">
+        <h2 className="text-[16px] md:text-xl font-bold mt-1 text-gray-900">
           Revenue per Staff
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">
@@ -84,66 +84,68 @@ export default function RevenueStaffChart({
       </div>
 
       {/* Chart */}
-      <ResponsiveContainer
-        width="100%"
-        height={200}
-      >
-        <BarChart
-          data={displayData}
-          margin={{
-            top: 0,
-            right: 20,
-            left: 20,
-            bottom: 0,
-          }}
-          barCategoryGap="15%"
+      <div className="h-55 md:h-75">
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
         >
-          <CartesianGrid
-            vertical={false}
-            stroke="#f3f4f6"
-          />
-
-          <XAxis
-            dataKey="name"
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 13,
+          <BarChart
+            data={displayData}
+            margin={{
+              top: 0,
+              right: 20,
+              left: 20,
+              bottom: 0,
             }}
-            dy={10}
-          />
+            barCategoryGap="15%"
+          >
+            <CartesianGrid
+              vertical={false}
+              stroke="#f3f4f6"
+            />
 
-          <YAxis
-            tickFormatter={formatYAxis}
-            axisLine={false}
-            tickLine={false}
-            tick={{
-              fill: "#9ca3af",
-              fontSize: 12,
-            }}
-            ticks={[0, 2000, 4000, 6000, 8000]}
-            domain={[0, 8500]}
-            width={60}
-          />
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 13,
+              }}
+              dy={10}
+            />
 
-          <Tooltip
-            content={
-              <CustomTooltip
-                currency={currency}
-              />
-            }
-            cursor={{
-              fill: "rgba(96,165,250,0.05)",
-            }}
-          />
+            <YAxis
+              tickFormatter={formatYAxis}
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: "#9ca3af",
+                fontSize: 12,
+              }}
+              ticks={[0, 2000, 4000, 6000, 8000]}
+              domain={[0, 8500]}
+              width={60}
+            />
 
-          <Bar
-            dataKey="revenue"
-            shape={CustomBar}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+            <Tooltip
+              content={
+                <CustomTooltip
+                  currency={currency}
+                />
+              }
+              cursor={{
+                fill: "rgba(96,165,250,0.05)",
+              }}
+            />
+
+            <Bar
+              dataKey="revenue"
+              shape={CustomBar}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
