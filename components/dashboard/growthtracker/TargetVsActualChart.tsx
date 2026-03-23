@@ -197,11 +197,11 @@ export default function TargetVsActualChart({
                 <circle cx="12" cy="12" r="6" />
                 <circle cx="12" cy="12" r="2" />
               </svg>
-              <h2 className="text-lg font-bold text-gray-900">
+              <h1 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
                 Target vs Actual Revenue
-              </h2>
+              </h1>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm mt-0.5 text-gray-400">
               Monthly performance against set
               targets
             </p>

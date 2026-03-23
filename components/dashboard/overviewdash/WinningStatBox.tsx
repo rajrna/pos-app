@@ -19,7 +19,7 @@ export default function WinningStatBox({
 }: WinningStatBoxProps) {
   return (
     <div
-      className={`w-full md:px-6 px-3 md:py-4 py-2 ${bgColor} shadow-md  rounded-lg`}
+      className={`w-full md:px-6 px-3 md:py-4 py-2 ${bgColor} shadow-md hover:shadow-lg  rounded-lg`}
     >
       <span className="md:text-[14px] text-[10px] text-gray-300">
         {label}

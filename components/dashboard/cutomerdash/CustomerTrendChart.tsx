@@ -160,10 +160,10 @@ export default function CustomerTrendChart({
       {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-4 md:mb-6">
-        <h2 className="text-base md:text-lg font-bold text-gray-900">
+        <h2 className="text-[16px] md:text-xl mt-1 font-bold text-gray-900">
           New vs Repeat Customer Trend
         </h2>
-        <p className="text-xs md:text-sm text-gray-400 mt-0.5">
+        <p className="text-sm text-gray-400 mt-0.5">
           Monthly breakdown over the last 6 months
         </p>
       </div>

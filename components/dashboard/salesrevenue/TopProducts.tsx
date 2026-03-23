@@ -17,10 +17,10 @@ export default function TopProducts({
   const columns = getTopProductColumns(currency);
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full">
-      <h1 className="font-semibold text-[17px]">
+      <h1 className="font-bold mt-1 text-[16px] md:text-xl text-gray-900">
         Top Selling Products
       </h1>
-      <p className="text-gray-700">
+      <p className="text-gray-400 mt-0.5 text-sm">
         Products contributing most to revenue
         growth
       </p>

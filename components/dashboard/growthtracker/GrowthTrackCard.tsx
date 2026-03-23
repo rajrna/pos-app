@@ -72,7 +72,7 @@ export default function GrowthTrackCard({
   };
   return (
     <div
-      className={`py-4 md:py-6  px-3 md:px-4 w-full border rounded-lg transition duration-300 shadow-md ${cardBg}`}
+      className={`py-4 md:py-6  px-3 md:px-4 w-full border rounded-lg transition duration-300 shadow-md hover:shadow-lg border-gray-100  ${cardBg}`}
     >
       <div className="flex items-end justify-between">
         <p className="text-gray-700 text-[16px]">
