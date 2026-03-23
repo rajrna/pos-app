@@ -59,7 +59,7 @@ export default function Page() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 font-sans">
       {/* Logo Section */}
-      <div className="my-8 flex items-center gap-2">
+      <div className="my-4 md:my-8 flex items-center gap-2">
         <span className="text-2xl text-blue-900 font-bold tracking-tight">
           <Link href="/">Rebuzz</Link>
         </span>
@@ -67,10 +67,10 @@ export default function Page() {
 
       {/* Header */}
       <div className="text-center max-w-md mb-4">
-        <h1 className="text-[32px] font-bold leading-tight mb-4">
+        <h1 className="text-[28px] md:text-[32px] font-bold leading-tight mb-4">
           Log back into your account.
         </h1>
-        <p className="text-gray-600 text-[20px] leading-relaxed">
+        <p className="text-gray-600 text-[16px] md:text-[20px] leading-relaxed">
           Welcome back, <br />
           Your customers are waiting for you.
         </p>
@@ -185,9 +185,14 @@ export default function Page() {
 
         {/* Remove later */}
         <div className="p-4 flex items-center justify-center text-red-600">
-          <Link href="/dashboard">
-            For development only
-          </Link>
+          <Button
+            type="button"
+            className=" border border-red-300 bg-gray-50 text-red-600 hover:bg-red-200 hover:text-red-800 hover:border-red-900 font-bold py-5 text-[14px] rounded-full transition-colors duration-200"
+          >
+            <Link href="/dashboard">
+              Demo: For development only
+            </Link>
+          </Button>
         </div>
       </div>
     </div>
