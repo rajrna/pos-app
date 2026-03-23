@@ -71,11 +71,11 @@ export default function RevenueStaffChart({
       ? `${currency.symbol}${value / 1000}k`
       : formatCurrency(value, currency);
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm md:p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition duration-300 md:p-6 w-full">
       {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-[16px] md:text-xl font-bold text-gray-900">
           Revenue per Staff
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">

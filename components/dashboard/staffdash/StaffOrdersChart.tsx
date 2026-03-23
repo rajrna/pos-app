@@ -140,10 +140,10 @@ export default function StaffOrdersChart({
   );
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-md hover:shadow-lg p-6 transition duration-300 w-full">
       {isEmpty && <SampleDataBadge />}
       <div className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-[16px] md:text-xl font-bold text-gray-900">
           Orders Per Hour by Staff
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">

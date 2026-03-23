@@ -17,10 +17,10 @@ export default function BudgetTable({
   const columns = getBudgetColumns(currency);
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full  overflow-hidden">
-      <h1 className="font-semibold text-xl text-[16px]">
+      <h1 className="font-bold md:text-xl mt-1 text-[16px]">
         Budget vs Actual
       </h1>
-      <p className="text-gray-400 text-xs md:text-sm mt-0.5">
+      <p className="text-gray-400 text-sm mt-0.5">
         Spending vs Planned Budget per Category
       </p>
 
