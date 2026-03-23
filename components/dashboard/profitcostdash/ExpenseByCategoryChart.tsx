@@ -143,7 +143,7 @@ export default function ExpensesByCategoryChart({
       {isEmpty && <SampleDataBadge />}
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900">
+        <h2 className="text-xl md:text-[16px] font-bold text-gray-900">
           Expenses by Category
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">

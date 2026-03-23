@@ -78,8 +78,10 @@ export default function DashboardLayout({
                 }
               >
                 <Link href={href}>
-                  <Icon className="mr-2 h-4 w-4" />
-                  {label}
+                  <Icon className="md:mr-2 h-4 w-4 mr-1" />
+                  <span className="text-[16px] hidden md:block ">
+                    {label}
+                  </span>
                 </Link>
               </Button>
             ),
