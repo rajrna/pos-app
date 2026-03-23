@@ -20,10 +20,10 @@ export default function ProfitPerProduct({
     // <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 py-8 px-4">
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4 overflow-hidden">
       <div className="min-w-0">
-        <h1 className="font-semibold md:text-xl text-[16px]">
+        <h1 className="font-bold mt-1 md:text-xl text-[16px] text-gray-900">
           Profit per Product
         </h1>
-        <p className="text-gray-400 text-xs md:text-sm mt-0.5">
+        <p className="text-gray-400 text-sm mt-0.5">
           Revenue, cost and margins for top
           selling products .
         </p>

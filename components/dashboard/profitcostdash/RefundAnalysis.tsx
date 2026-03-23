@@ -19,10 +19,10 @@ export default function RefundAnalysis({
   return (
     // <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 py-8 px-4">
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 md:p-6 w-full mt-4 overflow-hidden">
-      <h1 className="font-semibold text-base md:text-[17px]">
+      <h1 className="font-bold md:text-xl text-[16px]">
         Refund Analysis
       </h1>
-      <p className="text-gray-400 text-xs md:text-sm mt-0.5">
+      <p className="text-gray-400 text-sm mt-0.5">
         Primary reasons for customer refunds this
         period .
       </p>
