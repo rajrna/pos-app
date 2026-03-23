@@ -15,7 +15,7 @@ export default function Page() {
         <div className="flex items-center gap-2 md:gap-4">
           <Button className="border-0 hover:bg-gray-100 hover:text-blue-600 bg-gray-100 text-blue-900 font-semibold px-4 md:px-8">
             <Link href="/login">
-              <span className="text-base md:text-xl">
+              <span className="text-base md:text-lg">
                 Log in
               </span>
             </Link>
@@ -23,7 +23,7 @@ export default function Page() {
 
           <Button className="bg-blue-600 hover:bg-blue-700 px-4 md:px-8 py-3 md:py-6 font-semibold rounded-3xl">
             <Link href="/signup">
-              <span className="hidden md:block text-xl">
+              <span className="hidden md:block text-lg">
                 Get started for free
               </span>
               <span className="md:hidden text-base">
