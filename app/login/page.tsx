@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Divider from "@/components/forms/Divider";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { loginUser } from "@/services/apiLogin";
+import { loginUser } from "@/services/auth/login/apiLogin";
 
 const BUSINESS_SLUG =
   process.env.NEXT_PUBLIC_BUSINESS_SLUG ?? "java";
@@ -38,7 +38,7 @@ export default function Page() {
     setIsLoading(true);
 
     const result = await loginUser(
-      BUSINESS_SLUG,
+      // BUSINESS_SLUG,
       {
         email_or_phone: data.email,
         password: data.password,

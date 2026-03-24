@@ -1,3 +1,5 @@
+import { LoginResponse } from "@/lib/types/auth";
+
 const BASE = "https://appapi.rebuzzpos.com/api";
 
 type LoginPayload = {
@@ -10,7 +12,12 @@ type ApiResult<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-function extractError(data: any): string {
+function extractError(data: {
+  data:
+    | string
+    | { message?: string }
+    | Record<string, string>;
+}): string {
   if (typeof data.data === "string")
     return data.data;
   if (typeof data.data?.message === "string")
@@ -21,24 +28,18 @@ function extractError(data: any): string {
 }
 
 export async function loginUser(
-  slug: string,
+  // slug: string,
   payload: LoginPayload,
-): Promise<ApiResult> {
+): Promise<ApiResult<LoginResponse["data"]>> {
   try {
-    const res = await fetch(
-      `${BASE}/${slug}/auth/login/pos`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(payload),
+    });
 
-    // const text = await res.text();
-    // console.log("Raw response:", text);
-    // const data = JSON.parse(text);
     const data = await res.json();
 
     if (!res.ok) {

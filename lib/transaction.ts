@@ -29,7 +29,8 @@ export const statusStyles: Record<
 export type PaymentMethod =
   | "Card"
   | "Cash"
-  | "Loyalty";
+  | "Loyalty"
+  | "QR";
 
 export const paymentMethods: Record<
   PaymentMethod,
@@ -46,5 +47,9 @@ export const paymentMethods: Record<
   Loyalty: {
     cell: "text-purple-800",
     badge: "bg-purple-200",
+  },
+  QR: {
+    cell: "text-green-800",
+    badge: "text-green-200",
   },
 };
