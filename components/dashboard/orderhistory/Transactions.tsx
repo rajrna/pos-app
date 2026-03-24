@@ -60,7 +60,12 @@ export default function Transactions({
           {
             columnId: "paymentMethod",
             label: "Payment",
-            options: ["Card", "Cash", "Loyalty"],
+            options: [
+              "Card",
+              "Cash",
+              "Loyalty",
+              "QR",
+            ],
           },
         ]}
       />
