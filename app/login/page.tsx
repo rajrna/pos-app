@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { loginUser } from "@/services/auth/login/apiLogin";
 
-const BUSINESS_SLUG =
-  process.env.NEXT_PUBLIC_BUSINESS_SLUG ?? "java";
+// const BUSINESS_SLUG =
+//   process.env.NEXT_PUBLIC_BUSINESS_SLUG ?? "java";
 
 type LoginFormValues = {
   email: string;
