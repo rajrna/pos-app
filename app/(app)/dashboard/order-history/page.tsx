@@ -1,4 +1,4 @@
-import { getTransactions } from "@/services/dashboard/apiTransaction";
+import { getTransactions } from "@/services/dashboard/apiTransactionServer";
 import Transactions from "@/components/dashboard/orderhistory/Transactions";
 
 export default async function Page() {

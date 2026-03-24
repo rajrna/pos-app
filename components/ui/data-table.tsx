@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
   filters?: FilterConfig[];
   showDateFilter?: boolean;
   showColumnToggle?: boolean;
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -45,6 +46,7 @@ export function DataTable<TData, TValue>({
   filters,
   showDateFilter,
   showColumnToggle,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   "use no memo";
   const [sorting, setSorting] =
@@ -109,7 +111,17 @@ export function DataTable<TData, TValue>({
               table
                 .getRowModel()
                 .rows.map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    onClick={() =>
+                      onRowClick?.(row.original)
+                    }
+                    className={
+                      onRowClick
+                        ? "cursor-pointer"
+                        : ""
+                    }
+                  >
                     {row
                       .getVisibleCells()
                       .map((cell) => (
