@@ -24,7 +24,11 @@ import { formatCurrency } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
-type Item = { name: string; quantity: number };
+type Item = {
+  name: string;
+  quantity: number;
+  unitPrice: number;
+};
 
 export type Transaction = {
   id: string;
@@ -35,6 +39,15 @@ export type Transaction = {
   paymentMethod: PaymentMethod;
   items: Item[];
   status: TransactionStatus;
+  businessName?: string;
+  generatedBy?: string;
+  totalAmount?: number;
+  discount?: number;
+  taxAmount?: number;
+  cashAmount?: number;
+  qrAmount?: number;
+  invoiceNo?: number;
+  billNo?: number;
 };
 
 // Checks if the row's date falls within a [from, to] range

@@ -7,24 +7,27 @@ import { TransactionStatus } from "@/lib/transaction";
 
 import { getTransactionDetail } from "@/services/dashboard/apiTransactionClient";
 import { DataTable } from "@/components/ui/data-table";
-import { getTransactionColumns } from "@/components/dashboard/orderhistory/transaction-columns";
+import {
+  getTransactionColumns,
+  Transaction,
+} from "@/components/dashboard/orderhistory/transaction-columns";
 import TransactionDetailModal from "./TransactionDetailModal";
 
-type Item = {
-  name: string;
-  quantity: number;
-};
+// type Item = {
+//   name: string;
+//   quantity: number;
+// };
 
-type Transaction = {
-  id: string;
-  date: string;
-  timestamp: string;
-  customer: string;
-  amount: string;
-  paymentMethod: PaymentMethod;
-  items: Item[];
-  status: TransactionStatus;
-};
+// type Transaction = {
+//   id: string;
+//   date: string;
+//   timestamp: string;
+//   customer: string;
+//   amount: string;
+//   paymentMethod: PaymentMethod;
+//   items: Item[];
+//   status: TransactionStatus;
+// };
 
 export default function Transactions({
   transactions,
@@ -120,6 +123,7 @@ export default function Transactions({
           }}
           transaction={selectedTransaction}
           isLoading={isLoadingDetail}
+          currency={currency}
         />
       </div>
     </>
