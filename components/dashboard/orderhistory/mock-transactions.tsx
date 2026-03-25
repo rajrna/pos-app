@@ -9,8 +9,16 @@ export const mockTransactions: Transaction[] = [
     amount: "42.50",
     paymentMethod: "Card",
     items: [
-      { name: "Latte", quantity: 2 },
-      { name: "Croissant", quantity: 3 },
+      {
+        name: "Latte",
+        quantity: 2,
+        unitPrice: 100,
+      },
+      {
+        name: "Croissant",
+        quantity: 3,
+        unitPrice: 150,
+      },
     ],
     status: "completed",
   },
@@ -22,8 +30,16 @@ export const mockTransactions: Transaction[] = [
     amount: "18.00",
     paymentMethod: "Cash",
     items: [
-      { name: "Espresso", quantity: 2 },
-      { name: "Muffin", quantity: 1 },
+      {
+        name: "Espresso",
+        quantity: 2,
+        unitPrice: 100,
+      },
+      {
+        name: "Muffin",
+        quantity: 1,
+        unitPrice: 100,
+      },
     ],
     status: "completed",
   },
@@ -35,9 +51,21 @@ export const mockTransactions: Transaction[] = [
     amount: "67.25",
     paymentMethod: "Loyalty",
     items: [
-      { name: "Cappuccino", quantity: 3 },
-      { name: "Sandwich", quantity: 2 },
-      { name: "Orange Juice", quantity: 2 },
+      {
+        name: "Cappuccino",
+        quantity: 3,
+        unitPrice: 100,
+      },
+      {
+        name: "Sandwich",
+        quantity: 2,
+        unitPrice: 100,
+      },
+      {
+        name: "Orange Juice",
+        quantity: 2,
+        unitPrice: 100,
+      },
     ],
     status: "completed",
   },
@@ -49,8 +77,16 @@ export const mockTransactions: Transaction[] = [
     amount: "95.00",
     paymentMethod: "Card",
     items: [
-      { name: "Black Coffee", quantity: 5 },
-      { name: "Cookies", quantity: 6 },
+      {
+        name: "Black Coffee",
+        quantity: 5,
+        unitPrice: 100,
+      },
+      {
+        name: "Cookies",
+        quantity: 6,
+        unitPrice: 100,
+      },
     ],
     status: "pending",
   },
@@ -62,8 +98,16 @@ export const mockTransactions: Transaction[] = [
     amount: "33.75",
     paymentMethod: "Card",
     items: [
-      { name: "Green Tea", quantity: 3 },
-      { name: "Brownie", quantity: 2 },
+      {
+        name: "Green Tea",
+        quantity: 3,
+        unitPrice: 100,
+      },
+      {
+        name: "Brownie",
+        quantity: 2,
+        unitPrice: 100,
+      },
     ],
     status: "completed",
   },
@@ -75,8 +119,16 @@ export const mockTransactions: Transaction[] = [
     amount: "120.00",
     paymentMethod: "Loyalty",
     items: [
-      { name: "Protein Shake", quantity: 4 },
-      { name: "Energy Bar", quantity: 8 },
+      {
+        name: "Protein Shake",
+        quantity: 4,
+        unitPrice: 100,
+      },
+      {
+        name: "Energy Bar",
+        quantity: 8,
+        unitPrice: 100,
+      },
     ],
     status: "failed",
   },
@@ -88,8 +140,16 @@ export const mockTransactions: Transaction[] = [
     amount: "55.50",
     paymentMethod: "Cash",
     items: [
-      { name: "Flat White", quantity: 3 },
-      { name: "Toast", quantity: 4 },
+      {
+        name: "Flat White",
+        quantity: 3,
+        unitPrice: 100,
+      },
+      {
+        name: "Toast",
+        quantity: 4,
+        unitPrice: 100,
+      },
     ],
     status: "completed",
   },
@@ -101,8 +161,16 @@ export const mockTransactions: Transaction[] = [
     amount: "28.00",
     paymentMethod: "Card",
     items: [
-      { name: "Iced Coffee", quantity: 2 },
-      { name: "Bagel", quantity: 2 },
+      {
+        name: "Iced Coffee",
+        quantity: 2,
+        unitPrice: 100,
+      },
+      {
+        name: "Bagel",
+        quantity: 2,
+        unitPrice: 100,
+      },
     ],
     status: "refunded",
   },
@@ -114,9 +182,21 @@ export const mockTransactions: Transaction[] = [
     amount: "76.80",
     paymentMethod: "Loyalty",
     items: [
-      { name: "Mocha", quantity: 4 },
-      { name: "Cheesecake", quantity: 2 },
-      { name: "Lemonade", quantity: 2 },
+      {
+        name: "Mocha",
+        quantity: 4,
+        unitPrice: 100,
+      },
+      {
+        name: "Cheesecake",
+        quantity: 2,
+        unitPrice: 100,
+      },
+      {
+        name: "Lemonade",
+        quantity: 2,
+        unitPrice: 100,
+      },
     ],
     status: "pending",
   },
@@ -128,8 +208,16 @@ export const mockTransactions: Transaction[] = [
     amount: "15.00",
     paymentMethod: "Cash",
     items: [
-      { name: "Americano", quantity: 1 },
-      { name: "Cookie", quantity: 2 },
+      {
+        name: "Americano",
+        quantity: 1,
+        unitPrice: 100,
+      },
+      {
+        name: "Cookie",
+        quantity: 2,
+        unitPrice: 100,
+      },
     ],
     status: "completed",
   },
@@ -141,8 +229,16 @@ export const mockTransactions: Transaction[] = [
     amount: "49.95",
     paymentMethod: "Card",
     items: [
-      { name: "Chai Latte", quantity: 3 },
-      { name: "Waffle", quantity: 2 },
+      {
+        name: "Chai Latte",
+        quantity: 3,
+        unitPrice: 100,
+      },
+      {
+        name: "Waffle",
+        quantity: 2,
+        unitPrice: 100,
+      },
     ],
     status: "completed",
   },
@@ -154,9 +250,21 @@ export const mockTransactions: Transaction[] = [
     amount: "88.40",
     paymentMethod: "Loyalty",
     items: [
-      { name: "Cold Brew", quantity: 4 },
-      { name: "Sandwich", quantity: 3 },
-      { name: "Juice", quantity: 3 },
+      {
+        name: "Cold Brew",
+        quantity: 4,
+        unitPrice: 100,
+      },
+      {
+        name: "Sandwich",
+        quantity: 3,
+        unitPrice: 100,
+      },
+      {
+        name: "Juice",
+        quantity: 3,
+        unitPrice: 100,
+      },
     ],
     status: "failed",
   },
