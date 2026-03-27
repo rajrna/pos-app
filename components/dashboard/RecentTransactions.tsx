@@ -14,14 +14,15 @@ import {
 } from "../ui/table";
 import { useCurrency } from "@/lib/context/CurrencyContext";
 import { formatCurrency } from "@/lib/utils";
+import { Transaction } from "./orderhistory/transaction-columns";
 
-export type Transaction = {
-  id: string;
-  timestamp: string;
-  customer: string;
-  amount: number;
-  status: TransactionStatus;
-};
+// export type Transaction = {
+//   id: string;
+//   timestamp: string;
+//   customer: string;
+//   amount: number;
+//   status: TransactionStatus;
+// };
 
 type RecentTransactionsProps = {
   title?: string;
@@ -88,7 +89,7 @@ export default function RecentTransactions({
                 </TableCell>
                 <TableCell>
                   {formatCurrency(
-                    tx.amount as number,
+                    Number(tx.amount),
                     currency,
                   )}
                 </TableCell>

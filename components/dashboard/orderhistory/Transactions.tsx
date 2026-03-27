@@ -13,22 +13,6 @@ import {
 } from "@/components/dashboard/orderhistory/transaction-columns";
 import TransactionDetailModal from "./TransactionDetailModal";
 
-// type Item = {
-//   name: string;
-//   quantity: number;
-// };
-
-// type Transaction = {
-//   id: string;
-//   date: string;
-//   timestamp: string;
-//   customer: string;
-//   amount: string;
-//   paymentMethod: PaymentMethod;
-//   items: Item[];
-//   status: TransactionStatus;
-// };
-
 export default function Transactions({
   transactions,
 }: {

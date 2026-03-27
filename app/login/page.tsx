@@ -185,13 +185,33 @@ export default function Page() {
 
         {/* Remove later */}
         <div className="p-4 flex items-center justify-center text-red-600">
-          <Button
+          {/* <Button
             type="button"
             className=" border border-red-300 bg-gray-50 text-red-600 hover:bg-red-200 hover:text-red-800 hover:border-red-900 font-bold py-5 text-[14px] rounded-full transition-colors duration-200"
           >
             <Link href="/dashboard">
               Demo: For development only
             </Link>
+          </Button> */}
+
+          <Button
+            type="button"
+            onClick={() =>
+              onSubmit({
+                email:
+                  process.env
+                    .NEXT_PUBLIC_DEMO_EMAIL!,
+                password:
+                  process.env
+                    .NEXT_PUBLIC_DEMO_PASSWORD!,
+              })
+            }
+            disabled={isLoading}
+            className="border border-red-300 bg-gray-50 text-red-600 hover:bg-red-200 hover:text-red-800 hover:border-red-900 font-bold py-5 text-[14px] rounded-full transition-colors duration-200 disabled:opacity-60"
+          >
+            {isLoading
+              ? "Logging in..."
+              : "Demo: For development only"}
           </Button>
         </div>
       </div>
