@@ -1,6 +1,6 @@
 import { TopProduct } from "../TopItems";
 import { HourlyData } from "./HourlySalesChart";
-import { Transaction } from "../RecentTransactions";
+
 import { LocationData } from "./SalesLocationChart";
 
 import { DataPoint } from "@/lib/types/chart";
@@ -8,6 +8,7 @@ import {
   StatsApiResponse,
   WinningApiResponse,
 } from "@/lib/dashboardstats";
+import { Transaction } from "../orderhistory/transaction-columns";
 
 export const mockStats: StatsApiResponse = {
   totalSales: {
@@ -64,25 +65,46 @@ export const mockTopProducts: TopProduct[] = [
 export const mockRecentTransactions: Transaction[] =
   [
     {
-      id: "ORD-421",
-      timestamp: "2 min ago",
-      customer: "Alex Johnson",
-      amount: 28.5,
+      id: "ORD-007",
+      date: "Jan 13 2025",
+      timestamp: "09:50",
+      customer: "Fred Johnson",
+      amount: "55.50",
+      paymentMethod: "Cash",
+      items: [
+        {
+          name: "Flat White",
+          quantity: 3,
+          unitPrice: 100,
+        },
+        {
+          name: "Toast",
+          quantity: 4,
+          unitPrice: 100,
+        },
+      ],
       status: "completed",
     },
     {
-      id: "ORD-420",
-      timestamp: "15 min ago",
-      customer: "Maria Garcia",
-      amount: 14.0,
-      status: "pending",
-    },
-    {
-      id: "ORD-419",
-      timestamp: "1 hr ago",
-      customer: "James Lee",
-      amount: 52.75,
-      status: "failed",
+      id: "ORD-008",
+      date: "Jan 13 2025",
+      timestamp: "16:30",
+      customer: "Camina Drummer",
+      amount: "28.00",
+      paymentMethod: "Card",
+      items: [
+        {
+          name: "Iced Coffee",
+          quantity: 2,
+          unitPrice: 100,
+        },
+        {
+          name: "Bagel",
+          quantity: 2,
+          unitPrice: 100,
+        },
+      ],
+      status: "refunded",
     },
   ];
 
