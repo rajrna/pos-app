@@ -1,11 +1,15 @@
-"use client";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import CustomerTable from "@/components/customer/CustomerTable";
+// import CustomerTable from "@/components/customer/CustomerTable";
 import { UserPlus } from "lucide-react";
+import { fetchCustomers } from "@/services/apiCustomer.server";
+import CustomerTable from "@/components/customer/CustomerTable";
 
-export default function Page() {
+export default async function Page() {
+  const [customers] = await Promise.all([
+    fetchCustomers(),
+  ]);
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="flex items-center justify-between mb-8">
@@ -22,7 +26,7 @@ export default function Page() {
         </div>
       </div>
 
-      <CustomerTable />
+      <CustomerTable customers={customers} />
     </div>
   );
 }

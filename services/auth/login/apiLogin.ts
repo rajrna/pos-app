@@ -1,6 +1,7 @@
 import { LoginResponse } from "@/lib/types/auth";
 
-const BASE = "https://appapi.rebuzzpos.com/api";
+// const BASE = "https://appapi.rebuzzpos.com/api";
+const BASE = "https://api.beta.rebuzzpos.com/api";
 
 type LoginPayload = {
   email_or_phone: string;

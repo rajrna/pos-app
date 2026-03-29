@@ -1,4 +1,3 @@
-// store/invoiceStore.ts
 import { create } from "zustand";
 import { Invoice } from "@/lib/types/invoice";
 
@@ -32,9 +31,7 @@ export const useInvoiceStore =
     },
 
     setInvoices: (invoices) => set({ invoices }),
-
     setFilters: (filters) => set({ filters }),
-
     updateFilter: (key, value) =>
       set((state) => ({
         filters: {
@@ -46,41 +43,40 @@ export const useInvoiceStore =
     getFilteredInvoices: () => {
       const { invoices, filters } = get();
 
-      return invoices.filter((invoice) => {
-        // Status filter
+      return invoices.filter((ticket) => {
+        // Status filter — maps to paidStatus
         if (
           filters.status !== "all" &&
-          invoice.status !== filters.status
-        ) {
+          ticket.status !== filters.status
+        )
           return false;
-        }
 
-        // Date range filter
+        // Date range filter — maps to createdAt
         if (filters.dateRange === "today") {
-          const isToday = (
-            dateString: string,
-          ) => {
-            const date = new Date(dateString);
-            const today = new Date();
-            return (
-              date.toDateString() ===
-              today.toDateString()
-            );
-          };
-          if (!isToday(invoice.created_at))
+          const date = new Date(
+            ticket.created_at,
+          );
+          const today = new Date();
+          if (
+            date.toDateString() !==
+            today.toDateString()
+          )
             return false;
         }
 
-        // Search filter
-        if (
-          filters.searchTerm &&
-          !invoice.customer_name
+        // Search filter — maps to customerEmail or ticketName (no customer_name on RawTicket)
+        if (filters.searchTerm) {
+          const term =
+            filters.searchTerm.toLowerCase();
+          const matchesEmail =
+            ticket.customer_name
+              ?.toLowerCase()
+              .includes(term);
+          const matchesName = ticket.invoice_id
             ?.toLowerCase()
-            .includes(
-              filters.searchTerm.toLowerCase(),
-            )
-        ) {
-          return false;
+            .includes(term);
+          if (!matchesEmail && !matchesName)
+            return false;
         }
 
         return true;

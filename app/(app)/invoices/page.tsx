@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import InvoiceHeader from "@/components/invoice/InvoiceHeader";
 import InvoiceStats from "@/components/invoice/InvoiceStats";
 import InvoiceTable from "@/components/invoice/InvoiceTable";
-import { fetchInvoices } from "@/services/apiInvoice";
+import { fetchInvoices } from "@/services/apiInvoice.server";
 import { useInvoiceStore } from "@/stores/invoiceStore";
 import { Spinner } from "@/components/ui/spinner";
+import { fetchInvoicesClient } from "@/services/apiInvoice.client";
 
 export default function Page() {
   const { setInvoices } = useInvoiceStore();
@@ -17,9 +18,9 @@ export default function Page() {
     error,
   } = useQuery({
     queryKey: ["invoice"],
-    queryFn: fetchInvoices,
+    queryFn: fetchInvoicesClient,
   });
-  console.log(invoices);
+  // console.log(invoices);
 
   useEffect(() => {
     if (invoices.length > 0) {
@@ -44,7 +45,7 @@ export default function Page() {
     <div className="min-h-screen p-8">
       <InvoiceHeader />
       <InvoiceStats invoices={invoices} />
-      <InvoiceTable />
+      <InvoiceTable invoices={invoices} />
     </div>
   );
 }

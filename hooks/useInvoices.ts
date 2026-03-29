@@ -1,4 +1,6 @@
-import { createInvoice } from "@/services/apiInvoice";
+import { CreateTicketInput } from "@/lib/types/ticket";
+import { createTicket } from "@/services/apiInvoice.client";
+
 import {
   useMutation,
   useQueryClient,
@@ -11,16 +13,16 @@ export function useCreateInvoice() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: createInvoice,
-    onSuccess: (data) => {
+    mutationFn: (data: CreateTicketInput) =>
+      createTicket(data),
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["invoices"],
       });
       toast.success(
         "Invoice created successfully!",
       );
-
-      router.push(`/invoices/${data.invoice_id}`);
+      router.push("/invoices"); // update path as needed
     },
     onError: (error: Error) => {
       toast.error(

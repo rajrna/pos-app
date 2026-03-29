@@ -2,8 +2,6 @@
 import { useState } from "react";
 
 import { useCurrency } from "@/lib/context/CurrencyContext";
-import { PaymentMethod } from "@/lib/transaction";
-import { TransactionStatus } from "@/lib/transaction";
 
 import { getTransactionDetail } from "@/services/dashboard/apiTransactionClient";
 import { DataTable } from "@/components/ui/data-table";
@@ -64,7 +62,7 @@ export default function Transactions({
         <h1 className="font-semibold text-xl">
           Transactions Log
         </h1>
-        <p className="text-gray-500">
+        <p className="text-gray-400">
           All orders matching your request
         </p>
         <DataTable

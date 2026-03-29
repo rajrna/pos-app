@@ -1,12 +1,12 @@
 import { Product } from "./product";
 
-export interface Invoice {
+export type Invoice = {
   invoice_id: string;
-  amount: number;
-  status: string;
-  created_at: string;
   customer_name: string;
-}
+  amount: number;
+  created_at: string;
+  status: string;
+};
 
 export interface InvoiceStatsProps {
   invoices: Invoice[];

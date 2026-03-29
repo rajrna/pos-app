@@ -4,11 +4,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import {
-  fetchCustomers,
-  createCustomer,
-  deleteCustomer,
-} from "@/services/apiCustomer";
+import { fetchCustomers } from "@/services/apiCustomer.server";
+import { fetchCustomersClient } from "@/services/apiCustomer.client";
 
 export const customerKeys = {
   all: ["customers"] as const,
@@ -31,7 +28,7 @@ export function useCustomers(
 ) {
   return useQuery({
     queryKey: customerKeys.list(searchQuery),
-    queryFn: () => fetchCustomers(searchQuery),
+    queryFn: () => fetchCustomersClient(),
     staleTime: 10 * 1000, // 30 seconds
   });
 }
@@ -45,29 +42,29 @@ export function useCustomers(
 // }
 
 // Mutations
-export function useCreateCustomer() {
-  const queryClient = useQueryClient();
+// export function useCreateCustomer() {
+//   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: createCustomer,
-    onSuccess: () => {
-      // Invalidate and refetch customer list
-      queryClient.invalidateQueries({
-        queryKey: customerKeys.lists(),
-      });
-    },
-  });
-}
+//   return useMutation({
+//     mutationFn: createCustomer,
+//     onSuccess: () => {
+//       // Invalidate and refetch customer list
+//       queryClient.invalidateQueries({
+//         queryKey: customerKeys.lists(),
+//       });
+//     },
+//   });
+// }
 
-export function useDeleteCustomer() {
-  const queryClient = useQueryClient();
+// export function useDeleteCustomer() {
+//   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: deleteCustomer,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: customerKeys.lists(),
-      });
-    },
-  });
-}
+//   return useMutation({
+//     mutationFn: deleteCustomer,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({
+//         queryKey: customerKeys.lists(),
+//       });
+//     },
+//   });
+// }
