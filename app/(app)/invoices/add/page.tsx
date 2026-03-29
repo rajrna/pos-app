@@ -24,6 +24,7 @@ import { InvoiceItem } from "@/lib/types/invoice";
 import { Discount } from "@/lib/types/invoice";
 import { Customer } from "@/lib/types/customer";
 import { CreateTicketInput } from "@/lib/types/ticket";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -34,6 +35,7 @@ const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
 };
 
 export default function Page() {
+  const router = useRouter();
   const {
     data: customers = [],
     isLoading: loadingCustomers,
@@ -150,7 +152,6 @@ export default function Page() {
           quantity: item.quantity,
           unitPrice: item.price,
           note: null,
-          // Map your local discount state to the format the backend expects
           discounts: [],
           isTaxable: false,
         })),
@@ -160,8 +161,6 @@ export default function Page() {
       phoneNumber: selectedCustomer?.phone ?? "",
       customerEmail:
         selectedCustomer?.email ?? "",
-      // If the backend doesn't have an 'invoiceNumber' field,
-      // consider prepending it to the notes or a metadata field if available
       note:
         notes +
         (invoiceNumber
@@ -177,10 +176,11 @@ export default function Page() {
       return;
     }
     createInvoiceMutation.mutate(ticketData, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success(
           "Invoice created successfully!",
         );
+        router.push(`/invoices/${data.id}`);
         // Optional: Redirect or Reset form here
       },
       onError: (err) => {
@@ -227,7 +227,7 @@ export default function Page() {
             }}
           />
           <form>
-            <div className="grid grid-cols-3 gap-4 items-start bp-1">
+            {/* <div className="grid grid-cols-3 gap-4 items-start bp-1">
               <Label className="text-right pt-3 text-[16px] font-semibold text-gray-700">
                 Invoice no.
               </Label>
@@ -244,10 +244,10 @@ export default function Page() {
                   }
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* {Po number} */}
-            <div className="grid grid-cols-3 gap-4 items-start bp-1">
+            {/* <div className="grid grid-cols-3 gap-4 items-start bp-1">
               <Label className="text-right pt-3 text-[16px] font-semibold text-gray-700">
                 P.O./S.O.
               </Label>
@@ -261,10 +261,10 @@ export default function Page() {
                   }
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* {Invoice dates} */}
-            <div className="grid grid-cols-3 gap-4 items-start bp-1">
+            {/* <div className="grid grid-cols-3 gap-4 items-start bp-1">
               <Label className="text-right pt-3 text-[16px] font-semibold text-gray-700">
                 Invoice Date
               </Label>
@@ -275,7 +275,7 @@ export default function Page() {
                   // onDateChange={setInvoiceDate}
                 />
               </div>
-            </div>
+            </div> */}
           </form>
         </div>
         {/* {order columns} */}

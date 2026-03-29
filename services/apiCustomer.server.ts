@@ -2,7 +2,6 @@ import { authHeaders } from "./auth/login/session";
 import {
   Customer,
   mapRawCustomerToCustomer,
-  RawCustomer,
   RawCustomerListResponse,
 } from "@/lib/types/customer";
 

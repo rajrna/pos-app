@@ -1,11 +1,14 @@
-"use client";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import ProductTable from "@/components/product/ProductTable";
 import { PackagePlus } from "lucide-react";
+import { fetchProducts } from "@/services/apiProduct.server";
 
-export default function Page() {
+export default async function Page() {
+  const [products] = await Promise.all([
+    fetchProducts(),
+  ]);
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="flex items-center justify-between mb-8">
@@ -22,7 +25,7 @@ export default function Page() {
         </div>
       </div>
 
-      <ProductTable />
+      <ProductTable products={products} />
     </div>
   );
 }
