@@ -1,5 +1,5 @@
 import { Transaction } from "@/components/dashboard/orderhistory/transaction-columns";
-import { mapDetailBillToTransaction } from "@/lib/mappers/Transaction";
+import { mapDetailBillToTransaction } from "@/lib/mappers/transaction";
 import { RawBillDetailResponse } from "@/lib/types/bill";
 
 // const BASE = "https://appapi.rebuzzpos.com/api";
@@ -20,6 +20,6 @@ export async function getTransactionDetail(
     );
   const data: RawBillDetailResponse =
     await res.json();
-  console.log("detail response:", data);
+  // console.log("detail response:", data);
   return mapDetailBillToTransaction(data);
 }

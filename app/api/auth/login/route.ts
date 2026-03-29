@@ -13,7 +13,9 @@ export async function POST(req: NextRequest) {
   const body: LoginRequest = await req.json();
 
   const res = await fetch(
-    "https://appapi.rebuzzpos.com/api/java/auth/login/pos",
+    "https://api.beta.rebuzzpos.com/api/java/auth/login/pos",
+
+    // "https://appapi.rebuzzpos.com/api/java/auth/login/pos",
     {
       method: "POST",
       headers: {

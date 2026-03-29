@@ -1,9 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchCustomersList } from "@/services/apiCustomer";
+import { fetchCustomersClient } from "@/services/apiCustomer.client";
 
 export function useCustomersList() {
   return useQuery({
     queryKey: ["customers-list"],
-    queryFn: fetchCustomersList,
+    queryFn: fetchCustomersClient,
+  });
+}
+export function useCustomerNames() {
+  return useQuery({
+    queryKey: ["customers-list"],
+    queryFn: fetchCustomersClient,
   });
 }

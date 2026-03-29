@@ -20,9 +20,10 @@ import { useCustomersList } from "@/hooks/useCustomersList";
 import { useCreateInvoice } from "@/hooks/useInvoices";
 import { useProductsList } from "@/hooks/useProductsList";
 
-import { CreateInvoiceInput } from "@/lib/types/invoice";
 import { InvoiceItem } from "@/lib/types/invoice";
 import { Discount } from "@/lib/types/invoice";
+import { Customer } from "@/lib/types/customer";
+import { CreateTicketInput } from "@/lib/types/ticket";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -44,10 +45,9 @@ export default function Page() {
   const createInvoiceMutation =
     useCreateInvoice();
 
-  const [
-    selectedCustomerId,
-    setSelectedCustomerId,
-  ] = useState<string | null>(null);
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<Customer | null>(null);
+
   const [invoiceNumber, setInvoiceNumber] =
     useState("");
   const [poNumber, setPoNumber] = useState("");
@@ -114,7 +114,7 @@ export default function Page() {
 
   const handleSave = () => {
     // Validation
-    if (!selectedCustomerId) {
+    if (!selectedCustomer) {
       toast.error("Please select a customer");
       return;
     }
@@ -134,34 +134,61 @@ export default function Page() {
       return;
     }
 
-    // Prepare data
-    const invoiceData: CreateInvoiceInput = {
-      customer_id: selectedCustomerId,
-      invoice_number: invoiceNumber,
-      po_number: poNumber || undefined,
-      invoice_date: invoiceDate.toISOString(),
+    const ticketData: CreateTicketInput = {
+      ticketName:
+        selectedCustomer?.name ??
+        "Walk-in Customer",
+      // Ensure we are sending the correct shape for items
       items: items
-        .filter((item) => item.name) // Only include items with names
+        .filter(
+          (item) =>
+            item.name && item.quantity > 0,
+        )
         .map((item) => ({
-          product_id: item.productId,
+          id: item.productId,
           name: item.name,
-          description: item.description,
           quantity: item.quantity,
-          unit_price: item.price,
-          total: item.quantity * item.price,
+          unitPrice: item.price,
+          note: null,
+          // Map your local discount state to the format the backend expects
+          discounts: [],
+          isTaxable: false,
         })),
-      discount_description:
-        discounts[0]?.description,
-      discount_value: discounts[0]?.value,
-      discount_type: discounts[0]?.type,
-      subtotal,
-      total,
-      currency,
-      notes: notes || undefined,
-      status: "Draft",
+      taxId: null,
+      grandTotal: total,
+      total: subtotal,
+      phoneNumber: selectedCustomer?.phone ?? "",
+      customerEmail:
+        selectedCustomer?.email ?? "",
+      // If the backend doesn't have an 'invoiceNumber' field,
+      // consider prepending it to the notes or a metadata field if available
+      note:
+        notes +
+        (invoiceNumber
+          ? ` | Invoice: ${invoiceNumber}`
+          : ""),
     };
 
-    createInvoiceMutation.mutate(invoiceData);
+    // createTicket(ticketData);
+
+    // Update validation
+    if (!selectedCustomer) {
+      toast.error("Please select a customer");
+      return;
+    }
+    createInvoiceMutation.mutate(ticketData, {
+      onSuccess: () => {
+        toast.success(
+          "Invoice created successfully!",
+        );
+        // Optional: Redirect or Reset form here
+      },
+      onError: (err) => {
+        toast.error(
+          `Save failed: ${err.message}`,
+        );
+      },
+    });
   };
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -194,10 +221,10 @@ export default function Page() {
       <div className="my-5 border-gray-300 border shadow-lg rounded-lg ">
         <div className="flex justify-between">
           <CustomerSelector
-            customers={customers}
-            onCustomerSelect={
-              setSelectedCustomerId
-            }
+            // customers={customers}
+            onCustomerSelect={(customer) => {
+              setSelectedCustomer(customer);
+            }}
           />
           <form>
             <div className="grid grid-cols-3 gap-4 items-start bp-1">
