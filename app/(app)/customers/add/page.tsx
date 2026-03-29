@@ -179,3 +179,6 @@ type CustomerFormData = z.infer<
 //     </div>
 //   );
 // }
+export default function Page() {
+  return <div></div>;
+}
