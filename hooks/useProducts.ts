@@ -7,8 +7,8 @@ import {
 import {
   fetchProducts,
   deleteProduct,
-  createProduct,
 } from "@/services/apiProduct";
+import { createProduct } from "@/services/apiProduct.client";
 
 export const productKeys = {
   all: ["products"] as const,

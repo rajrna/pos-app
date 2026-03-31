@@ -61,6 +61,8 @@ export type CreateTicketInput = {
   taxId: string | null;
   grandTotal: number;
   total: number;
+  discount?: number;
+  totalDiscount?: number;
   phoneNumber: string;
   customerEmail: string;
   note: string;

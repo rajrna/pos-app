@@ -17,7 +17,7 @@ import InvoiceItemsSelector from "@/components/invoice/InvoiceItemsSelector";
 import AddInvoiceHeader from "@/components/invoice/AddInvoiceHeader";
 
 import { useCustomersList } from "@/hooks/useCustomersList";
-import { useCreateInvoice } from "@/hooks/useInvoices";
+// import { useCreateInvoice } from "@/hooks/useInvoices";
 import { useProductsList } from "@/hooks/useProductsList";
 
 import { InvoiceItem } from "@/lib/types/invoice";
@@ -25,6 +25,7 @@ import { Discount } from "@/lib/types/invoice";
 import { Customer } from "@/lib/types/customer";
 import { CreateTicketInput } from "@/lib/types/ticket";
 import { useRouter } from "next/navigation";
+import { useCreateTicket } from "@/hooks/useTickets";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -36,6 +37,10 @@ const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
 
 export default function Page() {
   const router = useRouter();
+
+  const { mutate: saveTicket, isPending } =
+    useCreateTicket();
+
   const {
     data: customers = [],
     isLoading: loadingCustomers,
@@ -44,8 +49,7 @@ export default function Page() {
     data: products = [],
     isLoading: loadingProducts,
   } = useProductsList();
-  const createInvoiceMutation =
-    useCreateInvoice();
+  // const createInvoiceMutation = useCreateTicket();
 
   const [selectedCustomer, setSelectedCustomer] =
     useState<Customer | null>(null);
@@ -98,15 +102,21 @@ export default function Page() {
 
   const totalDiscount = discounts.reduce(
     (sum, d) => {
+      let val = 0;
       if (d.type === "percentage") {
-        return sum + (subtotal * d.value) / 100;
+        val = (subtotal * d.value) / 100;
+      } else {
+        val = d.value;
       }
-      return sum + d.value;
+      return sum + val;
     },
     0,
   );
 
-  const total = subtotal - totalDiscount;
+  const total = Math.max(
+    0,
+    subtotal - totalDiscount,
+  );
 
   const removeDiscount = (id: string) => {
     setDiscounts((prev) =>
@@ -115,16 +125,10 @@ export default function Page() {
   };
 
   const handleSave = () => {
+    console.log("Button clicked");
     // Validation
     if (!selectedCustomer) {
       toast.error("Please select a customer");
-      return;
-    }
-
-    if (!invoiceNumber) {
-      toast.error(
-        "Please enter an invoice number",
-      );
       return;
     }
 
@@ -140,7 +144,16 @@ export default function Page() {
       ticketName:
         selectedCustomer?.name ??
         "Walk-in Customer",
-      // Ensure we are sending the correct shape for items
+      customerEmail:
+        selectedCustomer?.email || "",
+      phoneNumber: selectedCustomer?.phone || "",
+      total: subtotal,
+      discount: totalDiscount,
+      totalDiscount: totalDiscount,
+      grandTotal: total,
+      taxId: null,
+      note: `${notes}${invoiceNumber ? `|Invoice: ${invoiceNumber}` : ""}`,
+
       items: items
         .filter(
           (item) =>
@@ -155,35 +168,26 @@ export default function Page() {
           discounts: [],
           isTaxable: false,
         })),
-      taxId: null,
-      grandTotal: total,
-      total: subtotal,
-      phoneNumber: selectedCustomer?.phone ?? "",
-      customerEmail:
-        selectedCustomer?.email ?? "",
-      note:
-        notes +
-        (invoiceNumber
-          ? ` | Invoice: ${invoiceNumber}`
-          : ""),
     };
+    console.log(
+      "2. Payload Prepared:",
+      ticketData,
+    );
 
-    // createTicket(ticketData);
-
-    // Update validation
-    if (!selectedCustomer) {
-      toast.error("Please select a customer");
-      return;
-    }
-    createInvoiceMutation.mutate(ticketData, {
-      onSuccess: (data) => {
-        toast.success(
-          "Invoice created successfully!",
-        );
-        router.push(`/invoices/${data.id}`);
-        // Optional: Redirect or Reset form here
+    saveTicket(ticketData, {
+      onSuccess: (response) => {
+        console.log("Success", response);
+        toast.success("Invoice saved");
+        const newId =
+          response?.data?.ticket?._id ||
+          response?.data?.ticket?.id;
+        if (newId) {
+          router.push(`/invoices/${newId}`);
+          // router.push(`/invoices/`);
+        }
       },
       onError: (err) => {
+        console.log("Failed", err);
         toast.error(
           `Save failed: ${err.message}`,
         );
@@ -199,12 +203,10 @@ export default function Page() {
         <div className="flex items-center gap-3">
           <Button
             onClick={handleSave}
-            disabled={
-              createInvoiceMutation.isPending
-            }
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl"
+            disabled={isPending}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 z-100 rounded-2xl"
           >
-            {createInvoiceMutation.isPending
+            {isPending
               ? "Saving..."
               : "Save and Continue"}
           </Button>
