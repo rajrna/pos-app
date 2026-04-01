@@ -25,6 +25,7 @@ import {
   CreditCard,
   FileEdit,
   FileText,
+  Mail,
   Send,
   Trash2,
 } from "lucide-react";
@@ -34,7 +35,7 @@ import {
 } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
+import InvoiceBillTable from "../../../../components/ticket/InvoiceBillTable";
 type InvoiceStatus =
   | "draft"
   | "sent"
@@ -53,6 +54,8 @@ export default function InvoiceDetailPage() {
     enabled: !!id,
   });
   const invoice = data?.data?.Tickets;
+  const invoice2 = data?.data;
+  console.log(invoice2);
 
   const {
     data: customerData,
@@ -120,11 +123,10 @@ export default function InvoiceDetailPage() {
       tax: "",
       taxId: null,
       taxamt: 0,
-      grandTotal: Number(calculatedGrandTotal), // Ensure this is a number
+      grandTotal: Number(calculatedGrandTotal),
       redeemPointDeducted: 0,
     };
 
-    // Ensure we are using the numeric '20' as seen in your console log
     const ticketId = invoice.invoice;
 
     if (!ticketId || isNaN(Number(ticketId))) {
@@ -146,13 +148,10 @@ export default function InvoiceDetailPage() {
 
       const result = await response.json();
 
-      // The backend might return 200 but with status: "fail"
       if (result.status === "success") {
         toast.success("Payment Recorded!");
         setIsPaymentModalOpen(false);
-        // Optional: window.location.reload() or refresh data state
       } else {
-        // Logic to handle specific "fail" messages from the API
         const errorMsg =
           result.data?.invoice_number ||
           "Payment failed";
@@ -227,8 +226,37 @@ export default function InvoiceDetailPage() {
     overdue: "bg-red-100 text-red-700",
   };
 
-  const handleResendInvoice = () => {
-    toast.success("Invoice resent successfully!");
+  const handleResendInvoice = async () => {
+    const ticketId = invoice.invoice;
+
+    if (!ticketId) {
+      toast.error("Invoice ID is missing");
+      return;
+    }
+
+    const sendPromise = fetch(
+      `/api/tickets/${ticketId}/send`,
+      {
+        method: "POST",
+      },
+    ).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok || data.status === "fail") {
+        throw new Error(
+          data.message || "Failed to send",
+        );
+      }
+      return data;
+    });
+
+    toast.promise(sendPromise, {
+      loading: "Sending invoice reminder...",
+      success: () => {
+        // Optional: Trigger a data refresh here to update 'sentAt'
+        return "Reminder sent successfully!";
+      },
+      error: (err) => `${err.message}`,
+    });
   };
 
   const handleChargeCard = () => {
@@ -422,51 +450,104 @@ export default function InvoiceDetailPage() {
             {/* Connector */}
             <div className="w-px h-2 rounded-2xl bg-gray-200 ml-9" />
 
-            {/* Step 2: Send */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3 shadow-md hover:shadow-lg transition duration-300">
+            {/* Step 2: Send & Reminders */}
+            <div
+              className={`bg-white border rounded-2xl p-5 flex flex-col gap-3 shadow-md transition duration-300 ${
+                invoice.sentAt
+                  ? "border-blue-100 bg-blue-50/20"
+                  : "border-gray-200"
+              }`}
+            >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full border-2 border-blue-600 flex items-center justify-center text-blue-600 shrink-0">
-                  <Send size={18} />
+                <div
+                  className={`w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                    invoice.sentAt
+                      ? "border-blue-500 text-blue-600 bg-blue-50"
+                      : "border-gray-300 text-gray-400"
+                  }`}
+                >
+                  {invoice.sentAt ? (
+                    <Send size={18} />
+                  ) : (
+                    <Mail size={18} />
+                  )}
                 </div>
+
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800 text-lg">
-                    Send
+                    Send Invoice
                   </h3>
                   {invoice.sentAt ? (
-                    <p className="text-sm text-gray-500 mt-0.5">
-                      <span className="font-medium text-gray-700">
-                        Last sent:
-                      </span>{" "}
-                      Marked as sent today.{" "}
-                      <button className="text-blue-600 hover:underline">
-                        Edit date
-                      </button>
-                    </p>
+                    <div className="flex flex-col">
+                      <p className="text-sm text-gray-600 mt-0.5">
+                        <span className="font-medium text-gray-900">
+                          Sent to:
+                        </span>{" "}
+                        {invoice.customerEmail ||
+                          "Customer"}
+                      </p>
+                      <p className="text-xs text-blue-600 font-medium mt-1">
+                        Last sent:{" "}
+                        {new Date(
+                          invoice.sentAt,
+                        ).toLocaleString([], {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </p>
+                    </div>
                   ) : (
                     <p className="text-sm text-gray-500 mt-0.5">
-                      Not sent yet.
+                      Not sent to the customer
+                      yet.
                     </p>
                   )}
                 </div>
+
                 <Button
                   onClick={handleResendInvoice}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
+                  variant={
+                    invoice.sentAt
+                      ? "outline"
+                      : "default"
+                  }
+                  className={`rounded-full px-6 ${
+                    !invoice.sentAt
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "border-blue-200 text-blue-600 hover:bg-blue-50"
+                  }`}
                 >
                   {invoice.sentAt
-                    ? "Resend invoice"
-                    : "Send invoice"}
+                    ? "Send again"
+                    : "Send now"}
                 </Button>
               </div>
-              <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 ml-14">
-                <Bell
-                  size={16}
-                  className="text-blue-600 mt-0.5 shrink-0"
-                />
-                <p className="text-sm text-gray-700">
-                  <button className="text-blue-600 font-medium hover:underline">
-                    Schedule reminders.
-                  </button>
-                </p>
+
+              {/* Reminder Alert Box */}
+              <div className="flex items-center justify-between bg-white border border-blue-100 rounded-xl px-4 py-3 ml-14 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <Bell
+                    size={16}
+                    className="text-blue-600 mt-0.5 shrink-0"
+                  />
+                  <div>
+                    <p className="text-sm text-gray-700 font-medium">
+                      Automatic Reminders
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Remind customer 3 days
+                      before due date.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() =>
+                    toast("Opening scheduler...")
+                  }
+                  className="text-xs bg-blue-50 text-blue-700 font-bold px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  Schedule
+                </button>
               </div>
             </div>
 
@@ -579,6 +660,130 @@ export default function InvoiceDetailPage() {
                     "Your invoice is awaiting payment"
                   )}
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Invoice Preview */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5 mt-4 shadow-md hover:shadow-lg transition duration-300">
+            {/* Header: Company Info */}
+            <div className="border-b py-4">
+              <h1 className="font-semibold text-2xl tracking-tight text-gray-900">
+                INVOICE
+              </h1>
+              <h2 className="font-bold text-gray-800">
+                Meowtrix
+              </h2>
+              <p className="text-sm text-gray-500">
+                Nepal
+              </p>
+            </div>
+
+            {/* Main Info Row */}
+            <div className="flex justify-between items-start py-6">
+              {/* Left Side: Bill To */}
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Bill to
+                </p>
+                <p className="text-gray-900 font-bold text-lg">
+                  {customerProfile?.name ||
+                    invoice?.ticketName ||
+                    invoice?.customerEmail ||
+                    "Guest"}
+                </p>
+                <div className="text-sm text-gray-500 leading-relaxed">
+                  <p>{invoice?.phoneNumber}</p>
+                  <p>{invoice?.customerEmail}</p>
+                </div>
+              </div>
+
+              {/* Right Side: Invoice Details (The Grid) */}
+              <div className="w-60 ml-auto text-sm">
+                <div className="space-y-2 mb-2">
+                  {/* Row: Number */}
+                  <div className="grid grid-cols-2 items-center">
+                    <span className="font-semibold text-gray-600">
+                      Invoice Number :
+                    </span>
+                    <span className="text-gray-900 font-medium text-right">
+                      {invoice.invoice}
+                    </span>
+                  </div>
+
+                  {/* Row: Date */}
+                  <div className="grid grid-cols-2 items-center">
+                    <span className="font-semibold text-gray-600">
+                      Invoice Date :
+                    </span>
+
+                    <span className="text-gray-900 text-right">
+                      {new Date(
+                        invoice.createdAt,
+                      ).toLocaleDateString(
+                        undefined,
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        },
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Amount Box */}
+                <div className="bg-gray-200  p-1 border border-gray-100">
+                  <div className="grid grid-cols-2 items-center">
+                    <span className="font-bold text-gray-600">
+                      Amount :
+                    </span>
+
+                    <span className="text-gray-900 font-black text-xl text-right">
+                      {currency.symbol}
+                      {invoice.grandTotal.toFixed(
+                        2,
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Items Row */}
+            <InvoiceBillTable
+              invoices={invoice.items}
+            />
+            <div className="w-px h-2 bg-gray-200 ml-9" />
+
+            {/* Calculation */}
+            <div className="flex flex-col items-end">
+              <div className="grid grid-cols-2 items-center">
+                <span className="font-semibold text-gray-600">
+                  Subtotal :
+                </span>
+                <span className="text-gray-900 font-medium text-right">
+                  {currency.symbol}{" "}
+                  {invoice.total}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 items-center border-b-2 border-gray-800">
+                <span className="font-semibold text-green-600">
+                  Discount :
+                </span>
+                <span className="text-green-600 font-medium text-right">
+                  {currency.symbol} 0
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 items-center">
+                <span className="font-semibold text-gray-600">
+                  Total :
+                </span>
+                <span className="text-gray-600 font-medium text-right">
+                  {currency.symbol}{" "}
+                  {invoice.grandTotal}
+                </span>
               </div>
             </div>
           </div>

@@ -4,15 +4,13 @@ import { NextResponse } from "next/server";
 const BASE_URL =
   "https://api.beta.rebuzzpos.com/api/business/ticket";
 
-export async function PUT(
+export async function POST(
   request: Request,
   {
     params,
   }: { params: Promise<{ invoice: string }> },
 ) {
   const { invoice } = await params;
-  console.log(invoice);
-
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -23,18 +21,16 @@ export async function PUT(
     );
   }
 
-  const body = await request.json();
-
   try {
     const res = await fetch(
-      `${BASE_URL}/${invoice}/make-payment`,
+      `${BASE_URL}/${invoice}/send-reminder`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({}),
       },
     );
 
