@@ -1,12 +1,32 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { getTicketByInvoice } from "@/services/apiTicket.client";
+import { useQuery } from "@tanstack/react-query";
+import {
   ArrowLeft,
   Bell,
+  Check,
   ChevronDown,
   CreditCard,
+  FileEdit,
   FileText,
   Send,
+  Trash2,
 } from "lucide-react";
 import {
   useParams,
@@ -24,25 +44,131 @@ type InvoiceStatus =
 export default function InvoiceDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { currency } = useCurrency();
 
-  // Replace this with your real hook — e.g. useInvoice(id)
-  // const { data: invoice, isLoading } = useInvoice(id as string);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["ticket", id],
+    queryFn: () =>
+      getTicketByInvoice(id as string),
+    enabled: !!id,
+  });
+  const invoice = data?.data?.Tickets;
 
-  // --- Mock data for illustration; delete when wiring up real hook ---
-  const invoice = {
-    id,
-    number: id,
-    status: "sent" as InvoiceStatus,
-    customer: {
-      name: "John Doe",
-      email: "john@example.com",
+  const {
+    data: customerData,
+    isLoading: isCustomerLoading,
+  } = useQuery({
+    queryKey: [
+      "customer-lookup",
+      invoice?.phoneNumber,
+      invoice?.customerEmail,
+    ],
+    queryFn: async () => {
+      const identifier =
+        invoice?.phoneNumber ||
+        invoice?.customerEmail;
+      if (!identifier) return null;
+
+      const query = invoice.phoneNumber
+        ? `phone=${invoice.phoneNumber}`
+        : `email=${invoice.customerEmail}`;
+      const response = await fetch(
+        `/api/customers/lookup?${query}`,
+      );
+      const result = await response.json();
+
+      return result?.data?.users?.[0] || null;
     },
-    grandTotal: 90,
-    dueDate: new Date(),
-    createdAt: new Date(),
-    sentAt: new Date(),
+    enabled: !!invoice,
+  });
+
+  const customerProfile = customerData;
+
+  const [
+    isPaymentModalOpen,
+    setIsPaymentModalOpen,
+  ] = useState(false);
+  const [paymentData, setPaymentData] = useState({
+    amount: invoice?.grandTotal || 0,
+    discount: 0,
+    method: "cash",
+  });
+
+  const openPaymentModal = () => {
+    setPaymentData((prev) => ({
+      ...prev,
+      amount: invoice?.grandTotal || 0,
+    }));
+    setIsPaymentModalOpen(true);
   };
-  const isLoading = false;
+  const calculatedGrandTotal = Math.max(
+    0,
+    paymentData.amount - paymentData.discount,
+  );
+
+  const handleRecordPayment = async () => {
+    const formattedDate = new Date()
+      .toISOString()
+      .replace("T", " ")
+      .split(".")[0];
+
+    const payload = {
+      payment: String(calculatedGrandTotal),
+      method: paymentData.method,
+      discount: Number(paymentData.discount),
+      paidAt: formattedDate,
+      tax: "",
+      taxId: null,
+      taxamt: 0,
+      grandTotal: Number(calculatedGrandTotal), // Ensure this is a number
+      redeemPointDeducted: 0,
+    };
+
+    // Ensure we are using the numeric '20' as seen in your console log
+    const ticketId = invoice.invoice;
+
+    if (!ticketId || isNaN(Number(ticketId))) {
+      toast.error("Invalid Invoice Number");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/tickets/${ticketId}/payment`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      const result = await response.json();
+
+      // The backend might return 200 but with status: "fail"
+      if (result.status === "success") {
+        toast.success("Payment Recorded!");
+        setIsPaymentModalOpen(false);
+        // Optional: window.location.reload() or refresh data state
+      } else {
+        // Logic to handle specific "fail" messages from the API
+        const errorMsg =
+          result.data?.invoice_number ||
+          "Payment failed";
+        toast.error(errorMsg);
+        console.error(
+          "Payment API Failure:",
+          result,
+        );
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      toast.error(
+        "Network error. Please try again.",
+      );
+    }
+  };
   // ------------------------------------------------------------------
 
   const [moreActionsOpen, setMoreActionsOpen] =
@@ -58,7 +184,13 @@ export default function InvoiceDetailPage() {
     );
   }
 
-  if (!invoice) {
+  if (!isLoading && !invoice) {
+    console.log(
+      "API Response received but no Tickets found:",
+      data,
+    );
+  }
+  if (error || !invoice) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-gray-500">
@@ -68,6 +200,10 @@ export default function InvoiceDetailPage() {
     );
   }
 
+  const displayStatus: InvoiceStatus =
+    invoice.paidStatus === "paid"
+      ? "paid"
+      : "sent";
   const isToday =
     new Date(invoice.dueDate).toDateString() ===
     new Date().toDateString();
@@ -99,18 +235,14 @@ export default function InvoiceDetailPage() {
     toast("Opening payment form...");
   };
 
-  const handleRecordPayment = () => {
-    toast("Opening record payment form...");
-  };
-
   const handleEditInvoice = () => {
     router.push(`/invoices/${id}/edit`);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Top bar */}
-      <div className="bg-white border-b px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
@@ -119,275 +251,473 @@ export default function InvoiceDetailPage() {
             <ArrowLeft size={20} />
           </button>
           <h1 className="text-2xl font-bold text-gray-900">
-            Invoice #{invoice.number}
+            Invoice #{invoice?.invoice}
           </h1>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Online Payments toggle */}
-          <button className="flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2 text-sm font-medium text-blue-600 hover:bg-gray-50 transition-colors">
-            Online Payments
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-red-400" />
-              <span className="text-gray-500">
-                OFF
-              </span>
-            </span>
-          </button>
-
           {/* More actions */}
-          <div className="relative">
-            <button
-              onClick={() =>
-                setMoreActionsOpen((v) => !v)
-              }
-              className="flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2 text-sm font-medium text-blue-600 hover:bg-gray-50 transition-colors"
-            >
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 border border-blue-600 rounded-full px-4 py-2 text-sm font-medium hover:bg-blue-100 text-blue-600  transition-colors focus:outline-none focus:ring-2 focus:ring-blue-100">
               More actions{" "}
               <ChevronDown size={14} />
-            </button>
-            {moreActionsOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-10 py-1">
-                <button
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                  onClick={() => {
-                    setMoreActionsOpen(false);
-                    handleEditInvoice();
-                  }}
-                >
-                  Edit invoice
-                </button>
-                <button
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                  onClick={() => {
-                    setMoreActionsOpen(false);
-                    toast("Downloading PDF...");
-                  }}
-                >
-                  Download PDF
-                </button>
-                <button
-                  className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
-                  onClick={() => {
-                    setMoreActionsOpen(false);
-                    toast.error(
-                      "Invoice deleted",
-                    );
-                  }}
-                >
-                  Delete invoice
-                </button>
-              </div>
-            )}
-          </div>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="end"
+              className="w-48 rounded-xl p-1 shadow-lg border-gray-200"
+            >
+              <DropdownMenuItem
+                onClick={handleEditInvoice}
+                className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-600"
+              >
+                <FileEdit size={14} />
+                <span>Edit invoice</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() =>
+                  toast("Downloading PDF...")
+                }
+                className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-600"
+              >
+                <FileText size={14} />
+                <span>Download PDF</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator className="my-1 bg-gray-100" />
+
+              <DropdownMenuItem
+                onClick={() =>
+                  toast.error("Invoice deleted")
+                }
+                className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg text-red-500 focus:bg-red-50 focus:text-red-600"
+              >
+                <Trash2 size={14} />
+                <span>Delete invoice</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Button
             onClick={() =>
               router.push("/invoices/new")
             }
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
           >
             Create another invoice
           </Button>
         </div>
       </div>
 
-      {/* Invoice meta row */}
-      <div className="max-w-3xl mx-auto px-6 py-6">
-        <div className="flex items-center gap-8 mb-6">
-          <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Status
-            </p>
-            <span
-              className={`inline-block px-3 py-1 rounded-md text-sm font-semibold capitalize ${statusColors[invoice.status]}`}
-            >
-              {invoice.status}
-            </span>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Customer
-            </p>
-            <p className="text-blue-600 font-semibold">
-              {invoice.customer.name}
-            </p>
-          </div>
-          <div className="ml-auto text-right">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Amount due
-            </p>
-            <p className="text-2xl font-bold text-gray-900">
-              ${invoice.grandTotal.toFixed(2)}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-              Due
-            </p>
-            <p className="text-2xl font-bold text-gray-900">
-              {dueDateLabel}
-            </p>
-          </div>
-        </div>
+      {/* Body */}
+      <div className="py-12 flex justify-center">
+        <div className="w-full max-w-2xl">
+          {/* Invoice meta row */}
+          <div className="flex justify-between items-start mb-8">
+            {/* Left Group */}
+            <div className="flex gap-8">
+              <div>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-1">
+                  Status
+                </p>
+                {invoice.paidStatus ===
+                "unpaid" ? (
+                  <span className="rounded-md font-semibold capitalize text-xl px-1 py-1 bg-red-400 text-red-700">
+                    {invoice.paidStatus}
+                  </span>
+                ) : (
+                  <span className="rounded-md font-semibold capitalize text-xl px-1 py-1 bg-green-400 text-green-700">
+                    {invoice.paidStatus}
+                  </span>
+                )}
+              </div>
 
-        {/* Steps */}
-        <div className="flex flex-col gap-3">
-          {/* Step 1: Create */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-500 shrink-0">
-              <FileText size={18} />
+              <div>
+                <p className="text-xs text-gray-500  font-bold uppercase tracking-wide mb-1">
+                  Customer
+                </p>
+                {isCustomerLoading ? (
+                  <div className="h-5 w-32 bg-gray-200 animate-pulse rounded" />
+                ) : (
+                  <>
+                    <span className="text-blue-600 rounded-md font-semibold capitalize text-2xl ">
+                      {customerProfile?.name ||
+                        invoice?.ticketName ||
+                        invoice?.customerEmail ||
+                        "Guest"}
+                    </span>
+                    {customerProfile?.loyaltyPoint >
+                      0 && (
+                      <p className="text-[10px] text-orange-500 font-medium flex items-center gap-1">
+                        ★{" "}
+                        {
+                          customerProfile.loyaltyPoint
+                        }{" "}
+                        Points
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-800 text-lg">
-                Create
-              </h3>
-              <p className="text-sm text-gray-500 mt-0.5">
-                <span className="font-medium text-gray-700">
-                  Created:
-                </span>{" "}
-                {new Date(
-                  invoice.createdAt,
-                ).toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit",
-                })}
-              </p>
+
+            {/* Right Group */}
+            <div className="flex gap-8 text-right">
+              <div>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-1">
+                  Amount due
+                </p>
+                <p className="text-2xl font-semibold text-gray-800">
+                  {/* {invoice?.grandTotal?.toLocaleString()} */}
+                  {invoice.paidStatus ===
+                  "paid" ? (
+                    <span className="text-green-600 font-bold">
+                      {currency.symbol}0.00
+                    </span>
+                  ) : (
+                    ` ${currency.symbol}${invoice.grandTotal.toFixed(2)}`
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-1">
+                  Due
+                </p>
+                <p className="text-2xl font-semibold text-gray-800">
+                  {dueDateLabel}
+                </p>
+              </div>
             </div>
-            <button
-              onClick={handleEditInvoice}
-              className="text-sm border border-gray-200 rounded-full px-4 py-1.5 text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Edit invoice
-            </button>
           </div>
 
-          {/* Connector */}
-          <div className="w-px h-4 bg-gray-200 ml-9" />
-
-          {/* Step 2: Send */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-500 shrink-0">
-                <Send size={18} />
+          {/* Steps Section */}
+          <div className="flex flex-col gap-3">
+            {/* Step 1: Created */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4 shadow-md hover:shadow-lg transition duration-300">
+              <div className="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-600 shrink-0">
+                <FileText size={18} />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-gray-800 text-lg">
-                  Send
+                  Created
                 </h3>
-                {invoice.sentAt ? (
-                  <p className="text-sm text-gray-500 mt-0.5">
-                    <span className="font-medium text-gray-700">
-                      Last sent:
-                    </span>{" "}
-                    Marked as sent today.{" "}
-                    <button className="text-blue-600 hover:underline">
-                      Edit date
-                    </button>
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-500 mt-0.5">
-                    Not sent yet.
-                  </p>
-                )}
+                <p className="text-sm text-gray-500 mt-0.5">
+                  <span className="font-medium text-gray-700">
+                    Created:
+                  </span>{" "}
+                  {new Date(
+                    invoice.createdAt,
+                  ).toLocaleString()}
+                </p>
               </div>
               <Button
-                onClick={handleResendInvoice}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5"
+                onClick={handleEditInvoice}
+                className="text-sm border border-blue-600 rounded-full px-4 py-1.5 text-blue-600 bg-white hover:bg-blue-100 transition-colors"
               >
-                {invoice.sentAt
-                  ? "Resend invoice"
-                  : "Send invoice"}
+                Edit invoice
               </Button>
             </div>
 
-            {/* Reminder tip */}
-            <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 ml-14">
-              <Bell
-                size={16}
-                className="text-blue-500 mt-0.5 shrink-0"
-              />
-              <p className="text-sm text-gray-700">
-                Overdue invoices are{" "}
-                <span className="font-bold">
-                  3x more likely to get paid
-                </span>{" "}
-                when you send reminders.{" "}
-                <button className="text-blue-600 font-medium hover:underline">
-                  Schedule reminders.
-                </button>
-              </p>
-            </div>
-          </div>
+            {/* Connector */}
+            <div className="w-px h-2 rounded-2xl bg-gray-200 ml-9" />
 
-          {/* Connector */}
-          <div className="w-px h-4 bg-gray-200 ml-9" />
-
-          {/* Step 3: Manage payments */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-500 shrink-0">
-                <CreditCard size={18} />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-800 text-lg">
-                  Manage payments
-                </h3>
-              </div>
-              <div className="flex items-center gap-2">
+            {/* Step 2: Send */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3 shadow-md hover:shadow-lg transition duration-300">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full border-2 border-blue-600 flex items-center justify-center text-blue-600 shrink-0">
+                  <Send size={18} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-800 text-lg">
+                    Send
+                  </h3>
+                  {invoice.sentAt ? (
+                    <p className="text-sm text-gray-500 mt-0.5">
+                      <span className="font-medium text-gray-700">
+                        Last sent:
+                      </span>{" "}
+                      Marked as sent today.{" "}
+                      <button className="text-blue-600 hover:underline">
+                        Edit date
+                      </button>
+                    </p>
+                  ) : (
+                    <p className="text-sm text-gray-500 mt-0.5">
+                      Not sent yet.
+                    </p>
+                  )}
+                </div>
                 <Button
-                  onClick={handleChargeCard}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5"
+                  onClick={handleResendInvoice}
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
                 >
-                  Charge a credit card
+                  {invoice.sentAt
+                    ? "Resend invoice"
+                    : "Send invoice"}
                 </Button>
-                <button
-                  onClick={handleRecordPayment}
-                  className="text-sm border border-gray-200 rounded-full px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors font-medium"
-                >
-                  Record a payment
-                </button>
+              </div>
+              <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 ml-14">
+                <Bell
+                  size={16}
+                  className="text-blue-600 mt-0.5 shrink-0"
+                />
+                <p className="text-sm text-gray-700">
+                  <button className="text-blue-600 font-medium hover:underline">
+                    Schedule reminders.
+                  </button>
+                </p>
               </div>
             </div>
 
-            <div className="ml-14 flex items-center justify-between text-sm">
-              <p className="text-gray-600">
-                <span className="font-medium">
-                  Amount due:
-                </span>{" "}
-                ${invoice.grandTotal.toFixed(2)} —{" "}
-                <button
-                  onClick={handleRecordPayment}
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Record a payment
-                </button>{" "}
-                manually
-              </p>
-              <p className="text-gray-600">
-                <span className="font-medium">
-                  Status:
-                </span>{" "}
-                Your invoice is awaiting payment
-              </p>
-            </div>
+            {/* Connector */}
+            <div className="w-px h-2 rounded-2xl bg-gray-200 ml-9" />
 
-            <div className="ml-14 text-sm text-gray-600">
-              <button
-                onClick={() =>
-                  toast("Sending reminder...")
-                }
-                className="text-blue-600 hover:underline font-medium"
-              >
-                Send a reminder
-              </button>{" "}
-              now.
+            {/* Step 3: Manage payments */}
+            <div
+              className={`bg-white border rounded-2xl p-5 flex flex-col gap-4 shadow-md transition duration-300 ${
+                invoice.paidStatus === "paid"
+                  ? "border-green-100 bg-green-50/30"
+                  : "border-gray-200"
+              }`}
+            >
+              <div className="flex items-start gap-4">
+                <div
+                  className={`w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                    invoice.paidStatus === "paid"
+                      ? "border-green-500 text-green-600 bg-green-50"
+                      : "border-blue-500 text-blue-600"
+                  }`}
+                >
+                  {invoice.paidStatus ===
+                  "paid" ? (
+                    <Check size={18} />
+                  ) : (
+                    <CreditCard size={18} />
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-800 text-lg">
+                    {invoice.paidStatus === "paid"
+                      ? "Payment completed"
+                      : "Manage payments"}
+                  </h3>
+                  {invoice.paidStatus ===
+                    "paid" && (
+                    <p className="text-sm text-green-600 font-medium">
+                      Paid via{" "}
+                      {invoice.paymentMethod ||
+                        "cash"}{" "}
+                      on{" "}
+                      {new Date(
+                        invoice.updatedAt,
+                      ).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+
+                {/* Only show buttons if the invoice is NOT paid */}
+                {invoice.paidStatus !==
+                  "paid" && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={handleChargeCard}
+                      className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
+                    >
+                      Charge a credit card
+                    </Button>
+                    <Button
+                      onClick={openPaymentModal}
+                      className="text-sm border border-blue-600 rounded-full px-4 py-2 text-blue-600 bg-white hover:bg-blue-100 transition-colors font-medium"
+                    >
+                      Record a payment
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="ml-14 flex items-center justify-between text-sm">
+                <p className="text-gray-600">
+                  <span className="font-medium">
+                    Amount due:
+                  </span>{" "}
+                  {invoice.paidStatus ===
+                  "paid" ? (
+                    <span className="text-green-600 font-bold">
+                      $0.00
+                    </span>
+                  ) : (
+                    `$${invoice.grandTotal.toFixed(2)}`
+                  )}
+                  {invoice.paidStatus !==
+                    "paid" && (
+                    <>
+                      {" — "}
+                      <button
+                        onClick={openPaymentModal}
+                        className="text-blue-600 hover:underline font-medium"
+                      >
+                        Record a payment
+                      </button>{" "}
+                      manually.
+                    </>
+                  )}
+                </p>
+
+                <p className="text-gray-600">
+                  <span className="font-medium">
+                    Status:
+                  </span>{" "}
+                  {invoice.paidStatus ===
+                  "paid" ? (
+                    <span className="text-green-700">
+                      This invoice has been fully
+                      paid
+                    </span>
+                  ) : (
+                    "Your invoice is awaiting payment"
+                  )}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {isPaymentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+            {/* Header */}
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-600">
+                Record Payment
+              </h2>
+              <button
+                onClick={() =>
+                  setIsPaymentModalOpen(false)
+                }
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* Payment Method Selector */}
+              <div>
+                <label className="text-[14px] font-semibold text-gray-400 uppercase tracking-widest">
+                  Payment Method
+                </label>
+                <div className="mt-2">
+                  <Select
+                    value={paymentData.method}
+                    onValueChange={(value) =>
+                      setPaymentData({
+                        ...paymentData,
+                        method: value,
+                      })
+                    }
+                  >
+                    <SelectTrigger className="w-full h-12 rounded-xl border-gray-200 bg-gray-50 focus:ring-blue-500 font-medium capitalize">
+                      <SelectValue placeholder="Select method" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-gray-200 shadow-xl">
+                      <SelectItem
+                        value="cash"
+                        className="py-3 focus:bg-blue-50 focus:text-blue-600 cursor-pointer font-medium"
+                      >
+                        Cash
+                      </SelectItem>
+                      <SelectItem
+                        value="card"
+                        className="py-3 focus:bg-blue-50 focus:text-blue-600 cursor-pointer font-medium"
+                      >
+                        Credit Card
+                      </SelectItem>
+                      <SelectItem
+                        value="qr"
+                        className="py-3 focus:bg-blue-50 focus:text-blue-600 cursor-pointer font-medium"
+                      >
+                        QR / Digital Wallet
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Inputs */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 uppercase">
+                    Total
+                  </label>
+                  <input
+                    type="number"
+                    value={paymentData.amount}
+                    onChange={(e) =>
+                      setPaymentData({
+                        ...paymentData,
+                        amount: Number(
+                          e.target.value,
+                        ),
+                      })
+                    }
+                    disabled
+                    className="w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 uppercase">
+                    Discount
+                  </label>
+                  <input
+                    type="number"
+                    value={paymentData.discount}
+                    onChange={(e) =>
+                      setPaymentData({
+                        ...paymentData,
+                        discount: Number(
+                          e.target.value,
+                        ),
+                      })
+                    }
+                    className="w-full mt-1 px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Summary Area */}
+              <div className="bg-gray-600 rounded-2xl p-5 text-gray-600 flex justify-between items-center">
+                <div>
+                  <p className="text-gray-400 text-xs uppercase font-medium">
+                    Final Amount
+                  </p>
+                  <p className="text-3xl font-bold">
+                    {currency.symbol}
+                    {calculatedGrandTotal.toLocaleString()}
+                  </p>
+                </div>
+                {/* <div className="text-right">
+                  <span className="bg-white/20 px-3 font-semibold py-1 rounded-full text-xs">
+                    Method: {paymentData.method}
+                  </span>
+                </div> */}
+              </div>
+            </div>
+
+            {/* Footer Button */}
+            <div className="p-6 bg-gray-50">
+              <button
+                onClick={handleRecordPayment}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-blue-200"
+              >
+                Confirm & Pay {currency.symbol}
+                {calculatedGrandTotal}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

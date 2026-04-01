@@ -1,6 +1,7 @@
 import { Product } from "./product";
 
 export type Invoice = {
+  invoice?: number;
   invoice_id: string;
   customer_name: string;
   amount: number;

@@ -56,9 +56,9 @@ export default function Page() {
 
   const [invoiceNumber, setInvoiceNumber] =
     useState("");
-  const [poNumber, setPoNumber] = useState("");
-  const [invoiceDate, setInvoiceDate] =
-    useState<Date>(new Date());
+  // const [poNumber, setPoNumber] = useState("");
+  // const [invoiceDate, setInvoiceDate] =
+  useState<Date>(new Date());
   const [notes, setNotes] = useState("");
 
   const [items, setItems] = useState<

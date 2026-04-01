@@ -2,30 +2,32 @@
 
 import { DataTable } from "@/components/ui/data-table";
 import { getInvoiceColumns } from "./invoice-columns";
-import { useInvoiceStore } from "@/stores/invoiceStore";
+
 import { useCurrency } from "@/lib/context/CurrencyContext";
-import { RawTicket } from "@/lib/types/ticket";
+
 import { Invoice } from "@/lib/types/invoice";
+import { useRouter } from "next/navigation";
 
 export default function InvoiceTable({
   invoices,
 }: {
   invoices: Invoice[];
 }) {
-  // const getFilteredInvoices = useInvoiceStore(
-  //   (state) => state.getFilteredInvoices,
-  // );
-  // const invoices = get();
   const { currency } = useCurrency();
   const columns = getInvoiceColumns(currency);
+  const router = useRouter();
 
   return (
     <DataTable
       columns={columns}
       data={invoices}
-      searchColumn="invoice_id"
+      searchColumn="invoice"
       searchPlaceholder="Search invoice #..."
-      pageSize={25}
+      pageSize={10}
+      onRowClick={(row: Invoice) => {
+        console.log(row.invoice);
+        router.push(`/invoices/${row.invoice}`);
+      }}
       filters={[
         {
           columnId: "status",

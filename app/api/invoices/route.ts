@@ -1,4 +1,3 @@
-// app/api/invoices/route.ts
 import {
   NextRequest,
   NextResponse,
