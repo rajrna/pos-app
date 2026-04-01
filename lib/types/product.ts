@@ -4,6 +4,8 @@ export interface Product {
   image?: string;
   price: number;
   category: string;
+  description?: string;
+  costPrice?: number;
 }
 
 export type RawProduct = {
@@ -23,7 +25,7 @@ export type RawProduct = {
   usesStocks: boolean;
   sku: string;
   adminId: string;
-  constPrice: number;
+  costPrice: number;
   tags: unknown[];
   soldBy: string;
   orderedCount: number;
@@ -44,6 +46,8 @@ export function mapRawProductToProduct(
     name: raw.name,
     category: raw.categories,
     price: raw.price,
+    description: raw.description,
+    costPrice: raw.costPrice,
   };
 }
 
@@ -58,6 +62,7 @@ export interface CreateProductInput {
   name: string;
   image?: string;
   price: number;
+  costPrice: number;
   category?: string;
   description?: string;
 }

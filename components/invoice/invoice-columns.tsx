@@ -32,11 +32,11 @@ export const getInvoiceColumns = (
   currency: CurrencyConfig,
 ): ColumnDef<Invoice>[] => [
   {
-    accessorKey: "invoice_id",
+    accessorKey: "invoice",
     header: "Invoice #",
     cell: ({ row }) => (
       <span className="font-medium text-gray-900">
-        {row.getValue("invoice_id")}
+        {row.getValue("invoice")}
       </span>
     ),
   },

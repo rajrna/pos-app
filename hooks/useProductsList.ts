@@ -1,10 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchProductsList } from "@/services/apiProduct";
+import { fetchProductsListClient } from "@/services/apiProduct.client";
 
 export function useProductsList() {
   return useQuery({
     queryKey: ["products-list"],
-    queryFn: fetchProductsList,
+    queryFn: fetchProductsListClient,
+  });
+}
+
+export function useProductNames() {
+  return useQuery({
+    queryKey: ["products-list"],
+    queryFn: fetchProductsListClient,
   });
 }

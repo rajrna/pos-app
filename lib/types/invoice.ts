@@ -1,6 +1,7 @@
 import { Product } from "./product";
 
 export type Invoice = {
+  invoice?: number;
   invoice_id: string;
   customer_name: string;
   amount: number;
@@ -46,7 +47,7 @@ export interface InvoiceItem {
   id: string;
   productId: string;
   name: string;
-  description: string;
+  description: string | undefined;
   quantity: number;
   price: number;
 }
@@ -61,4 +62,5 @@ export interface InvoiceItemsSelectorProps {
   products: Product[];
   items: InvoiceItem[];
   onItemsChange: (items: InvoiceItem[]) => void;
+  refetchProducts?: () => Promise<void> | void;
 }

@@ -1,50 +1,125 @@
-import { Fragment } from "react";
+import { useState } from "react";
 import {
   Trash2,
   CirclePlus,
   GripVertical,
+  Check,
+  ChevronsUpDown,
+  Plus,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-
-import { InvoiceItem } from "@/lib/types/invoice";
-import { InvoiceItemsSelectorProps } from "@/lib/types/invoice";
-
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { TableCell, TableRow } from "../ui/table";
 import { Input } from "../ui/input";
-
-const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
-  productId: "",
-  name: "",
-  description: "",
-  quantity: 1,
-  price: 0,
-};
+import {
+  InvoiceItem,
+  InvoiceItemsSelectorProps,
+} from "@/lib/types/invoice";
+import { useCreateProduct } from "@/hooks/useProducts";
 
 export default function InvoiceItemsSelector({
   products,
   items,
   onItemsChange,
+  refetchProducts,
 }: InvoiceItemsSelectorProps) {
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
+  const [isLoading, setIsLoading] =
+    useState(false);
+  const [search, setSearch] = useState("");
+  const [activeRowId, setActiveRowId] = useState<
+    string | null
+  >(null);
+  const { mutateAsync: createProductMutation } =
+    useCreateProduct();
+
+  // Consolidated Product State
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    price: 0,
+    costPrice: 0,
+    description: "",
+  });
+
+  const resetModalFields = () => {
+    setNewProduct({
+      name: "",
+      price: 0,
+      costPrice: 0,
+      description: "",
+    });
+    setSearch("");
+  };
+
+  const openCreateModal = (
+    rowId: string,
+    name: string,
+  ) => {
+    setActiveRowId(rowId);
+    setNewProduct((prev) => ({ ...prev, name }));
+    setIsModalOpen(true);
+  };
+
+  const handleSaveProduct = async () => {
+    try {
+      const result =
+        await createProductMutation(newProduct);
+      const savedProduct = result;
+
+      onItemsChange(
+        items.map((item) =>
+          item.id === activeRowId
+            ? {
+                ...item,
+                name: savedProduct.name,
+                productId: savedProduct.id,
+                price: savedProduct.price,
+                description:
+                  savedProduct.description,
+              }
+            : item,
+        ),
+      );
+      setIsModalOpen(false);
+      resetModalFields();
+    } catch (err) {
+      console.error("Mutation failed", err);
+    }
+  };
   const addItem = () => {
     onItemsChange([
       ...items,
       {
         id: crypto.randomUUID(),
-        ...DEFAULT_ITEM,
+        productId: "",
+        name: "",
+        description: "",
+        quantity: 1,
+        price: 0,
       },
     ]);
-  };
-
-  const removeItem = (id: string) => {
-    onItemsChange(
-      items.filter((item) => item.id !== id),
-    );
   };
 
   const updateItem = (
@@ -55,204 +130,309 @@ export default function InvoiceItemsSelector({
     onItemsChange(
       items.map((item) => {
         if (item.id !== id) return item;
-
-        if (field === "name") {
-          const product = products.find(
-            (p) =>
-              p.name.toLowerCase() ===
-              (value as string).toLowerCase(),
-          );
-          return {
-            ...item,
-            name: value as string,
-            productId: product?.id ?? "",
-            price: product?.price ?? 0,
-          };
-        }
-
         return { ...item, [field]: value };
       }),
     );
   };
 
-  const calculateTotal = (
-    quantity: number,
-    price: number,
+  const handleProductSelect = (
+    itemId: string,
+    productName: string,
   ) => {
-    return (quantity * price).toFixed(2);
+    const product = products.find(
+      (p) => p.name === productName,
+    );
+    onItemsChange(
+      items.map((item) => {
+        if (item.id !== itemId) return item;
+        return {
+          ...item,
+          name: productName,
+          productId: product?.id ?? "",
+          price: product?.price ?? 0,
+        };
+      }),
+    );
   };
 
   return (
     <>
       {items.map((item) => (
-        <Fragment key={item.id}>
-          {/* Main Item Row */}
-          <TableRow
-            key={item.id}
-            className="border-b-0"
-          >
-            <TableCell className="w-6 px-1">
-              <GripVertical className="h-4 w-4 text-gray-400 cursor-grab" />
-            </TableCell>
+        <TableRow
+          key={item.id}
+          className="border-b-0"
+        >
+          <TableCell className="w-6 px-1">
+            <GripVertical className="h-4 w-4 text-gray-400 cursor-grab" />
+          </TableCell>
 
-            {/* Product Name */}
-            <TableCell className="min-w-40">
-              <Input
-                value={item.name}
-                onChange={(e) =>
-                  updateItem(
-                    item.id,
-                    "name",
-                    e.target.value,
-                  )
-                }
-                placeholder="Product Name"
-                className="border-gray-300"
-                list={`products-${item.id}`}
-              />
-              <datalist
-                id={`products-${item.id}`}
+          <TableCell className="min-w-50">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className={cn(
+                    "w-full justify-between font-normal border-gray-300",
+                    !item.name &&
+                      "text-muted-foreground",
+                  )}
+                >
+                  {item.name ||
+                    "Select product..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-75 p-0"
+                align="start"
               >
-                {products.map((product) => (
-                  <option
-                    key={product.id}
-                    value={product.name}
+                <Command>
+                  <CommandInput
+                    placeholder="Search product..."
+                    value={search}
+                    onValueChange={setSearch}
                   />
-                ))}
-              </datalist>
-            </TableCell>
+                  <CommandList>
+                    <CommandEmpty className="p-0">
+                      <div className="py-6 text-center text-sm">
+                        No product found.
+                      </div>
+                      <Button
+                        variant="secondary"
+                        className="w-full rounded-none border-t flex items-center justify-start gap-2 px-4 py-2"
+                        onClick={() =>
+                          openCreateModal(
+                            item.id,
+                            search,
+                          )
+                        }
+                      >
+                        <Plus className="h-4 w-4" />
+                        <span>
+                          Create &quot;{search}
+                          &quot;
+                        </span>
+                      </Button>
+                    </CommandEmpty>
+                    <CommandGroup>
+                      {products.map((product) => (
+                        <CommandItem
+                          key={product.id}
+                          value={product.name}
+                          onSelect={() =>
+                            handleProductSelect(
+                              item.id,
+                              product.name,
+                            )
+                          }
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              item.name ===
+                                product.name
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                          <div className="flex flex-col">
+                            <span>
+                              {product.name}
+                            </span>
 
-            {/* Description */}
-            <TableCell className="min-w-48">
-              <Input
-                value={item.description}
-                onChange={(e) =>
-                  updateItem(
-                    item.id,
-                    "description",
-                    e.target.value,
-                  )
-                }
-                placeholder="Enter item description"
-                className="border-gray-300 text-gray-400"
-              />
-            </TableCell>
+                            <span className="text-xs text-muted-foreground">
+                              ${product.price}
+                            </span>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </TableCell>
 
-            {/* Quantity */}
-            <TableCell className="w-20">
-              <Input
-                type="number"
-                min={1}
-                value={item.quantity}
-                onChange={(e) =>
-                  updateItem(
-                    item.id,
-                    "quantity",
-                    Number(e.target.value),
-                  )
-                }
-                className="border-gray-300 text-right"
-              />
-            </TableCell>
+          <TableCell className="min-w-48">
+            <Input
+              value={item.description}
+              onChange={(e) =>
+                updateItem(
+                  item.id,
+                  "description",
+                  e.target.value,
+                )
+              }
+              placeholder="Test Description"
+            />
+          </TableCell>
 
-            {/* Price */}
-            <TableCell className="w-24">
-              <Input
-                type="number"
-                min={0}
-                step={0.01}
-                value={item.price}
-                onChange={(e) =>
-                  updateItem(
-                    item.id,
-                    "price",
-                    Number(e.target.value),
-                  )
-                }
-                className="border-gray-300 text-right"
-              />
-            </TableCell>
-
-            {/* Total */}
-            <TableCell className="w-20 text-right font-medium">
-              $
-              {calculateTotal(
-                item.quantity,
-                item.price,
-              )}
-            </TableCell>
-
-            {/* Delete */}
-            <TableCell className="w-8">
-              <Trash2
-                className="h-4 w-4 text-blue-500 cursor-pointer hover:text-red-500 transition-colors"
-                onClick={() =>
-                  removeItem(item.id)
-                }
-              />
-            </TableCell>
-          </TableRow>
-
-          {/* Sub Row - Edit income account & Tax */}
-          <TableRow
-            key={`${item.id}-sub`}
-            className="bg-blue-50/50 border-b"
-          >
-            <TableCell />
-            <TableCell colSpan={2}>
-              <span className="text-blue-600 font-semibold text-sm cursor-pointer hover:underline">
-                Edit income account
-              </span>
-            </TableCell>
-            <TableCell
-              colSpan={2}
+          <TableCell className="w-24">
+            <Input
+              type="number"
+              value={item.quantity}
+              onChange={(e) =>
+                updateItem(
+                  item.id,
+                  "quantity",
+                  Number(e.target.value),
+                )
+              }
               className="text-right"
+            />
+          </TableCell>
+
+          <TableCell className="w-24">
+            <Input
+              type="number"
+              value={item.price}
+              onChange={(e) =>
+                updateItem(
+                  item.id,
+                  "price",
+                  Number(e.target.value),
+                )
+              }
+              className="text-right"
+            />
+          </TableCell>
+
+          <TableCell className="w-24 text-right font-medium">
+            $
+            {(item.quantity * item.price).toFixed(
+              2,
+            )}
+          </TableCell>
+
+          <TableCell className="w-8">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                onItemsChange(
+                  items.filter(
+                    (i) => i.id !== item.id,
+                  ),
+                )
+              }
             >
-              <div className="flex items-center justify-end gap-2">
-                <span className="text-sm text-gray-600">
-                  Tax
-                </span>
-                <Select>
-                  <SelectTrigger className="w-36 h-8 text-sm">
-                    <SelectValue placeholder="Select a tax" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">
-                      No Tax
-                    </SelectItem>
-                    <SelectItem value="gst-10">
-                      GST 10%
-                    </SelectItem>
-                    <SelectItem value="vat-20">
-                      VAT 20%
-                    </SelectItem>
-                    <SelectItem value="hst-13">
-                      HST 13%
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </TableCell>
-            <TableCell className="text-right text-gray-400">
-              —
-            </TableCell>
-            <TableCell />
-          </TableRow>
-        </Fragment>
+              <Trash2 className="h-4 w-4 text-blue-500 hover:text-red-500" />
+            </Button>
+          </TableCell>
+        </TableRow>
       ))}
 
-      {/* Add Item Row */}
       <TableRow className="bg-blue-50/30 hover:bg-blue-50/50">
         <TableCell colSpan={7}>
           <button
             onClick={addItem}
-            className="flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors px-13 py-1"
+            className="flex items-center gap-2 text-blue-600 font-semibold text-sm hover:text-blue-700 transition-colors px-4 py-2"
           >
             <CirclePlus className="h-4 w-4" />
             Add an item
           </button>
         </TableCell>
       </TableRow>
+
+      {/* PRODUCT CREATION DIALOG */}
+      <Dialog
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Create New Product
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">
+                Product Name
+              </Label>
+              <Input
+                id="name"
+                value={newProduct.name}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    name: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="costPrice">
+                Cost Price
+              </Label>
+              <Input
+                id="costPrice"
+                type="number"
+                value={newProduct.costPrice}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    costPrice: Number(
+                      e.target.value,
+                    ),
+                  })
+                }
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="price">
+                Selling Price
+              </Label>
+              <Input
+                id="price"
+                type="number"
+                value={newProduct.price}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    price: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">
+                Description
+              </Label>
+              <Input
+                id="description"
+                value={newProduct.description}
+                onChange={(e) =>
+                  setNewProduct({
+                    ...newProduct,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() =>
+                setIsModalOpen(false)
+              }
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveProduct}
+              disabled={isLoading}
+            >
+              {isLoading
+                ? "Saving..."
+                : "Save Product"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
