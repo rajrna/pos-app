@@ -7,7 +7,6 @@ import { RawBillDetailResponse } from "@/lib/types/bill";
 export async function getTransactionDetail(
   invoiceNo: number,
 ): Promise<Transaction> {
-  // Calls your own Next.js route handler which reads the httpOnly cookie server-side
   const res = await fetch(
     `/api/transactions/${invoiceNo}`,
     {
@@ -20,6 +19,6 @@ export async function getTransactionDetail(
     );
   const data: RawBillDetailResponse =
     await res.json();
-  // console.log("detail response:", data);
+
   return mapDetailBillToTransaction(data);
 }
