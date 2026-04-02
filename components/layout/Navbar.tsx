@@ -1,30 +1,33 @@
-"use client";
-
-import React from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
-
-import { useSidebar } from "@/providers/SidebarProvider";
 
 import User from "./User";
 import HelpButton from "./HelpButton";
-import { Button } from "../ui/button";
-// import { Badge } from "@/components/ui/badge";
 
-export default function Navbar() {
-  const { toggleMobile } = useSidebar();
+import MobileButton from "./MobileButton";
+import { cookies } from "next/headers";
+
+export default async function Navbar() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  const res = await fetch(
+    "https://api.beta.rebuzzpos.com/api/business/aboutBusiness",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  const result = await res.json();
+  const businessData = result.data?.business;
+  console.log(businessData);
+  // const { toggleMobile } = useSidebar();
   return (
     <nav className="w-full border-b bg-white">
       <div className="flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden h-8 w-8 text-gray-600"
-            onClick={toggleMobile}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          <MobileButton />
           <div className="text-xl font-semibold text-blue-600">
             <Link href="/">Rebuzz</Link>
           </div>
@@ -45,7 +48,12 @@ export default function Navbar() {
             </Badge>
           </Button> */}
           <HelpButton />
-          <User />
+          <User
+            initialBusinessName={
+              businessData?.businessName ||
+              "My Business"
+            }
+          />
         </div>
       </div>
     </nav>

@@ -179,8 +179,8 @@ export default function Page() {
         console.log("Success", response);
         toast.success("Invoice saved");
         const newId =
-          response?.data?.ticket?._id ||
-          response?.data?.ticket?.id;
+          response?.data?.ticket?.invoice ||
+          response?.data?.ticket?.invoice;
         if (newId) {
           router.push(`/invoices/${newId}`);
           // router.push(`/invoices/`);
