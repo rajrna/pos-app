@@ -64,3 +64,26 @@ export interface InvoiceItemsSelectorProps {
   onItemsChange: (items: InvoiceItem[]) => void;
   refetchProducts?: () => Promise<void> | void;
 }
+
+export interface InvoiceItemDetails {
+  preTaxPrice: number;
+  taxApplied: boolean;
+  taxAmount: number;
+  costPrice: number;
+  quantity: number;
+  discount: number;
+  isTaxable: boolean;
+  _id: string;
+  product: string;
+  productName: string;
+  unitPrice: number;
+  note: string | null;
+  addons: any[];
+  discounts: any[];
+}
+
+export interface InvoiceItemGroup {
+  _id: string;
+  item: InvoiceItemDetails[];
+  createdAt: string;
+}

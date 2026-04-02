@@ -21,8 +21,6 @@ export default async function Navbar() {
   );
   const result = await res.json();
   const businessData = result.data?.business;
-  console.log(businessData);
-  // const { toggleMobile } = useSidebar();
   return (
     <nav className="w-full border-b bg-white">
       <div className="flex items-center justify-between px-6 py-3">

@@ -2,29 +2,7 @@
 import { useCurrency } from "@/lib/context/CurrencyContext";
 import InvoiceBillTable from "../ticket/InvoiceBillTable";
 import { RefObject } from "react";
-
-interface InvoiceItemDetails {
-  preTaxPrice: number;
-  taxApplied: boolean;
-  taxAmount: number;
-  costPrice: number;
-  quantity: number;
-  discount: number;
-  isTaxable: boolean;
-  _id: string;
-  product: string;
-  productName: string;
-  unitPrice: number;
-  note: string | null;
-  addons: any[];
-  discounts: any[];
-}
-
-interface InvoiceItemGroup {
-  _id: string;
-  item: InvoiceItemDetails[];
-  createdAt: string;
-}
+import { InvoiceItemGroup } from "@/lib/types/invoice";
 
 interface InvoiceData {
   _id: string;
