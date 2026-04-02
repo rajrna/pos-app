@@ -1,6 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
-import { fetchProductsList } from "@/services/apiProduct";
 import { fetchProductsListClient } from "@/services/apiProduct.client";
 
 export function useProductsList() {

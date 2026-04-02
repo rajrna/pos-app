@@ -3,9 +3,9 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/ui/pop-calendar";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import { DatePicker } from "@/components/ui/pop-calendar";
 import {
   Table,
   TableBody,
@@ -26,6 +26,9 @@ import { Customer } from "@/lib/types/customer";
 import { CreateTicketInput } from "@/lib/types/ticket";
 import { useRouter } from "next/navigation";
 import { useCreateTicket } from "@/hooks/useTickets";
+import { useBusiness } from "@/hooks/useBusiness";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -49,10 +52,14 @@ export default function Page() {
     data: products = [],
     isLoading: loadingProducts,
   } = useProductsList();
+  const { data: business } = useBusiness();
   // const createInvoiceMutation = useCreateTicket();
 
   const [selectedCustomer, setSelectedCustomer] =
     useState<Customer | null>(null);
+
+  const [invoiceTitle, setInvoiceTitle] =
+    useState("");
 
   const [invoiceNumber, setInvoiceNumber] =
     useState("");
@@ -142,6 +149,7 @@ export default function Page() {
 
     const ticketData: CreateTicketInput = {
       ticketName:
+        invoiceTitle ??
         selectedCustomer?.name ??
         "Walk-in Customer",
       customerEmail:
@@ -183,7 +191,6 @@ export default function Page() {
           response?.data?.ticket?.invoice;
         if (newId) {
           router.push(`/invoices/${newId}`);
-          // router.push(`/invoices/`);
         }
       },
       onError: (err) => {
@@ -215,20 +222,47 @@ export default function Page() {
 
       <div className="p-3 border rounded-lg">
         <h2 className="font-semibold">
-          Business adress and contact details,
-          title, summary and logo
+          Business address and contact details,
+          title, summary
         </h2>
+        <div>
+          <h2 className="font-bold text-lg">
+            {business?.businessName ||
+              "My Business"}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {business?.address},{" "}
+          </p>
+          <p>{business?.panNumber}</p>
+        </div>
       </div>
 
       <div className="my-5 border-gray-300 border shadow-lg rounded-lg ">
         <div className="flex justify-between">
           <CustomerSelector
-            // customers={customers}
             onCustomerSelect={(customer) => {
               setSelectedCustomer(customer);
             }}
           />
           <form>
+            <div className="grid grid-cols-3 gap-4 items-start bp-1 mt-1">
+              <Label className="text-right pt-4 text-[16px] font-semibold text-blue-600">
+                Invoice Title
+              </Label>
+              <div className="col-span-2 py-3 px-3">
+                <Input
+                  className="hover:bg-blue-100 font-semibold px-6"
+                  id="invoiceTitle"
+                  placeholder="Invoice"
+                  value={invoiceTitle}
+                  onChange={(e) =>
+                    setInvoiceTitle(
+                      e.target.value,
+                    )
+                  }
+                />
+              </div>
+            </div>
             {/* <div className="grid grid-cols-3 gap-4 items-start bp-1">
               <Label className="text-right pt-3 text-[16px] font-semibold text-gray-700">
                 Invoice no.
