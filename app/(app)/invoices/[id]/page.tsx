@@ -33,9 +33,12 @@ import {
   useParams,
   useRouter,
 } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import InvoiceBillTable from "../../../../components/ticket/InvoiceBillTable";
+import jsPDF from "jspdf";
+import { toPng } from "html-to-image";
+
+import InvoicePreview from "@/components/invoice/InvoicePreview";
 type InvoiceStatus =
   | "draft"
   | "sent"
@@ -46,6 +49,48 @@ export default function InvoiceDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const { currency } = useCurrency();
+  const invoiceRef = useRef(null);
+  const [isGenerating, setIsGenerating] =
+    useState(false);
+  const handleDownloadPDF = async () => {
+    if (!invoiceRef.current) return;
+
+    try {
+      setIsGenerating(true);
+
+      const dataUrl = await toPng(
+        invoiceRef.current,
+        {
+          quality: 1.0,
+          pixelRatio: 2,
+          backgroundColor: "#ffffff",
+        },
+      );
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgProps =
+        pdf.getImageProperties(dataUrl);
+      const pdfWidth =
+        pdf.internal.pageSize.getWidth();
+      const pdfHeight =
+        (imgProps.height * pdfWidth) /
+        imgProps.width;
+
+      pdf.addImage(
+        dataUrl,
+        "PNG",
+        0,
+        0,
+        pdfWidth,
+        pdfHeight,
+      );
+      pdf.save(`Invoice-${invoice.invoice}.pdf`);
+    } catch (err) {
+      console.error("PDF Generation Error:", err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["ticket", id],
@@ -54,8 +99,8 @@ export default function InvoiceDetailPage() {
     enabled: !!id,
   });
   const invoice = data?.data?.Tickets;
-  const invoice2 = data?.data;
-  console.log(invoice2);
+  // const invoice2 = data?.data;
+  // console.log(invoice2);
 
   const {
     data: customerData,
@@ -304,9 +349,7 @@ export default function InvoiceDetailPage() {
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                onClick={() =>
-                  toast("Downloading PDF...")
-                }
+                onClick={handleDownloadPDF}
                 className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg focus:bg-blue-50 focus:text-blue-600"
               >
                 <FileText size={14} />
@@ -665,128 +708,11 @@ export default function InvoiceDetailPage() {
           </div>
 
           {/* Invoice Preview */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5 mt-4 shadow-md hover:shadow-lg transition duration-300">
-            {/* Header: Company Info */}
-            <div className="border-b py-4">
-              <h1 className="font-semibold text-2xl tracking-tight text-gray-900">
-                INVOICE
-              </h1>
-              <h2 className="font-bold text-gray-800">
-                Meowtrix
-              </h2>
-              <p className="text-sm text-gray-500">
-                Nepal
-              </p>
-            </div>
-
-            {/* Main Info Row */}
-            <div className="flex justify-between items-start py-6">
-              {/* Left Side: Bill To */}
-              <div className="space-y-1">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Bill to
-                </p>
-                <p className="text-gray-900 font-bold text-lg">
-                  {customerProfile?.name ||
-                    invoice?.ticketName ||
-                    invoice?.customerEmail ||
-                    "Guest"}
-                </p>
-                <div className="text-sm text-gray-500 leading-relaxed">
-                  <p>{invoice?.phoneNumber}</p>
-                  <p>{invoice?.customerEmail}</p>
-                </div>
-              </div>
-
-              {/* Right Side: Invoice Details (The Grid) */}
-              <div className="w-60 ml-auto text-sm">
-                <div className="space-y-2 mb-2">
-                  {/* Row: Number */}
-                  <div className="grid grid-cols-2 items-center">
-                    <span className="font-semibold text-gray-600">
-                      Invoice Number :
-                    </span>
-                    <span className="text-gray-900 font-medium text-right">
-                      {invoice.invoice}
-                    </span>
-                  </div>
-
-                  {/* Row: Date */}
-                  <div className="grid grid-cols-2 items-center">
-                    <span className="font-semibold text-gray-600">
-                      Invoice Date :
-                    </span>
-
-                    <span className="text-gray-900 text-right">
-                      {new Date(
-                        invoice.createdAt,
-                      ).toLocaleDateString(
-                        undefined,
-                        {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        },
-                      )}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Amount Box */}
-                <div className="bg-gray-200  p-1 border border-gray-100">
-                  <div className="grid grid-cols-2 items-center">
-                    <span className="font-bold text-gray-600">
-                      Amount :
-                    </span>
-
-                    <span className="text-gray-900 font-black text-xl text-right">
-                      {currency.symbol}
-                      {invoice.grandTotal.toFixed(
-                        2,
-                      )}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Items Row */}
-            <InvoiceBillTable
-              invoices={invoice.items}
-            />
-            <div className="w-px h-2 bg-gray-200 ml-9" />
-
-            {/* Calculation */}
-            <div className="flex flex-col items-end">
-              <div className="grid grid-cols-2 items-center">
-                <span className="font-semibold text-gray-600">
-                  Subtotal :
-                </span>
-                <span className="text-gray-900 font-medium text-right">
-                  {currency.symbol}{" "}
-                  {invoice.total}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 items-center border-b-2 border-gray-800">
-                <span className="font-semibold text-green-600">
-                  Discount :
-                </span>
-                <span className="text-green-600 font-medium text-right">
-                  {currency.symbol} 0
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 items-center">
-                <span className="font-semibold text-gray-600">
-                  Total :
-                </span>
-                <span className="text-gray-600 font-medium text-right">
-                  {currency.symbol}{" "}
-                  {invoice.grandTotal}
-                </span>
-              </div>
-            </div>
-          </div>
+          <InvoicePreview
+            invoiceRef={invoiceRef}
+            invoice={invoice}
+            customerProfile={customerProfile}
+          />
         </div>
       </div>
       {isPaymentModalOpen && (
