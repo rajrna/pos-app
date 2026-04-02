@@ -329,7 +329,7 @@ export default function InvoiceDetailPage() {
 
           <Button
             onClick={() =>
-              router.push("/invoices/new")
+              router.push("/invoices/add")
             }
             className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6"
           >

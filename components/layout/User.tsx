@@ -1,27 +1,53 @@
+"use client";
+
+import React from "react";
+import { useRouter } from "next/navigation";
+
+import {
+  ChevronDown,
+  LogOut,
+  Settings,
+  User2,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown } from "lucide-react";
-export default function User() {
+
+interface UserProps {
+  initialBusinessName: string;
+}
+
+export default function User({
+  initialBusinessName,
+}: UserProps) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+    router.refresh();
+  };
+
   return (
     <div className="bg-blue-100 rounded-xl">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="flex items-center gap-2 md:px-3 px-1 "
+            className="flex items-center gap-2 md:px-3 px-1"
           >
-            <span className="font-medium text-gray-900">
-              Meowtrix
+            <span className="font-medium text-gray-600">
+              {initialBusinessName}{" "}
             </span>
             <Badge
               variant="secondary"
-              className="bg-gray-100 text-gray-700 hover:bg-gray-100 hidden md:block"
+              className="hidden md:block"
             >
               STARTER
             </Badge>
@@ -32,16 +58,19 @@ export default function User() {
           align="end"
           className="w-48"
         >
-          <DropdownMenuItem>
+          <DropdownMenuItem className="text-gray-600 cursor-pointer">
+            <User2 className="mr-2 h-4 w-4" />
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="text-gray-600 cursor-pointer">
+            <Settings className="mr-2 h-4 w-4" />
             Settings
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-          </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="text-red-600 cursor-pointer"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
             Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
