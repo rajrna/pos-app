@@ -36,7 +36,7 @@ export const getInvoiceColumns = (
     header: "Invoice #",
     cell: ({ row }) => (
       <span className="font-medium text-gray-900">
-        {row.getValue("invoice")}
+        ORD-{row.getValue("invoice")}
       </span>
     ),
   },

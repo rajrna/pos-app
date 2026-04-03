@@ -25,6 +25,7 @@ import {
   CreditCard,
   FileEdit,
   FileText,
+  Link,
   Mail,
   Send,
   Trash2,
@@ -39,6 +40,7 @@ import jsPDF from "jspdf";
 import { toPng } from "html-to-image";
 
 import InvoicePreview from "@/components/invoice/InvoicePreview";
+import { useBusiness } from "@/hooks/useBusiness";
 type InvoiceStatus =
   | "draft"
   | "sent"
@@ -49,6 +51,8 @@ export default function InvoiceDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const { currency } = useCurrency();
+  const { data: business } = useBusiness();
+
   const invoiceRef = useRef(null);
   const [isGenerating, setIsGenerating] =
     useState(false);
@@ -99,8 +103,6 @@ export default function InvoiceDetailPage() {
     enabled: !!id,
   });
   const invoice = data?.data?.Tickets;
-  // const invoice2 = data?.data;
-  // console.log(invoice2);
 
   const {
     data: customerData,
@@ -124,18 +126,23 @@ export default function InvoiceDetailPage() {
         `/api/customers/lookup?${query}`,
       );
       const result = await response.json();
-
+      console.log(result);
       return result?.data?.users?.[0] || null;
     },
     enabled: !!invoice,
   });
 
   const customerProfile = customerData;
-
   const [
     isPaymentModalOpen,
     setIsPaymentModalOpen,
   ] = useState(false);
+
+  const [
+    isSendInvoiceModalOpen,
+    setIsSendInvoiceModalOpen,
+  ] = useState(false);
+
   const [paymentData, setPaymentData] = useState({
     amount: invoice?.grandTotal || 0,
     discount: 0,
@@ -149,6 +156,10 @@ export default function InvoiceDetailPage() {
     }));
     setIsPaymentModalOpen(true);
   };
+  const openSendInvoiceModal = () => {
+    setIsSendInvoiceModalOpen(true);
+  };
+
   const calculatedGrandTotal = Math.max(
     0,
     paymentData.amount - paymentData.discount,
@@ -212,6 +223,15 @@ export default function InvoiceDetailPage() {
         "Network error. Please try again.",
       );
     }
+  };
+
+  const copyPublicLink = () => {
+    const publicUrl = `${window.location.origin}/preview/${invoice.invoice}`;
+
+    navigator.clipboard.writeText(publicUrl);
+    toast.success(
+      "Public link copied to clipboard!",
+    );
   };
   // ------------------------------------------------------------------
 
@@ -414,7 +434,6 @@ export default function InvoiceDetailPage() {
                   <>
                     <span className="text-blue-600 rounded-md font-semibold capitalize text-2xl ">
                       {customerProfile?.name ||
-                        invoice?.ticketName ||
                         invoice?.customerEmail ||
                         "Guest"}
                     </span>
@@ -463,7 +482,7 @@ export default function InvoiceDetailPage() {
           </div>
 
           {/* Steps Section */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-4">
             {/* Step 1: Created */}
             <div className="bg-white border border-gray-200 rounded-2xl p-5 flex items-start gap-4 shadow-md hover:shadow-lg transition duration-300">
               <div className="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center text-blue-600 shrink-0">
@@ -548,7 +567,8 @@ export default function InvoiceDetailPage() {
                 </div>
 
                 <Button
-                  onClick={handleResendInvoice}
+                  // onClick={handleResendInvoice}
+                  onClick={openSendInvoiceModal}
                   variant={
                     invoice.sentAt
                       ? "outline"
@@ -712,12 +732,82 @@ export default function InvoiceDetailPage() {
             invoiceRef={invoiceRef}
             invoice={invoice}
             customerProfile={customerProfile}
+            businessProfile={business}
           />
         </div>
       </div>
+      {isSendInvoiceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="p-6 border-b-2 border-gray-100 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-600">
+                Send Invoice
+              </h2>
+              <button
+                onClick={() =>
+                  setIsSendInvoiceModalOpen(false)
+                }
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="p-4 flex flex-col gap-2">
+              <div className="grid grid-cols-2 justify-between p-2  gap-2">
+                <button
+                  className="cursor-pointer"
+                  onClick={copyPublicLink}
+                >
+                  <div className="bg-white border border-gray-200  flex flex-col justify-between items-center rounded-2xl p-6  gap-4 shadow-md hover:shadow-lg transition duration-300">
+                    <Link className="text-purple-500 " />
+                    <p className="font-semibold text-gray-800 text-xl">
+                      Copy Link
+                    </p>
+                    <p className=" text-gray-800">
+                      A link to your invoice
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  className="cursor-pointer"
+                  onClick={handleDownloadPDF}
+                >
+                  <div className="bg-white border border-gray-200 flex flex-col items-center rounded-2xl p-6  gap-4 shadow-md hover:shadow-lg transition duration-300">
+                    <FileText className="text-purple-500 " />
+                    <p className="font-semibold text-gray-800 text-xl">
+                      Download PDF
+                    </p>
+                    <p className=" text-gray-800">
+                      Your invoice in a document
+                    </p>
+                  </div>
+                </button>
+              </div>
+
+              <button
+                className="cursor-pointer"
+                onClick={handleResendInvoice}
+              >
+                <div className="bg-white border border-gray-200 flex flex-col items-center rounded-2xl p-5  gap-4 shadow-md hover:shadow-lg transition duration-300">
+                  <Mail className="text-purple-500 " />
+                  <h1 className="font-semibold text-gray-800 text-xl">
+                    Send Invoice By Mail
+                  </h1>
+                  <p className=" text-gray-800">
+                    For premium users, mail the
+                    invoice directly to your
+                    customers
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {isPaymentModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             {/* Header */}
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <h2 className="text-xl font-semibold text-gray-600">

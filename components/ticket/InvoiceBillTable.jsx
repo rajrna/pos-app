@@ -11,21 +11,20 @@ export default function InvoiceBillTable({
   invoices,
 }) {
   return (
-    <div>
-      {/* Table Headers */}
-      <Table>
+    <div className="w-full overflow-hidden">
+      <Table className="w-full border-collapse">
         <TableHeader>
-          <TableRow className="bg-gray-400 hover:bg-gray-400 ">
-            <TableHead className="text-gray-100">
+          <TableRow className="bg-gray-400 hover:bg-gray-400 border-none ">
+            <TableHead className="text-white w-[40%]">
               Items
             </TableHead>
-            <TableHead className="text-gray-100">
+            <TableHead className="text-white w-[20%]">
               Quantity
             </TableHead>
-            <TableHead className="text-gray-100">
+            <TableHead className="text-white w-[20%]">
               Price
             </TableHead>
-            <TableHead className="text-gray-100 text-right">
+            <TableHead className="text-white w-[20%] text-right">
               Amount
             </TableHead>
           </TableRow>
@@ -46,8 +45,10 @@ export default function InvoiceBillTable({
                   {details.unitPrice}
                 </TableCell>
                 <TableCell className="text-right">
-                  {details.quantity *
-                    details.unitPrice}
+                  {(
+                    details.quantity *
+                    details.unitPrice
+                  ).toFixed(2)}
                 </TableCell>
               </TableRow>
             );
