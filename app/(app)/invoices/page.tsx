@@ -1,13 +1,15 @@
 "use client";
 import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import InvoiceHeader from "@/components/invoice/InvoiceHeader";
+
+import { useInvoiceStore } from "@/stores/invoiceStore";
+
+import { fetchInvoicesClient } from "@/services/apiInvoice.client";
+
+import { Spinner } from "@/components/ui/spinner";
 import InvoiceStats from "@/components/invoice/InvoiceStats";
 import InvoiceTable from "@/components/invoice/InvoiceTable";
-import { fetchInvoices } from "@/services/apiInvoice.server";
-import { useInvoiceStore } from "@/stores/invoiceStore";
-import { Spinner } from "@/components/ui/spinner";
-import { fetchInvoicesClient } from "@/services/apiInvoice.client";
+import InvoiceHeader from "@/components/invoice/InvoiceHeader";
 
 export default function Page() {
   const { setInvoices } = useInvoiceStore();
@@ -20,7 +22,6 @@ export default function Page() {
     queryKey: ["invoice"],
     queryFn: fetchInvoicesClient,
   });
-  // console.log(invoices);
 
   useEffect(() => {
     if (invoices.length > 0) {

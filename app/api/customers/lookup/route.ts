@@ -1,22 +1,22 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
   const phone = searchParams.get("phone");
   const email = searchParams.get("email");
-  const token = request.headers.get(
-    "Authorization",
-  );
 
   const queryParam = phone
     ? `phone=${phone}`
     : `email=${email}`;
-  const externalUrl = `https://api.beta.rebuzzpos.com/api/business/users/roles/user?${queryParam}`;
+  const BASE = `https://api.beta.rebuzzpos.com/api/business/users/roles/user?${queryParam}`;
 
   try {
-    const response = await fetch(externalUrl, {
+    const response = await fetch(BASE, {
       headers: {
-        Authorization: token || "",
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });

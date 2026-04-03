@@ -33,7 +33,7 @@ export default function Transactions({
   ) {
     console.log("row.id:", row.id);
     const invoiceNo = parseInt(
-      row.id.replace("INV-", ""),
+      row.id.replace("ORD-", ""),
       10,
     );
     console.log("invoiceNo:", invoiceNo);

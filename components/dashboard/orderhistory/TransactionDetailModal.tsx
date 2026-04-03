@@ -235,18 +235,6 @@ export default function TransactionDetailModal({
                 </span>
               </div>
             </section>
-
-            {/* Refund Button */}
-            {/* {!transaction.status.includes(
-              "refunded",
-            ) && (
-              <button
-                className="w-full border border-red-300 text-red-600 hover:bg-red-50 rounded-lg py-2 font-medium transition-colors"
-                onClick={() => {}}
-              >
-                Refund Transaction
-              </button>
-            )} */}
           </div>
         )}
       </DialogContent>

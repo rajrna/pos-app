@@ -26,6 +26,14 @@ export type Customer = {
   loyaltyPoint: number;
 };
 
+export interface IndividualCustomer {
+  name: string;
+  phone: string;
+  email: string | null;
+  totalDueAmount?: number;
+  loyaltyPoint: number;
+}
+
 export function mapRawCustomerToCustomer(
   raw: RawCustomer,
 ): Customer {
