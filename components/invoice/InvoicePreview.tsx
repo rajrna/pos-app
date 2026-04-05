@@ -146,7 +146,8 @@ export default function InvoicePreview({
             Discount :
           </span>
           <span className="text-green-600 font-medium text-right">
-            {currency.symbol} 0
+            {currency.symbol}{" "}
+            {invoice.total - invoice.grandTotal}
           </span>
         </div>
 

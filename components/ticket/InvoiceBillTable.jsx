@@ -29,7 +29,7 @@ export default function InvoiceBillTable({
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        {/* <TableBody>
           {invoices.map((group) => {
             const details = group.item[0];
 
@@ -53,6 +53,32 @@ export default function InvoiceBillTable({
               </TableRow>
             );
           })}
+        </TableBody> */}
+        <TableBody>
+          {invoices.map((group) =>
+            // Map through the items array inside each invoice group
+            group.item.map((product, index) => (
+              <TableRow
+                key={`${group._id}-${index}`}
+              >
+                <TableCell className="font-medium">
+                  {product.productName}
+                </TableCell>
+                <TableCell>
+                  {product.quantity}
+                </TableCell>
+                <TableCell>
+                  {product.unitPrice}
+                </TableCell>
+                <TableCell className="text-right">
+                  {(
+                    product.quantity *
+                    product.unitPrice
+                  ).toFixed(2)}
+                </TableCell>
+              </TableRow>
+            )),
+          )}
         </TableBody>
       </Table>
     </div>
