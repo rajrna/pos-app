@@ -30,6 +30,9 @@ export default function AddInvoiceHeader() {
         <TableHead className="font-medium text-blue-700 text-sm text-right">
           Amount
         </TableHead>
+        <TableHead className="font-medium text-blue-700 text-sm text-right">
+          Discount
+        </TableHead>
 
         {/* Delete column */}
         <TableHead className="w-8" />

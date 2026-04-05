@@ -29,6 +29,8 @@ import { useCreateTicket } from "@/hooks/useTickets";
 import { useBusiness } from "@/hooks/useBusiness";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useDiscounts } from "@/hooks/useDiscounts";
+import InvoiceDiscountCreate from "@/components/invoice/InvoiceDiscountCreate";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -36,6 +38,7 @@ const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   description: "",
   quantity: 1,
   price: 0,
+  discounts: [],
 };
 
 export default function Page() {
@@ -71,16 +74,28 @@ export default function Page() {
   const [items, setItems] = useState<
     InvoiceItem[]
   >([
-    { id: crypto.randomUUID(), ...DEFAULT_ITEM },
+    {
+      id: crypto.randomUUID(),
+      ...DEFAULT_ITEM,
+      discounts: [],
+    },
   ]);
+
+  const { data: masterDiscounts = [] } =
+    useDiscounts();
+  const [
+    selectedDiscountIds,
+    setSelectedDiscountIds,
+  ] = useState<string[]>([]);
 
   const [discounts, setDiscounts] = useState<
     Discount[]
   >([
     {
-      id: crypto.randomUUID(),
-      description: "",
-      value: 0,
+      _id: crypto.randomUUID(),
+      name: "",
+      isEnabled: false,
+      rate: 0,
       type: "fixed",
     },
   ]);
@@ -93,43 +108,158 @@ export default function Page() {
     0,
   );
 
-  const updateDiscount = (
-    id: string,
-    field: keyof Discount,
-    value: string | number,
-  ) => {
-    setDiscounts((prev) =>
-      prev.map((d) =>
-        d.id === id
-          ? { ...d, [field]: value }
-          : d,
-      ),
-    );
-  };
-
-  const totalDiscount = discounts.reduce(
-    (sum, d) => {
-      let val = 0;
-      if (d.type === "percentage") {
-        val = (subtotal * d.value) / 100;
-      } else {
-        val = d.value;
-      }
-      return sum + val;
+  const totalDiscountValue =
+    selectedDiscountIds.reduce((sum, id) => {
+      const d = masterDiscounts.find(
+        (m) => m._id === id,
+      );
+      if (!d) return sum;
+      return (
+        sum +
+        (d.type === "percentage"
+          ? (subtotal * d.rate) / 100
+          : d.rate)
+      );
+    }, 0);
+  // 1. Calculate the subtotal of all items AFTER their individual discounts
+  const itemsSubtotal = items.reduce(
+    (sum, item) => {
+      const rowRawTotal =
+        item.quantity * item.price;
+      const rowDiscount = item.discounts.reduce(
+        (dSum, dId) => {
+          const d = masterDiscounts.find(
+            (m) => m._id === dId,
+          );
+          if (!d) return dSum;
+          return (
+            dSum +
+            (d.type === "percentage"
+              ? (rowRawTotal * d.rate) / 100
+              : d.rate)
+          );
+        },
+        0,
+      );
+      return sum + (rowRawTotal - rowDiscount);
     },
     0,
   );
 
-  const total = Math.max(
-    0,
-    subtotal - totalDiscount,
-  );
+  // 2. Calculate global discounts based on the itemsSubtotal
+  const globalDiscountValue =
+    selectedDiscountIds.reduce((sum, id) => {
+      const d = masterDiscounts.find(
+        (m) => m._id === id,
+      );
+      if (!d) return sum;
+      return (
+        sum +
+        (d.type === "percentage"
+          ? (itemsSubtotal * d.rate) / 100
+          : d.rate)
+      );
+    }, 0);
 
-  const removeDiscount = (id: string) => {
-    setDiscounts((prev) =>
-      prev.filter((d) => d.id !== id),
+  const finalTotal = Math.max(
+    0,
+    itemsSubtotal - globalDiscountValue,
+  );
+  // const finalTotal = Math.max(
+  //   0,
+  //   subtotal - totalDiscountValue,
+  // );
+  // const updateDiscount = (
+  //   id: string,
+  //   field: keyof Discount,
+  //   value: string | number,
+  // ) => {
+  //   setDiscounts((prev) =>
+  //     prev.map((d) =>
+  //       d.id === id
+  //         ? { ...d, [field]: value }
+  //         : d,
+  //     ),
+  //   );
+  // };
+
+  // const totalDiscount = discounts.reduce(
+  //   (sum, d) => {
+  //     let val = 0;
+  //     if (d.type === "percentage") {
+  //       val = (subtotal * d.value) / 100;
+  //     } else {
+  //       val = d.value;
+  //     }
+  //     return sum + val;
+  //   },
+  //   0,
+  // );
+
+  // const total = Math.max(
+  //   0,
+  //   subtotal - totalDiscount,
+  // );
+
+  const handleDiscountSelect = (id: string) => {
+    if (!selectedDiscountIds.includes(id)) {
+      setSelectedDiscountIds((prev) => [
+        ...prev,
+        id,
+      ]);
+    }
+  };
+
+  const handleItemDiscountAdd = (
+    itemId: string,
+    discountId: string,
+  ) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              discounts: [
+                ...new Set([
+                  ...item.discounts,
+                  discountId,
+                ]),
+              ],
+            }
+          : item,
+      ),
     );
   };
+
+  const handleItemDiscountRemove = (
+    itemId: string,
+    discountId: string,
+  ) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? {
+              ...item,
+              discounts: item.discounts.filter(
+                (id) => id !== discountId,
+              ),
+            }
+          : item,
+      ),
+    );
+  };
+
+  const handleDiscountRemove = (id: string) => {
+    setSelectedDiscountIds((prev) =>
+      prev.filter((dId) => dId !== id),
+    );
+  };
+
+  // const removeDiscount = (id: string) => {
+  //   setDiscounts((prev) =>
+  //     prev.filter((d) => d.id !== id),
+  //   );
+  // };
 
   const handleSave = () => {
     console.log("Button clicked");
@@ -156,9 +286,9 @@ export default function Page() {
         selectedCustomer?.email || "",
       phoneNumber: selectedCustomer?.phone || "",
       total: subtotal,
-      discount: totalDiscount,
-      totalDiscount: totalDiscount,
-      grandTotal: total,
+      discount: totalDiscountValue,
+      totalDiscount: totalDiscountValue,
+      grandTotal: finalTotal,
       taxId: null,
       note: `${notes}${invoiceNumber ? `|Invoice: ${invoiceNumber}` : ""}`,
 
@@ -173,7 +303,20 @@ export default function Page() {
           quantity: item.quantity,
           unitPrice: item.price,
           note: null,
-          discounts: [],
+          // discounts: [],
+          discounts: item.discounts.map((id) => {
+            const master = masterDiscounts.find(
+              (m) => m._id === id,
+            );
+            return {
+              _id: master?._id,
+              name: master?.name,
+              rate: master?.rate,
+              type: master?.type,
+              isEnabled: true,
+              isSelected: true,
+            };
+          }),
           isTaxable: false,
         })),
     };
@@ -323,17 +466,37 @@ export default function Page() {
                 products={products}
                 items={items}
                 onItemsChange={setItems}
+                masterDiscounts={masterDiscounts}
+                onAddDiscount={
+                  handleItemDiscountAdd
+                }
+                onRemoveDiscount={
+                  handleItemDiscountRemove
+                }
               />
-              <InvoiceDiscount
+              {/* <InvoiceDiscount
                 subtotal={subtotal}
-                discounts={discounts}
-                currency={currency}
-                onDiscountUpdate={updateDiscount}
-                onDiscountRemove={removeDiscount}
-                onCurrencyChange={setCurrency}
-              />
+                selectedDiscountIds={
+                  selectedDiscountIds
+                }
+                onDiscountSelect={
+                  handleDiscountSelect
+                }
+                onDiscountRemove={
+                  handleDiscountRemove
+                }
+              /> */}
             </TableBody>
           </Table>
+        </div>
+        <div>
+          <InvoiceDiscountCreate
+            subtotal={subtotal}
+            finalTotal={finalTotal}
+          />
+          {/* <p className="text-right font-bold">
+            Total: ${finalTotal.toFixed(2)}
+          </p> */}
         </div>
         <div className="flex flex-col justify-start py-3 px-3 mb-4">
           <h2 className="font-semibold text-gray-400 px-2">

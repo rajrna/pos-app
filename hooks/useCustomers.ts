@@ -25,6 +25,6 @@ export function useCustomers(
   return useQuery({
     queryKey: customerKeys.list(searchQuery),
     queryFn: () => fetchCustomersClient(),
-    staleTime: 10 * 1000, // 30 seconds
+    staleTime: 10 * 1000,
   });
 }

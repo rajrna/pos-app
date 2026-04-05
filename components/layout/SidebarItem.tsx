@@ -17,72 +17,6 @@ interface SidebarItemProps {
   isCollapsed?: boolean;
 }
 
-// export default function SidebarItem({
-//   label,
-//   href,
-//   icon: Icon,
-//   isCollapsed,
-// }: SidebarItemProps) {
-//   const pathname = usePathname();
-//   const isActive = pathname === href;
-//   const { toggleMobile } = useSidebar();
-
-//   const linkClass = cn(
-//     "flex items-center gap-3 px-3 py-2 rounded-md text-foreground text-sm font-medium transition-colors",
-//     "hover:bg-accent hover:text-accent-foreground",
-//     isActive &&
-//       "bg-accent text-accent-foreground",
-//     isCollapsed && "justify-center px-2",
-//   );
-//   // return (
-//   //   <Link
-//   //     href={href}
-//   //     className={cn(
-//   //       "flex items-center gap-3 px-3 py-2 rounded-md text-foreground text-sm font-medium transition-colors",
-//   //       "hover:bg-accent hover:text-accent-foreground",
-//   //       isActive &&
-//   //         "bg-accent text-accent-foreground",
-//   //       isCollapsed && "justify-center px-2",
-//   //     )}
-//   //   >
-//   //     <Icon className="w-4 h-4 shrink-0" />
-//   //     {/* <span>{label}</span> */}
-//   //     {!isCollapsed && <span>{label}</span>}
-//   //   </Link>
-//   // );
-//   if (isCollapsed) {
-//     return (
-//       <Tooltip>
-//         <TooltipTrigger asChild>
-//           <Link
-//             href={href}
-//             className={linkClass}
-//             onClick={toggleMobile}
-//           >
-//             <Icon className="w-4 h-4 shrink-0" />
-//           </Link>
-//         </TooltipTrigger>
-//         <TooltipContent
-//           side="right"
-//           sideOffset={8}
-//         >
-//           {label}
-//         </TooltipContent>
-//       </Tooltip>
-//     );
-//   }
-
-//   return (
-//     <Link
-//       href={href}
-//       className={linkClass}
-//       onClick={toggleMobile}
-//     >
-//       <Icon className="w-4 h-4 shrink-0" />
-//       <span>{label}</span>
-//     </Link>
-//   );
-// }
 export default function SidebarItem({
   label,
   href,
@@ -95,7 +29,7 @@ export default function SidebarItem({
 
   const baseClass = cn(
     "flex items-center gap-3 px-3 py-2 rounded-md text-foreground text-sm font-medium transition-colors",
-    "hover:bg-accent hover:text-accent-foreground",
+    "hover:bg-blue-200 hover:text-blue-600",
     isActive &&
       "bg-accent text-accent-foreground",
   );

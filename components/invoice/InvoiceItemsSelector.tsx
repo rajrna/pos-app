@@ -6,7 +6,9 @@ import {
   Check,
   ChevronsUpDown,
   Plus,
+  X,
 } from "lucide-react";
+import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,11 +39,20 @@ import {
   InvoiceItemsSelectorProps,
 } from "@/lib/types/invoice";
 import { useCreateProduct } from "@/hooks/useProducts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "../ui/select";
 
 export default function InvoiceItemsSelector({
   products,
   items,
   onItemsChange,
+  masterDiscounts,
+  onAddDiscount,
+  onRemoveDiscount,
   refetchProducts,
 }: InvoiceItemsSelectorProps) {
   const [isModalOpen, setIsModalOpen] =
@@ -61,6 +72,7 @@ export default function InvoiceItemsSelector({
     price: 0,
     costPrice: 0,
     description: "",
+    discounts: [],
   });
 
   const resetModalFields = () => {
@@ -69,6 +81,7 @@ export default function InvoiceItemsSelector({
       price: 0,
       costPrice: 0,
       description: "",
+      discounts: [],
     });
     setSearch("");
   };
@@ -118,6 +131,7 @@ export default function InvoiceItemsSelector({
         description: "",
         quantity: 1,
         price: 0,
+        discounts: [],
       },
     ]);
   };
@@ -142,6 +156,7 @@ export default function InvoiceItemsSelector({
     const product = products.find(
       (p) => p.name === productName,
     );
+
     onItemsChange(
       items.map((item) => {
         if (item.id !== itemId) return item;
@@ -150,6 +165,9 @@ export default function InvoiceItemsSelector({
           name: productName,
           productId: product?.id ?? "",
           price: product?.price ?? 0,
+          description: product?.description ?? "",
+          // AUTO-POPULATE: If product has discounts in the DB, add them here
+          discounts: product?.discounts || [],
         };
       }),
     );
@@ -298,11 +316,109 @@ export default function InvoiceItemsSelector({
             />
           </TableCell>
 
-          <TableCell className="w-24 text-right font-medium">
+          {/* <TableCell className="w-24 text-right font-medium">
             $
             {(item.quantity * item.price).toFixed(
               2,
             )}
+          </TableCell> */}
+          <TableCell className="w-24 text-right font-medium">
+            $
+            {(() => {
+              const rowSubtotal =
+                item.quantity * item.price;
+              const rowDiscount =
+                item.discounts.reduce(
+                  (sum, dId) => {
+                    const d =
+                      masterDiscounts.find(
+                        (m) => m._id === dId,
+                      );
+                    if (!d) return sum;
+                    return (
+                      sum +
+                      (d.type === "percentage"
+                        ? (rowSubtotal * d.rate) /
+                          100
+                        : d.rate)
+                    );
+                  },
+                  0,
+                );
+              return (
+                rowSubtotal - rowDiscount
+              ).toFixed(2);
+            })()}
+          </TableCell>
+          <TableCell>
+            <div className="flex  gap-1">
+              {/* List applied discounts for this item */}
+              {item.discounts.map((dId) => {
+                const d = masterDiscounts.find(
+                  (m) => m._id === dId,
+                );
+                if (!d) return null;
+                return (
+                  <Badge
+                    key={dId}
+                    className="flex justify-between gap-1 items-center bg-blue-100 text-blue-700 hover:bg-blue-200"
+                  >
+                    {d.name}
+                    <button
+                      type="button" // Critical to prevent form submission
+                      className="ml-1 rounded-full outline-none hover:bg-blue-300 p-0.5 transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onRemoveDiscount(
+                          item.id,
+                          dId,
+                        );
+                      }}
+                    >
+                      <X className="w-3 h-3 cursor-pointer hover:text-red-500" />
+                      <span className="sr-only">
+                        Remove discount
+                      </span>
+                    </button>
+                  </Badge>
+                );
+              })}
+
+              {/* Selector for this specific row */}
+              <Select
+                value=""
+                onValueChange={(dId) => {
+                  if (dId) {
+                    onAddDiscount(item.id, dId);
+                  }
+                }}
+              >
+                <SelectTrigger className="h-7 w-full border-dashed">
+                  {/* <Plus className="w-3 h-3 mr-1" />{" "} */}
+                  Discount
+                </SelectTrigger>
+
+                <SelectContent
+                  position="popper"
+                  side="bottom"
+                  className="z-150"
+                >
+                  {masterDiscounts.map((d) => (
+                    <SelectItem
+                      key={d._id}
+                      value={d._id}
+                    >
+                      {d.name} (
+                      {d.type === "percentage"
+                        ? `${d.rate}%`
+                        : `$${d.rate}`}
+                      )
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </TableCell>
 
           <TableCell className="w-8">
@@ -342,7 +458,7 @@ export default function InvoiceItemsSelector({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-blue-600">
               Create New Product
             </DialogTitle>
           </DialogHeader>

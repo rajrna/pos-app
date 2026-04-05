@@ -6,6 +6,7 @@ export interface Product {
   category: string;
   description?: string;
   costPrice?: number;
+  discounts?: string[];
 }
 
 export type RawProduct = {
