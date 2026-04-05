@@ -909,12 +909,12 @@ export default function InvoiceDetailPage() {
               </div>
 
               {/* Summary Area */}
-              <div className="bg-gray-600 rounded-2xl p-5 text-gray-600 flex justify-between items-center">
+              <div className="bg-white rounded-2xl p-5 text-gray-600 flex justify-between items-center">
                 <div>
                   <p className="text-gray-400 text-xs uppercase font-medium">
                     Final Amount
                   </p>
-                  <p className="text-3xl font-bold">
+                  <p className="text-3xl font-bold text-gray-800">
                     {currency.symbol}
                     {calculatedGrandTotal.toLocaleString()}
                   </p>
