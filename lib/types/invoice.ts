@@ -50,18 +50,36 @@ export interface InvoiceItem {
   description: string | undefined;
   quantity: number;
   price: number;
+  discounts: string[];
 }
+// export interface Discount {
+//   id: string;
+//   description: string;
+//   value: number;
+//   type: "fixed" | "percentage";
+// }
+
 export interface Discount {
-  id: string;
-  description: string;
-  value: number;
-  type: "fixed" | "percentage";
+  _id: string;
+  name: string;
+  isEnabled: boolean;
+  rate: number;
+  type: "percentage" | "fixed";
 }
 
 export interface InvoiceItemsSelectorProps {
   products: Product[];
   items: InvoiceItem[];
   onItemsChange: (items: InvoiceItem[]) => void;
+  masterDiscounts: Discount[];
+  onAddDiscount: (
+    itemId: string,
+    discountId: string,
+  ) => void;
+  onRemoveDiscount: (
+    itemId: string,
+    discountId: string,
+  ) => void;
   refetchProducts?: () => Promise<void> | void;
 }
 

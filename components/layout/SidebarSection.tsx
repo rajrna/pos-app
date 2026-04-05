@@ -38,8 +38,8 @@ export default function SidebarSection({
   );
   const { toggle } = useSidebar();
   const baseClass = cn(
-    "flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-foreground transition-colors",
-    "hover:bg-accent hover:text-accent-foreground",
+    "flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm font-medium text-foreground transition-colors duration-200",
+    "hover:bg-blue-50 hover:text-blue-600",
     isAnyActive &&
       !isOpen &&
       "bg-blue-50 text-blue-600",

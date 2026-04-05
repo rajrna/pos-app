@@ -36,8 +36,6 @@ export function useProducts(
   });
 }
 
-//implement looking up detail of product later
-
 export function useCreateProduct() {
   const queryClient = useQueryClient();
 
