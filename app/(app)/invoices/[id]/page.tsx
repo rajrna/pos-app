@@ -103,6 +103,7 @@ export default function InvoiceDetailPage() {
     enabled: !!id,
   });
   const invoice = data?.data?.Tickets;
+  // const extraInvoice = data?.data;
 
   const {
     data: customerData,
