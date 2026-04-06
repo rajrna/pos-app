@@ -142,10 +142,10 @@ export default function InvoicePreview({
           </span>
         </div>
         <div className="grid grid-cols-2 items-center border-b-2 border-gray-800">
-          <span className="font-semibold text-green-600">
+          <span className="font-semibold text-gray-400">
             Discount :
           </span>
-          <span className="text-green-600 font-medium text-right">
+          <span className="text-gray-400 font-medium text-right">
             {currency.symbol}{" "}
             {invoice.total - invoice.grandTotal}
           </span>

@@ -1,5 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
-import { createTicket } from "@/services/apiTicket.client";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  createTicket,
+  updateTicket,
+} from "@/services/apiTicket.client";
 import toast from "react-hot-toast";
 
 export function useCreateTicket() {
@@ -8,6 +15,24 @@ export function useCreateTicket() {
     onSuccess: () => {
       toast.success(
         "Invoice saved successfully!",
+      );
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useUpdateTicket() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateTicket,
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({
+        queryKey: ["tickets"],
+      });
+      toast.success(
+        "Invoice updated successfully!",
       );
     },
     onError: (error: Error) => {
