@@ -1,34 +1,29 @@
-"use client";
-
-import toast from "react-hot-toast";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { useBusiness } from "@/hooks/useBusiness";
 import { useDiscounts } from "@/hooks/useDiscounts";
-import { useCreateTicket } from "@/hooks/useTickets";
-import { useProductsList } from "@/hooks/useProductsList";
-import { useCustomersList } from "@/hooks/useCustomersList";
-
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { DatePicker } from "@/components/ui/pop-calendar";
 import {
-  Table,
-  TableBody,
-} from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import CustomerSelector from "@/components/invoice/CustomerSelector";
-import AddInvoiceHeader from "@/components/invoice/AddInvoiceHeader";
-import InvoiceItemsSelector from "@/components/invoice/InvoiceItemsSelector";
-import InvoiceDiscountCreate from "@/components/invoice/InvoiceDiscountCreate";
-
-import { Discount } from "@/lib/types/invoice";
+  useCreateTicket,
+  useUpdateTicket,
+} from "@/hooks/useTickets";
 import { Customer } from "@/lib/types/customer";
 import { InvoiceItem } from "@/lib/types/invoice";
 import { CreateTicketInput } from "@/lib/types/ticket";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import InvoiceDiscountCreate from "./InvoiceDiscountCreate";
+import { Button } from "../ui/button";
+import CustomerSelector from "./CustomerSelector";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Table, TableBody } from "../ui/table";
+import AddInvoiceHeader from "./AddInvoiceHeader";
+import InvoiceItemsSelector from "./InvoiceItemsSelector";
+import { useProductsList } from "@/hooks/useProductsList";
+
+interface InvoiceFormProps {
+  initialData?: any;
+  isEditMode?: boolean;
+  invoiceNumber?: string;
+}
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -39,67 +34,92 @@ const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   discounts: [],
 };
 
-export default function Page() {
+export default function InvoiceForm({
+  initialData,
+  isEditMode,
+  invoiceNumber,
+}: InvoiceFormProps) {
   const router = useRouter();
-
-  const { mutate: saveTicket, isPending } =
-    useCreateTicket();
-
   const {
-    data: customers = [],
-    isLoading: loadingCustomers,
-  } = useCustomersList();
+    mutate: saveTicket,
+    isPending: isCreating,
+  } = useCreateTicket();
+  const {
+    mutate: updateTicket,
+    isPending: isUpdating,
+  } = useUpdateTicket();
+
   const {
     data: products = [],
     isLoading: loadingProducts,
   } = useProductsList();
-  const { data: business } = useBusiness();
-  // const createInvoiceMutation = useCreateTicket();
+
+  const isPending = isCreating || isUpdating;
 
   const [selectedCustomer, setSelectedCustomer] =
-    useState<Customer | null>(null);
+    useState<Customer | null>(
+      initialData
+        ? ({
+            name: initialData.Tickets.ticketName,
+            email:
+              initialData.Tickets.customerEmail,
+            phone:
+              initialData.Tickets.phoneNumber,
+          } as Customer)
+        : null,
+    );
 
   const [invoiceTitle, setInvoiceTitle] =
-    useState("");
+    useState(
+      initialData?.Tickets.ticketName || "",
+    );
+  //   const [invoiceNumber, setInvoiceNumber] =
+  //     useState(
+  //       initialData?.ticket?.invoice?.toString() ||
+  //         "",
+  //     );
 
-  const [invoiceNumber, setInvoiceNumber] =
-    useState("");
-  // const [poNumber, setPoNumber] = useState("");
-  // const [invoiceDate, setInvoiceDate] =
-  useState<Date>(new Date());
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(
+    initialData?.ticket?.note?.split(
+      "|Invoice:",
+    )[0] || "",
+  );
 
   const [items, setItems] = useState<
     InvoiceItem[]
-  >([
-    {
-      id: crypto.randomUUID(),
-      ...DEFAULT_ITEM,
-      discounts: [],
-    },
-  ]);
+  >(
+    initialData?.Tickets?.items?.[0]?.item?.map(
+      (item: any) => ({
+        id: item._id, // Use backend ID
+        productId: item.product,
+        name: item.productName,
+        quantity: item.quantity,
+        price: item.unitPrice,
+        discounts: [],
+        // (item.discounts || []).map(
+        //   (d: any) => d.discount,
+        // ),
+      }),
+    ) || [
+      {
+        id: crypto.randomUUID(),
+        ...DEFAULT_ITEM,
+        discounts: [],
+      },
+    ],
+  );
 
+  //   Discount handling
   const { data: masterDiscounts = [] } =
     useDiscounts();
   const [
     selectedDiscountIds,
     setSelectedDiscountIds,
-  ] = useState<string[]>([]);
-
-  const [discounts, setDiscounts] = useState<
-    Discount[]
-  >([
-    {
-      _id: crypto.randomUUID(),
-      name: "",
-      isEnabled: false,
-      rate: 0,
-      type: "fixed",
-    },
-  ]);
-
-  const [currency, setCurrency] = useState("usd");
-
+  ] = useState<string[]>(
+    initialData?.ticket?.discounts?.map(
+      (d: any) => d.discount,
+    ) || [],
+  );
   const subtotal = items.reduce(
     (sum, item) =>
       sum + item.quantity * item.price,
@@ -204,8 +224,6 @@ export default function Page() {
   };
 
   const handleSave = () => {
-    console.log("Button clicked");
-    // Validation
     if (!selectedCustomer) {
       toast.error("Please select a customer");
       return;
@@ -261,35 +279,50 @@ export default function Page() {
           isTaxable: false,
         })),
     };
-    console.log(
-      "2. Payload Prepared:",
-      ticketData,
-    );
 
-    saveTicket(ticketData, {
-      onSuccess: (response) => {
-        console.log("Success", response);
-        toast.success("Invoice saved");
-        const newId =
-          response?.data?.ticket?.invoice ||
-          response?.data?.ticket?.invoice;
-        if (newId) {
-          router.push(`/invoices/${newId}`);
-        }
-      },
-      onError: (err) => {
-        console.log("Failed", err);
-        toast.error(
-          `Save failed: ${err.message}`,
-        );
-      },
-    });
+    if (isEditMode && invoiceNumber) {
+      updateTicket(
+        { invoiceNumber, ticketData },
+        {
+          onSuccess: () => {
+            toast.success("Invoice updated");
+            router.push(
+              `/invoices/${invoiceNumber}`,
+            );
+          },
+        },
+      );
+    } else {
+      saveTicket(ticketData, {
+        onSuccess: (response) => {
+          console.log("Success", response);
+          toast.success("Invoice saved");
+          const newId =
+            response?.data?.ticket?.invoice ||
+            response?.data?.ticket?.invoice;
+          if (newId) {
+            router.push(`/invoices/${newId}`);
+          }
+        },
+        onError: (err) => {
+          console.log("Failed", err);
+          toast.error(
+            `Save failed: ${err.message}`,
+          );
+        },
+      });
+    }
   };
+
   return (
+    // ... your existing JSX ...
+    // Change the Title: {isEditMode ? `Edit Invoice #${invoiceId}` : "New Invoice"}
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="md:text-4xl text-3xl font-bold text-gray-900">
-          New Invoice
+          {isEditMode
+            ? `Edit Invoice #${invoiceNumber}`
+            : "New Invoice"}
         </h1>
         <div className="flex items-center gap-3">
           <Button
@@ -299,12 +332,14 @@ export default function Page() {
           >
             {isPending
               ? "Saving..."
-              : "Save and Continue"}
+              : isEditMode
+                ? "Update Invoice"
+                : "Save and Continue"}
           </Button>
         </div>
       </div>
 
-      <div className="p-3 border rounded-lg">
+      {/* <div className="p-3 border rounded-lg">
         <h2 className="font-semibold">
           Business address and contact details,
           title, summary
@@ -319,7 +354,7 @@ export default function Page() {
           </p>
           <p>{business?.panNumber}</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="my-5 border-gray-300 border shadow-lg rounded-lg ">
         <div className="flex justify-between">

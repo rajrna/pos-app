@@ -19,14 +19,14 @@ export async function createTicket(
 }
 
 export async function updateTicket({
-  invoice,
+  invoiceNumber,
   ticketData,
 }: {
-  invoice: string;
+  invoiceNumber: string;
   ticketData: any;
 }) {
   const res = await fetch(
-    `/api/tickets/${invoice}/update-ticketName`,
+    `/api/tickets/${invoiceNumber}/update-ticketName`,
     {
       method: "PUT",
       headers: {
