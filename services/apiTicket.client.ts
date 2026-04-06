@@ -18,6 +18,32 @@ export async function createTicket(
   return result;
 }
 
+export async function updateTicket({
+  invoice,
+  ticketData,
+}: {
+  invoice: string;
+  ticketData: any;
+}) {
+  const res = await fetch(
+    `/api/tickets/${invoice}/update-ticketName`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ticketData),
+    },
+  );
+  const result = await res.json();
+  if (!res.ok || result.status !== "success") {
+    throw new Error(
+      result.message || "Failed to save invoice",
+    );
+  }
+  return result;
+}
+
 export const getTicketByInvoice = async (
   invoiceNumber: string,
 ) => {

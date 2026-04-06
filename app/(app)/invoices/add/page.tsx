@@ -1,8 +1,15 @@
 "use client";
-import { useState } from "react";
-import toast from "react-hot-toast";
 
-import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { useBusiness } from "@/hooks/useBusiness";
+import { useDiscounts } from "@/hooks/useDiscounts";
+import { useCreateTicket } from "@/hooks/useTickets";
+import { useProductsList } from "@/hooks/useProductsList";
+import { useCustomersList } from "@/hooks/useCustomersList";
+
 // import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
 // import { DatePicker } from "@/components/ui/pop-calendar";
@@ -10,27 +17,18 @@ import {
   Table,
   TableBody,
 } from "@/components/ui/table";
-
-import CustomerSelector from "@/components/invoice/CustomerSelector";
-import InvoiceDiscount from "@/components/invoice/InvoiceDiscount";
-import InvoiceItemsSelector from "@/components/invoice/InvoiceItemsSelector";
-import AddInvoiceHeader from "@/components/invoice/AddInvoiceHeader";
-
-import { useCustomersList } from "@/hooks/useCustomersList";
-// import { useCreateInvoice } from "@/hooks/useInvoices";
-import { useProductsList } from "@/hooks/useProductsList";
-
-import { InvoiceItem } from "@/lib/types/invoice";
-import { Discount } from "@/lib/types/invoice";
-import { Customer } from "@/lib/types/customer";
-import { CreateTicketInput } from "@/lib/types/ticket";
-import { useRouter } from "next/navigation";
-import { useCreateTicket } from "@/hooks/useTickets";
-import { useBusiness } from "@/hooks/useBusiness";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useDiscounts } from "@/hooks/useDiscounts";
+import { Button } from "@/components/ui/button";
+import CustomerSelector from "@/components/invoice/CustomerSelector";
+import AddInvoiceHeader from "@/components/invoice/AddInvoiceHeader";
+import InvoiceItemsSelector from "@/components/invoice/InvoiceItemsSelector";
 import InvoiceDiscountCreate from "@/components/invoice/InvoiceDiscountCreate";
+
+import { Discount } from "@/lib/types/invoice";
+import { Customer } from "@/lib/types/customer";
+import { InvoiceItem } from "@/lib/types/invoice";
+import { CreateTicketInput } from "@/lib/types/ticket";
 
 const DEFAULT_ITEM: Omit<InvoiceItem, "id"> = {
   productId: "",
@@ -165,41 +163,6 @@ export default function Page() {
     0,
     itemsSubtotal - globalDiscountValue,
   );
-  // const finalTotal = Math.max(
-  //   0,
-  //   subtotal - totalDiscountValue,
-  // );
-  // const updateDiscount = (
-  //   id: string,
-  //   field: keyof Discount,
-  //   value: string | number,
-  // ) => {
-  //   setDiscounts((prev) =>
-  //     prev.map((d) =>
-  //       d.id === id
-  //         ? { ...d, [field]: value }
-  //         : d,
-  //     ),
-  //   );
-  // };
-
-  // const totalDiscount = discounts.reduce(
-  //   (sum, d) => {
-  //     let val = 0;
-  //     if (d.type === "percentage") {
-  //       val = (subtotal * d.value) / 100;
-  //     } else {
-  //       val = d.value;
-  //     }
-  //     return sum + val;
-  //   },
-  //   0,
-  // );
-
-  // const total = Math.max(
-  //   0,
-  //   subtotal - totalDiscount,
-  // );
 
   const handleDiscountSelect = (id: string) => {
     if (!selectedDiscountIds.includes(id)) {
@@ -255,12 +218,6 @@ export default function Page() {
     );
   };
 
-  // const removeDiscount = (id: string) => {
-  //   setDiscounts((prev) =>
-  //     prev.filter((d) => d.id !== id),
-  //   );
-  // };
-
   const handleSave = () => {
     console.log("Button clicked");
     // Validation
@@ -303,7 +260,6 @@ export default function Page() {
           quantity: item.quantity,
           unitPrice: item.price,
           note: null,
-          // discounts: [],
           discounts: item.discounts.map((id) => {
             const master = masterDiscounts.find(
               (m) => m._id === id,
@@ -474,18 +430,6 @@ export default function Page() {
                   handleItemDiscountRemove
                 }
               />
-              {/* <InvoiceDiscount
-                subtotal={subtotal}
-                selectedDiscountIds={
-                  selectedDiscountIds
-                }
-                onDiscountSelect={
-                  handleDiscountSelect
-                }
-                onDiscountRemove={
-                  handleDiscountRemove
-                }
-              /> */}
             </TableBody>
           </Table>
         </div>
@@ -494,9 +438,6 @@ export default function Page() {
             subtotal={subtotal}
             finalTotal={finalTotal}
           />
-          {/* <p className="text-right font-bold">
-            Total: ${finalTotal.toFixed(2)}
-          </p> */}
         </div>
         <div className="flex flex-col justify-start py-3 px-3 mb-4">
           <h2 className="font-semibold text-gray-400 px-2">
