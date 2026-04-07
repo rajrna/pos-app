@@ -1,5 +1,3 @@
-// app/api/auth/login/route.ts
-
 import {
   NextRequest,
   NextResponse,
@@ -14,8 +12,6 @@ export async function POST(req: NextRequest) {
 
   const res = await fetch(
     "https://api.beta.rebuzzpos.com/api/java/auth/login/pos",
-
-    // "https://appapi.rebuzzpos.com/api/java/auth/login/pos",
     {
       method: "POST",
       headers: {
@@ -47,7 +43,6 @@ export async function POST(req: NextRequest) {
     data: json.data,
   });
 
-  // Set token in httpOnly cookie — JS can't read this
   response.cookies.set("token", json.data.token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
