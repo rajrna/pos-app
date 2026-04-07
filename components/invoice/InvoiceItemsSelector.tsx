@@ -1,4 +1,13 @@
 import { useState } from "react";
+
+import { cn } from "@/lib/utils";
+import {
+  InvoiceItem,
+  InvoiceItemsSelectorProps,
+} from "@/lib/types/invoice";
+
+import { useCreateProduct } from "@/hooks/useProducts";
+
 import {
   Trash2,
   CirclePlus,
@@ -8,8 +17,10 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { Badge } from "../ui/badge";
-import { cn } from "@/lib/utils";
+
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -31,14 +42,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { TableCell, TableRow } from "../ui/table";
-import { Input } from "../ui/input";
 import {
-  InvoiceItem,
-  InvoiceItemsSelectorProps,
-} from "@/lib/types/invoice";
-import { useCreateProduct } from "@/hooks/useProducts";
+  TableCell,
+  TableRow,
+} from "@/components/ui/table";
+
 import {
   Select,
   SelectContent,

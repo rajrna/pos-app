@@ -1,12 +1,12 @@
 "use client";
 
-import { DataTable } from "@/components/ui/data-table";
-import { getInvoiceColumns } from "./invoice-columns";
-
-import { useCurrency } from "@/lib/context/CurrencyContext";
+import { useRouter } from "next/navigation";
 
 import { Invoice } from "@/lib/types/invoice";
-import { useRouter } from "next/navigation";
+import { useCurrency } from "@/lib/context/CurrencyContext";
+
+import { getInvoiceColumns } from "./invoice-columns";
+import { DataTable } from "@/components/ui/data-table";
 
 export default function InvoiceTable({
   invoices,
@@ -35,7 +35,7 @@ export default function InvoiceTable({
           options: [
             "all",
             "Draft",
-            "Unpaid",
+            "unpaid",
             "Paid",
             "Overdue",
           ],

@@ -1,5 +1,35 @@
 "use client";
+
+import jsPDF from "jspdf";
+import toast from "react-hot-toast";
+import { toPng } from "html-to-image";
+import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import {
+  useParams,
+  useRouter,
+} from "next/navigation";
+
+import {
+  ArrowLeft,
+  Bell,
+  Check,
+  ChevronDown,
+  CreditCard,
+  FileEdit,
+  FileText,
+  Link,
+  Mail,
+  Send,
+  Trash2,
+} from "lucide-react";
+
+import { useCurrency } from "@/lib/context/CurrencyContext";
+import { useBusiness } from "@/hooks/useBusiness";
+import { getTicketByInvoice } from "@/services/apiTicket.client";
+
 import { Button } from "@/components/ui/button";
+import InvoicePreview from "@/components/invoice/InvoicePreview";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,33 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCurrency } from "@/lib/context/CurrencyContext";
-import { getTicketByInvoice } from "@/services/apiTicket.client";
-import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  Bell,
-  Check,
-  ChevronDown,
-  CreditCard,
-  FileEdit,
-  FileText,
-  Link,
-  Mail,
-  Send,
-  Trash2,
-} from "lucide-react";
-import {
-  useParams,
-  useRouter,
-} from "next/navigation";
-import { useRef, useState } from "react";
-import toast from "react-hot-toast";
-import jsPDF from "jspdf";
-import { toPng } from "html-to-image";
 
-import InvoicePreview from "@/components/invoice/InvoicePreview";
-import { useBusiness } from "@/hooks/useBusiness";
 type InvoiceStatus =
   | "draft"
   | "sent"
@@ -317,7 +321,6 @@ export default function InvoiceDetailPage() {
     toast.promise(sendPromise, {
       loading: "Sending invoice reminder...",
       success: () => {
-        // Optional: Trigger a data refresh here to update 'sentAt'
         return "Reminder sent successfully!";
       },
       error: (err) => `${err.message}`,
@@ -330,6 +333,39 @@ export default function InvoiceDetailPage() {
 
   const handleEditInvoice = () => {
     router.push(`/invoices/${id}/edit`);
+  };
+
+  const handleDeleteInvoice = async () => {
+    const ticketId = invoice.invoice;
+
+    if (!ticketId) {
+      toast.error("Invoice ID is missing");
+      return;
+    }
+
+    const sendPromise = fetch(
+      `/api/tickets/${ticketId}/delete`,
+      {
+        method: "DELETE",
+      },
+    ).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok || data.status === "fail") {
+        throw new Error(
+          data.message || "Failed to send",
+        );
+      }
+      return data;
+    });
+
+    toast.promise(sendPromise, {
+      loading: "Deleting invoice ...",
+      success: () => {
+        return "Invoice deleted successfully!";
+      },
+      error: (err) => `${err.message}`,
+    });
+    router.push(`/invoices/`);
   };
 
   return (
@@ -379,9 +415,10 @@ export default function InvoiceDetailPage() {
               <DropdownMenuSeparator className="my-1 bg-gray-100" />
 
               <DropdownMenuItem
-                onClick={() =>
-                  toast.error("Invoice deleted")
-                }
+                // onClick={() =>
+                //   toast.error("Invoice deleted")
+                // }
+                onClick={handleDeleteInvoice}
                 className="flex items-center gap-2 px-3 py-2 cursor-pointer rounded-lg text-red-500 focus:bg-red-50 focus:text-red-600"
               >
                 <Trash2 size={14} />
@@ -747,7 +784,7 @@ export default function InvoiceDetailPage() {
                 onClick={() =>
                   setIsSendInvoiceModalOpen(false)
                 }
-                className="text-gray-400 hover:text-gray-600 text-2xl"
+                className="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
               >
                 &times;
               </button>
@@ -759,7 +796,7 @@ export default function InvoiceDetailPage() {
                   onClick={copyPublicLink}
                 >
                   <div className="bg-white border border-gray-200  flex flex-col justify-between items-center rounded-2xl p-6  gap-4 shadow-md hover:shadow-lg transition duration-300">
-                    <Link className="text-purple-500 " />
+                    <Link className="text-blue-500 " />
                     <p className="font-semibold text-gray-800 text-xl">
                       Copy Link
                     </p>
@@ -774,7 +811,7 @@ export default function InvoiceDetailPage() {
                   onClick={handleDownloadPDF}
                 >
                   <div className="bg-white border border-gray-200 flex flex-col items-center rounded-2xl p-6  gap-4 shadow-md hover:shadow-lg transition duration-300">
-                    <FileText className="text-purple-500 " />
+                    <FileText className="text-blue-500 " />
                     <p className="font-semibold text-gray-800 text-xl">
                       Download PDF
                     </p>
@@ -789,8 +826,8 @@ export default function InvoiceDetailPage() {
                 className="cursor-pointer"
                 onClick={handleResendInvoice}
               >
-                <div className="bg-white border border-gray-200 flex flex-col items-center rounded-2xl p-5  gap-4 shadow-md hover:shadow-lg transition duration-300">
-                  <Mail className="text-purple-500 " />
+                <div className="bg-yellow-300 border border-gray-200 flex flex-col items-center rounded-2xl p-5  gap-4 shadow-md hover:shadow-lg transition duration-300">
+                  <Mail className="text-blue-500 " />
                   <h1 className="font-semibold text-gray-800 text-xl">
                     Send Invoice By Mail
                   </h1>
