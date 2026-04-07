@@ -175,9 +175,10 @@ export default function InvoiceItemsSelector({
 
   return (
     <>
-      {items.map((item) => (
+      {items.map((item, idx) => (
         <TableRow
-          key={item.id}
+          // key={item.id}
+          key={idx}
           className="border-b-0"
         >
           <TableCell className="w-6 px-1">

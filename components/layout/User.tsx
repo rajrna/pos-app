@@ -28,10 +28,25 @@ export default function User({
 }: UserProps) {
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
-    router.refresh();
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(
+        "/api/auth/logout",
+        {
+          method: "POST",
+        },
+      );
+
+      if (res.ok) {
+        router.push("/login");
+        router.refresh();
+      }
+    } catch (error) {
+      console.error(
+        "Logout request failed",
+        error,
+      );
+    }
   };
 
   return (

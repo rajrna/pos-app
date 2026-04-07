@@ -2,8 +2,11 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import InvoiceSs from "@/public/InvoiceScreenshot.png";
+import { cookies } from "next/headers";
 
-export default function Page() {
+export default async function Page() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
   return (
     <div className="min-h-screen bg-gray-100">
       {/* NAVBAR */}
@@ -12,26 +15,39 @@ export default function Page() {
           ReBuzz
         </h1>
 
-        <div className="flex items-center gap-2 md:gap-4">
-          <Button className="border-0 hover:bg-gray-100 hover:text-blue-600 bg-gray-100 text-blue-900 font-semibold px-4 md:px-8">
-            <Link href="/login">
-              <span className="text-base md:text-lg">
-                Log in
-              </span>
-            </Link>
-          </Button>
+        {token ? (
+          <div>
+            {/* <Button className="border-0 hover:bg-gray-100 hover:text-blue-600 bg-gray-100 text-blue-900 font-semibold px-4 md:px-8"> */}
+            <Button className="bg-blue-600 hover:bg-blue-700 px-4 md:px-8 py-2 md:py-4 font-semibold rounded-3xl">
+              <Link href={"/dashboard"}>
+                <span className="text-base md:text-lg">
+                  Get Back
+                </span>
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 md:gap-4">
+            <Button className="border-0 hover:bg-gray-100 hover:text-blue-600 bg-gray-100 text-blue-900 font-semibold px-4 md:px-8">
+              <Link href="/login">
+                <span className="text-base md:text-lg">
+                  Log in
+                </span>
+              </Link>
+            </Button>
 
-          <Button className="bg-blue-600 hover:bg-blue-700 px-4 md:px-8 py-3 md:py-6 font-semibold rounded-3xl">
-            <Link href="/signup">
-              <span className="hidden md:block text-lg">
-                Get started for free
-              </span>
-              <span className="md:hidden text-base">
-                Sign up
-              </span>
-            </Link>
-          </Button>
-        </div>
+            <Button className="bg-blue-600 hover:bg-blue-700 px-4 md:px-8 py-3 md:py-6 font-semibold rounded-3xl">
+              <Link href="/signup">
+                <span className="hidden md:block text-lg">
+                  Get started for free
+                </span>
+                <span className="md:hidden text-base">
+                  Sign up
+                </span>
+              </Link>
+            </Button>
+          </div>
+        )}
       </nav>
 
       {/* BODY */}
