@@ -139,24 +139,24 @@ export const getTransactionColumns = (
       </span>
     ),
   },
-  {
-    accessorKey: "items",
-    header: "Items",
-    cell: ({ row }) => {
-      const items: Item[] = row.getValue("items");
-      return (
-        <span className="text-gray-600">
-          {items.map((item, i) => (
-            <span key={i}>
-              {item.name} x {item.quantity}
-              {i < items.length - 1 ? ", " : ""}
-            </span>
-          ))}
-        </span>
-      );
-    },
-    enableSorting: false,
-  },
+  // {
+  //   accessorKey: "items",
+  //   header: "Items",
+  //   cell: ({ row }) => {
+  //     const items: Item[] = row.getValue("items");
+  //     return (
+  //       <span className="text-gray-600">
+  //         {items.map((item, i) => (
+  //           <span key={i}>
+  //             {item.name} x {item.quantity}
+  //             {i < items.length - 1 ? ", " : ""}
+  //           </span>
+  //         ))}
+  //       </span>
+  //     );
+  //   },
+  //   enableSorting: false,
+  // },
   {
     accessorKey: "paymentMethod",
     header: "Payment",

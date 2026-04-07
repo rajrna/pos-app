@@ -1,6 +1,18 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+
+import {
+  ChevronDown,
+  ArrowUpDown,
+} from "lucide-react";
+
+import { formatDatetime } from "@/utils/helper";
+
+import { Invoice } from "@/lib/types/invoice";
+import { formatCurrency } from "@/lib/utils";
+import { CurrencyConfig } from "@/lib/config/store";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,18 +21,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  ChevronDown,
-  ArrowUpDown,
-} from "lucide-react";
-import { formatDatetime } from "@/utils/helper";
-import { Invoice } from "@/lib/types/invoice";
-import { CurrencyConfig } from "@/lib/config/store";
-import { formatCurrency } from "@/lib/utils";
 
 const statusStyles: Record<string, string> = {
   Paid: "bg-green-100 text-green-700 hover:bg-green-100",
-  Unpaid:
+  unpaid:
     "bg-red-100 text-red-700 hover:bg-red-100",
   Draft:
     "bg-gray-100 text-gray-700 hover:bg-gray-100",
@@ -132,18 +136,18 @@ export const getInvoiceColumns = (
             variant="link"
             className="text-blue-600 hover:text-blue-700 p-0"
           >
-            Approve
+            Actions
             <ChevronDown className="ml-1 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
-            Approve
+            Make Payment
           </DropdownMenuItem>
           <DropdownMenuItem>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem className="bg-red-400 text-gray-100 hover:bg-red-500">
+          <DropdownMenuItem className="bg-red-500 text-gray-100 hover:bg-red-600">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
