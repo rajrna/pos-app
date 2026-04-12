@@ -17,7 +17,8 @@ export async function registerUser(
   try {
     const res = await fetch(
       //   `https://appapi.rebuzzpos.com/api/java/auth/register`,
-      `https://appapi.rebuzzpos.com/api/${businessSlug}/auth/register`,
+      `https://api.beta.rebuzzpos.com/api/${businessSlug}/auth/register/pos`,
+      // `https://appapi.rebuzzpos.com/api/${businessSlug}/auth/register`,
       {
         method: "POST",
         headers: {
