@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 interface UserProps {
   initialBusinessName: string;
@@ -74,8 +75,13 @@ export default function User({
           className="w-48"
         >
           <DropdownMenuItem className="text-gray-600 cursor-pointer">
-            <User2 className="mr-2 h-4 w-4" />
-            Profile
+            <Link
+              href="/profile"
+              className="flex gap-2"
+            >
+              <User2 className="mr-2 h-4 w-4" />
+              Profile
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="text-gray-600 cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />

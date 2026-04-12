@@ -1,0 +1,89 @@
+"use client";
+import {
+  navigationConfig,
+  profileNavigationConfig,
+} from "@/lib/navigation";
+import { cn } from "@/lib/utils";
+import { useSidebar } from "@/providers/SidebarProvider";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+import SidebarItem from "../layout/SidebarItem";
+import SidebarSection from "../layout/SidebarSection";
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const { isCollapsed, toggle, closeMobile } =
+    useSidebar();
+
+  const activeSectionFromUrl =
+    navigationConfig.find(
+      (item) =>
+        item.type === "section" &&
+        item.items.some(
+          (subItem) => subItem.href === pathname,
+        ),
+    );
+
+  const [openSectionLabel, setOpenSectionLabel] =
+    useState<string | null>(() =>
+      activeSectionFromUrl?.type === "section"
+        ? activeSectionFromUrl.label
+        : null,
+    );
+
+  const handleToggle = (label: string) => {
+    setOpenSectionLabel((prev) =>
+      prev === label ? null : label,
+    );
+  };
+
+  return (
+    <aside
+      className={cn(
+        "border-r bg-background h-screen flex flex-col transition-all duration-300",
+        isCollapsed ? "w-56" : "w-56",
+      )}
+    >
+      <div className="py-2 px-1 flex items-center justify-between gap-1">
+        <h1 className="font-bold text-blue-700 p-4 text-2xl">
+          PROFILE
+        </h1>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto p-2">
+        <div className="space-y-1">
+          {profileNavigationConfig.map((item) => {
+            const isSectionActive =
+              activeSectionFromUrl?.label ===
+              item.label;
+            const isOpen =
+              openSectionLabel === item.label ||
+              (openSectionLabel === null &&
+                isSectionActive);
+
+            return item.type === "single" ? (
+              <SidebarItem
+                key={item.href}
+                {...item}
+                // isCollapsed={isCollapsed}
+              />
+            ) : (
+              <SidebarSection
+                key={item.label}
+                label={item.label}
+                icon={item.icon}
+                items={item.items}
+                isOpen={isOpen}
+                onToggle={() =>
+                  handleToggle(item.label)
+                }
+                isCollapsed={isCollapsed}
+              />
+            );
+          })}
+        </div>
+      </nav>
+    </aside>
+  );
+}

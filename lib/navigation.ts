@@ -5,6 +5,8 @@ import {
   Gauge,
   LucideIcon,
   Building,
+  User,
+  Settings,
 } from "lucide-react";
 
 export type NavigationItem =
@@ -20,6 +22,28 @@ export type NavigationItem =
       icon: LucideIcon;
       items: { label: string; href: string }[];
     };
+
+export const profileNavigationConfig: NavigationItem[] =
+  [
+    {
+      type: "single",
+      label: "Personal Information",
+      icon: User,
+      href: "/profile",
+    },
+    {
+      type: "single",
+      label: "Business Information",
+      icon: Building,
+      href: "/profile/business",
+    },
+    {
+      type: "single",
+      label: "Password & Security",
+      icon: Settings,
+      href: "/profile/password",
+    },
+  ];
 
 export const navigationConfig: NavigationItem[] =
   [
