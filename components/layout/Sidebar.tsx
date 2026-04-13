@@ -16,7 +16,6 @@ import { useSidebar } from "@/providers/SidebarProvider";
 import { Button } from "../ui/button";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
-import { DropdownMenu } from "../ui/dropdown-menu";
 import Link from "next/link";
 
 export default function Sidebar() {
@@ -57,11 +56,13 @@ export default function Sidebar() {
         {!isCollapsed && (
           <Link href="/invoices/add">
             <Button
-              className="flex-1 bg-white text-blue-500 text-[14px] font-bold hover:bg-blue-100"
+              className="flex-1 bg-white text-blue-500  font-bold hover:bg-blue-100"
               size="sm"
             >
               <Plus className="w-2 h-2 mr-1 font-bold" />
-              Create new
+              <span className="text-[16px]">
+                Create new
+              </span>
             </Button>
           </Link>
         )}

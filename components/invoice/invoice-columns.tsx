@@ -1,6 +1,9 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  FilterFn,
+} from "@tanstack/react-table";
 
 import {
   ChevronDown,
@@ -30,6 +33,15 @@ const statusStyles: Record<string, string> = {
     "bg-gray-100 text-gray-700 hover:bg-gray-100",
   Overdue:
     "bg-orange-100 text-orange-700 hover:bg-orange-100",
+};
+
+const multiSelectFilter: FilterFn<Invoice> = (
+  row,
+  columnId,
+  value,
+) => {
+  if (!value?.length) return true;
+  return value.includes(row.getValue(columnId));
 };
 
 export const getInvoiceColumns = (
@@ -103,6 +115,7 @@ export const getInvoiceColumns = (
   {
     accessorKey: "status",
     header: "Status",
+    filterFn: multiSelectFilter,
     cell: ({ row }) => {
       const status = row.getValue(
         "status",
@@ -116,13 +129,6 @@ export const getInvoiceColumns = (
         >
           {status}
         </Badge>
-      );
-    },
-    filterFn: (row, _, filterValue) => {
-      if (!filterValue || filterValue === "all")
-        return true;
-      return (
-        row.getValue("status") === filterValue
       );
     },
   },
