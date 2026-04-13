@@ -1,10 +1,8 @@
 "use client";
 
-import Divider from "@/components/forms/Divider";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 
 type SignupFormValues = {
   fullName: string;

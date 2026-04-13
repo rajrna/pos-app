@@ -16,6 +16,13 @@ export const getProductColumns = (
     ),
   },
   {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <span>{row.getValue("description")}</span>
+    ),
+  },
+  {
     accessorKey: "price",
     header: ({ column }) => (
       <Button

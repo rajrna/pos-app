@@ -16,6 +16,8 @@ import { useSidebar } from "@/providers/SidebarProvider";
 import { Button } from "../ui/button";
 import SidebarItem from "./SidebarItem";
 import SidebarSection from "./SidebarSection";
+import { DropdownMenu } from "../ui/dropdown-menu";
+import Link from "next/link";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -53,13 +55,15 @@ export default function Sidebar() {
     >
       <div className="py-2 px-1 flex items-center justify-between gap-1">
         {!isCollapsed && (
-          <Button
-            className="flex-1 bg-white text-blue-500 text-[14px] font-semibold hover:bg-blue-100"
-            size="sm"
-          >
-            <Plus className="w-2 h-2 mr-1 font-bold" />
-            Create new
-          </Button>
+          <Link href="/invoices/add">
+            <Button
+              className="flex-1 bg-white text-blue-500 text-[14px] font-bold hover:bg-blue-100"
+              size="sm"
+            >
+              <Plus className="w-2 h-2 mr-1 font-bold" />
+              Create new
+            </Button>
+          </Link>
         )}
         <Button
           variant="ghost"
