@@ -126,12 +126,12 @@ export const navigationConfig: NavigationItem[] =
       type: "single",
       label: "Receipt AI",
       icon: Receipt,
-      href: "/receipt-ai",
+      href: "/bizexpense",
     },
     {
       type: "single",
       label: "Biz Expense",
       icon: Building,
-      href: "/biz-expense",
+      href: "/bizexpenses",
     },
   ];

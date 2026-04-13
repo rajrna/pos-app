@@ -33,11 +33,9 @@ export default function InvoiceTable({
           columnId: "status",
           label: "Status",
           options: [
-            "all",
-            "Draft",
             "unpaid",
-            "Paid",
-            "Overdue",
+            "completed",
+            "pending",
           ],
         },
       ]}
