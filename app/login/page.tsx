@@ -138,7 +138,7 @@ export default function Page() {
                 onClick={() =>
                   setShowPassword((prev) => !prev)
                 }
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 text-sm font-bold hover:underline"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-600 text-sm font-bold hover:underline cursor-pointer"
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
@@ -165,7 +165,7 @@ export default function Page() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 text-[16px] rounded-full transition-colors duration-200 disabled:opacity-60"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 text-[16px] rounded-full transition-colors duration-200 disabled:opacity-60 cursor-pointer"
           >
             {isLoading
               ? "Logging in..."
@@ -177,7 +177,7 @@ export default function Page() {
           <Button
             type="button"
             onClick={() => router.push("/signup")}
-            className="w-full border border-gray-300 bg-gray-50 text-gray-700 hover:bg-blue-200 hover:text-blue-800 hover:border-blue-900 font-bold py-5 text-[16px] rounded-full transition-colors duration-200"
+            className="w-full border border-gray-300 bg-gray-50 text-gray-700 hover:bg-blue-200 hover:text-blue-800 hover:border-blue-900 font-bold py-5 text-[16px] rounded-full transition-colors duration-200 cursor-pointer"
           >
             Create a New Account
           </Button>
@@ -207,7 +207,7 @@ export default function Page() {
               })
             }
             disabled={isLoading}
-            className="border border-red-300 bg-gray-50 text-red-600 hover:bg-red-200 hover:text-red-800 hover:border-red-900 font-bold py-5 text-[14px] rounded-full transition-colors duration-200 disabled:opacity-60"
+            className="border border-red-300 bg-gray-50 text-red-600 hover:bg-red-200 hover:text-red-800 hover:border-red-900 font-bold py-5 text-[14px] rounded-full transition-colors duration-200 disabled:opacity-60 cursor-pointer"
           >
             {isLoading
               ? "Logging in..."

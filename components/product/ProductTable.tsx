@@ -9,6 +9,7 @@ export default function ProductTable({
 }: {
   products: Product[];
 }) {
+  console.log(products);
   const { currency } = useCurrency();
   const columns = getProductColumns(currency);
 

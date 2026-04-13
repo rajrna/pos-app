@@ -559,11 +559,13 @@ export default function InvoiceDetailPage() {
             >
               <div className="flex items-start gap-4">
                 <div
-                  className={`w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                    invoice.sentAt
-                      ? "border-blue-500 text-blue-600 bg-blue-50"
-                      : "border-gray-300 text-gray-400"
-                  }`}
+                  className="w-10 h-10 rounded-full border-2 flex items-center justify-center shrink-0 border-blue-500 text-blue-600 "
+                  //    ${
+                  //   invoice.sentAt
+                  //     ? "border-blue-500 text-blue-600 bg-blue-50"
+                  //     : "border-gray-300 text-gray-400"
+                  // }
+                  // }
                 >
                   {invoice.sentAt ? (
                     <Send size={18} />

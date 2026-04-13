@@ -1,4 +1,4 @@
-const BASE = "https://appapi.rebuzzpos.com/api";
+const BASE = "https://api.beta.rebuzzpos.com/api";
 
 type ApiResult<T = unknown> =
   | { success: true; data: T }
