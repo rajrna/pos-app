@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,7 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useBusiness } from "@/hooks/useBusiness";
+import {
+  useBusiness,
+  useUpdateBusiness,
+} from "@/hooks/useBusiness";
 import {
   Building2,
   MapPin,
@@ -19,7 +21,8 @@ import {
   User,
   Briefcase,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 function FieldRow({
   label,
@@ -52,13 +55,40 @@ function FieldRow({
   );
 }
 
+type BusinessFormValues = {
+  businessName: string;
+  address: string;
+  accurateLocation: string;
+  phoneNumber: string;
+  panNumber: number;
+  owner: string;
+  businessType: string;
+};
+
 export default function Page() {
   const { data: business } = useBusiness();
+  const { mutate: updateBusiness, isPending } =
+    useUpdateBusiness();
   const [saved, setSaved] = useState(false);
+  const { register, handleSubmit, reset } =
+    useForm<BusinessFormValues>({
+      defaultValues: {
+        businessName: business?.businessName,
+        address: business?.address,
+        accurateLocation:
+          business?.accurateLocation ?? "",
+        phoneNumber: business?.phoneNumber,
+        panNumber: business?.panNumber,
+        owner: business?.owner,
+        businessType: business?.businessType,
+      },
+    });
 
-  function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  useEffect(() => {
+    if (business) reset(business);
+  }, [business]);
+  function handleSave(data: BusinessFormValues) {
+    updateBusiness({ businessData: data });
   }
 
   return (
@@ -85,10 +115,7 @@ export default function Page() {
           <div className="px-6 py-2">
             <form
               className="divide-y divide-slate-100"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSave();
-              }}
+              onSubmit={handleSubmit(handleSave)}
             >
               <FieldRow
                 label="Business Name"
@@ -100,9 +127,10 @@ export default function Page() {
                 <input
                   type="text"
                   id="businessName"
-                  defaultValue={
-                    business?.businessName
-                  }
+                  {...register("businessName")}
+                  // defaultValue={
+                  //   business?.businessName
+                  // }
                   placeholder="e.g. Meowtrix"
                   className="w-full pl-5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
@@ -118,12 +146,29 @@ export default function Page() {
                 <input
                   type="text"
                   id="address"
-                  defaultValue={business?.address}
+                  {...register("address")}
+                  // defaultValue={business?.address}
                   placeholder="123 Main Street, City"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
               </FieldRow>
 
+              <FieldRow
+                label="Accurate Location"
+                icon={
+                  <MapPin className="w-4 h-4" />
+                }
+                index={6}
+              >
+                <input
+                  type="text"
+                  {...register(
+                    "accurateLocation",
+                  )}
+                  placeholder="e.g. Lakeside, Pokhara"
+                  className="w-full pl-5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 ..."
+                />
+              </FieldRow>
               <FieldRow
                 label="Phone Number"
                 icon={
@@ -134,9 +179,10 @@ export default function Page() {
                 <input
                   type="tel"
                   id="phoneNumber"
-                  defaultValue={
-                    business?.phoneNumber
-                  }
+                  {...register("phoneNumber")}
+                  // defaultValue={
+                  //   business?.phoneNumber
+                  // }
                   placeholder="+977 98XXXXXXXX"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
@@ -152,9 +198,10 @@ export default function Page() {
                 <input
                   type="text"
                   id="panNumber"
-                  defaultValue={
-                    business?.panNumber
-                  }
+                  {...register("panNumber")}
+                  // defaultValue={
+                  //   business?.panNumber
+                  // }
                   placeholder="e.g. 123456789"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
@@ -170,6 +217,7 @@ export default function Page() {
                 <input
                   type="text"
                   id="owner"
+                  {...register("owner")}
                   defaultValue={business?.owner}
                   placeholder="Full name"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
@@ -184,9 +232,10 @@ export default function Page() {
                 index={5}
               >
                 <Select
-                  defaultValue={
-                    business?.businessType
-                  }
+                  {...register("businessType")}
+                  // defaultValue={
+                  //   business?.businessType
+                  // }
                 >
                   <SelectTrigger className="w-full text-sm border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white transition-all duration-200 rounded-lg">
                     <SelectValue placeholder="Select a type" />
@@ -215,6 +264,7 @@ export default function Page() {
                 </p>
                 <Button
                   type="submit"
+                  disabled={isPending}
                   className="bg-blue-600 hover:bg-blue-700 hover:text-white"
                 >
                   {saved

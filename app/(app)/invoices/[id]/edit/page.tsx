@@ -16,7 +16,7 @@ export default function Page() {
     queryFn: () => getTicketByInvoice(id),
     enabled: !!id,
   });
-  console.log(data);
+  // console.log(data);
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <InvoiceForm
