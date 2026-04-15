@@ -238,7 +238,9 @@ export default function InvoiceDetailPage() {
   };
 
   const copyPublicLink = () => {
-    const publicUrl = `${window.location.origin}/preview/${invoice.invoice}`;
+    // Example logic for your "Copy Link" button
+    // const shareUrl = `${window.location.origin}/public/preview/${invoice.id}${isProformaInvoice ? "?proforma=true" : ""}`;
+    const publicUrl = `${window.location.origin}/preview/${invoice.invoice}${isProformaInvoice ? "?proforma=true" : ""}`;
 
     navigator.clipboard.writeText(publicUrl);
     toast.success(
