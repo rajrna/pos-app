@@ -70,6 +70,7 @@ export default function Page() {
   const { mutate: updateBusiness, isPending } =
     useUpdateBusiness();
   const [saved, setSaved] = useState(false);
+
   const { register, handleSubmit, reset } =
     useForm<BusinessFormValues>({
       defaultValues: {
@@ -180,9 +181,6 @@ export default function Page() {
                   type="tel"
                   id="phoneNumber"
                   {...register("phoneNumber")}
-                  // defaultValue={
-                  //   business?.phoneNumber
-                  // }
                   placeholder="+977 98XXXXXXXX"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
@@ -196,12 +194,9 @@ export default function Page() {
                 index={3}
               >
                 <input
-                  type="text"
+                  type="number"
                   id="panNumber"
                   {...register("panNumber")}
-                  // defaultValue={
-                  //   business?.panNumber
-                  // }
                   placeholder="e.g. 123456789"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
@@ -218,7 +213,7 @@ export default function Page() {
                   type="text"
                   id="owner"
                   {...register("owner")}
-                  defaultValue={business?.owner}
+                  // defaultValue={business?.owner}
                   placeholder="Full name"
                   className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white outline-none transition-all duration-200"
                 />
@@ -233,9 +228,6 @@ export default function Page() {
               >
                 <Select
                   {...register("businessType")}
-                  // defaultValue={
-                  //   business?.businessType
-                  // }
                 >
                   <SelectTrigger className="w-full text-sm border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-400 focus:bg-white transition-all duration-200 rounded-lg">
                     <SelectValue placeholder="Select a type" />
