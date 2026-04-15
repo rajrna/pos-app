@@ -211,6 +211,9 @@ export default function InvoiceDetailPage() {
       if (result.status === "success") {
         toast.success("Payment Recorded!");
         setIsPaymentModalOpen(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } else {
         const errorMsg =
           result.data?.invoice_number ||
