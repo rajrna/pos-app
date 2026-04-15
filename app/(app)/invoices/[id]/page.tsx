@@ -16,6 +16,7 @@ import {
   Check,
   ChevronDown,
   CreditCard,
+  FileCog,
   FileEdit,
   FileText,
   Link,
@@ -57,6 +58,10 @@ export default function InvoiceDetailPage() {
   const { currency } = useCurrency();
   const { data: business } = useBusiness();
 
+  const [
+    isProformaInvoice,
+    setIsProformaInvoice,
+  ] = useState(true);
   const invoiceRef = useRef(null);
   const [isGenerating, setIsGenerating] =
     useState(false);
@@ -298,6 +303,10 @@ export default function InvoiceDetailPage() {
     overdue: "bg-red-100 text-red-700",
   };
 
+  const handleProformaTag = () => {
+    setIsProformaInvoice((prev) => !prev);
+  };
+
   const handleResendInvoice = async () => {
     const ticketId = invoice.invoice;
 
@@ -426,6 +435,18 @@ export default function InvoiceDetailPage() {
               >
                 <Trash2 size={14} />
                 <span>Delete invoice</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1 bg-gray-100" />
+              <DropdownMenuItem
+                onClick={handleProformaTag}
+              >
+                <FileCog size={14} />
+                <span>
+                  {isProformaInvoice
+                    ? "Set as Regular Invoice"
+                    : "Set as Proforma Invoice"}
+                  {/* Set as Proforma Invoice */}
+                </span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -775,6 +796,7 @@ export default function InvoiceDetailPage() {
             invoice={invoice}
             customerProfile={customerProfile}
             businessProfile={business}
+            proformaTag={isProformaInvoice}
           />
         </div>
       </div>
