@@ -1,8 +1,10 @@
 "use client";
 import { useCurrency } from "@/lib/context/CurrencyContext";
 import InvoiceBillTable from "../ticket/InvoiceBillTable";
-import { RefObject } from "react";
+import { RefObject, useState } from "react";
 import { InvoiceItemGroup } from "@/lib/types/invoice";
+import businessLogo from "@/public/rebuzz.png";
+import Image from "next/image";
 
 interface InvoiceData {
   _id: string;
@@ -27,6 +29,7 @@ interface BusinessProfile {
 }
 
 interface InvoicePreviewProps {
+  proformaTag: boolean;
   invoiceRef?: RefObject<HTMLDivElement | null>;
   invoice: InvoiceData;
   customerProfile?: CustomerProfile | null;
@@ -34,6 +37,7 @@ interface InvoicePreviewProps {
 }
 
 export default function InvoicePreview({
+  proformaTag,
   invoiceRef,
   invoice,
   customerProfile,
@@ -47,16 +51,30 @@ export default function InvoicePreview({
       className="bg-white border border-gray-200  p-5  shadow-md hover:shadow-lg transition duration-300"
     >
       {/* Header: Company Info */}
-      <div className="border-b py-4">
-        <h1 className="font-semibold text-2xl tracking-tight text-gray-900">
-          INVOICE
-        </h1>
-        <h2 className="font-bold text-gray-800">
-          {businessProfile?.businessName}
-        </h2>
-        <p className="text-sm text-gray-500">
-          Nepal
-        </p>
+      <div className="border-b py-4 grid grid-cols-2">
+        <div>
+          <h1 className="font-semibold text-2xl tracking-tight text-gray-900">
+            {proformaTag
+              ? "PROFORMA INVOICE"
+              : "INVOICE"}
+          </h1>
+          <h2 className="font-bold text-gray-800">
+            {businessProfile?.businessName}
+          </h2>
+          <p className="text-sm text-gray-500">
+            Nepal
+          </p>
+        </div>
+        <div className="flex justify-end">
+          <Image
+            // className="w-full h-auto"
+            quality={100}
+            width={80}
+            height={80}
+            src={businessLogo}
+            alt="business logo"
+          />
+        </div>
       </div>
 
       {/* Main Info Row */}

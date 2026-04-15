@@ -16,6 +16,7 @@ import {
   Check,
   ChevronDown,
   CreditCard,
+  FileCog,
   FileEdit,
   FileText,
   Link,
@@ -57,6 +58,10 @@ export default function InvoiceDetailPage() {
   const { currency } = useCurrency();
   const { data: business } = useBusiness();
 
+  const [
+    isProformaInvoice,
+    setIsProformaInvoice,
+  ] = useState(true);
   const invoiceRef = useRef(null);
   const [isGenerating, setIsGenerating] =
     useState(false);
@@ -211,6 +216,9 @@ export default function InvoiceDetailPage() {
       if (result.status === "success") {
         toast.success("Payment Recorded!");
         setIsPaymentModalOpen(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } else {
         const errorMsg =
           result.data?.invoice_number ||
@@ -230,7 +238,9 @@ export default function InvoiceDetailPage() {
   };
 
   const copyPublicLink = () => {
-    const publicUrl = `${window.location.origin}/preview/${invoice.invoice}`;
+    // Example logic for your "Copy Link" button
+    // const shareUrl = `${window.location.origin}/public/preview/${invoice.id}${isProformaInvoice ? "?proforma=true" : ""}`;
+    const publicUrl = `${window.location.origin}/preview/${invoice.invoice}${isProformaInvoice ? "?proforma=true" : ""}`;
 
     navigator.clipboard.writeText(publicUrl);
     toast.success(
@@ -293,6 +303,10 @@ export default function InvoiceDetailPage() {
     sent: "bg-blue-100 text-blue-700",
     paid: "bg-green-100 text-green-700",
     overdue: "bg-red-100 text-red-700",
+  };
+
+  const handleProformaTag = () => {
+    setIsProformaInvoice((prev) => !prev);
   };
 
   const handleResendInvoice = async () => {
@@ -423,6 +437,18 @@ export default function InvoiceDetailPage() {
               >
                 <Trash2 size={14} />
                 <span>Delete invoice</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1 bg-gray-100" />
+              <DropdownMenuItem
+                onClick={handleProformaTag}
+              >
+                <FileCog size={14} />
+                <span>
+                  {isProformaInvoice
+                    ? "Set as Regular Invoice"
+                    : "Set as Proforma Invoice"}
+                  {/* Set as Proforma Invoice */}
+                </span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -772,6 +798,7 @@ export default function InvoiceDetailPage() {
             invoice={invoice}
             customerProfile={customerProfile}
             businessProfile={business}
+            proformaTag={isProformaInvoice}
           />
         </div>
       </div>

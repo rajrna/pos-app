@@ -1,6 +1,9 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import {
+  useParams,
+  useSearchParams,
+} from "next/navigation";
 
 import { useBusiness } from "@/hooks/useBusiness";
 import InvoicePreview from "@/components/invoice/InvoicePreview";
@@ -10,7 +13,10 @@ import { getTicketByInvoice } from "@/services/apiTicket.client";
 
 export default function PublicPreviewPage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
 
+  const isProforma =
+    searchParams.get("proforma") === "true";
   const {
     data,
     isLoading: invLoading,
@@ -76,6 +82,7 @@ export default function PublicPreviewPage() {
       <div className="max-w-4xl mx-auto">
         {/* Pass a 'isPublic' flag to hide internal admin buttons */}
         <InvoicePreview
+          proformaTag={isProforma}
           invoice={invoice}
           businessProfile={business}
           customerProfile={customerProfile}
