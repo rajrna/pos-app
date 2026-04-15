@@ -15,6 +15,7 @@ import MainContent from "@/components/layout/MainContent";
 import MobileSidebarOverlay from "@/components/layout/MobileSidebarOverlay";
 import { cookies } from "next/headers";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <TooltipProvider delayDuration={200}>
+        <Toaster />
         <SidebarProvider>
           <div className="fixed top-0 left-0 right-0 z-50 md:h-(--navbar-height)">
             <Navbar />
