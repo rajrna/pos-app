@@ -1,29 +1,30 @@
 "use client";
-import { DataTable } from "../ui/data-table";
-import { getProductColumns } from "./product-column";
 import { useCurrency } from "@/lib/context/CurrencyContext";
-import { Product } from "@/lib/types/product";
+import {
+  getProductServiceColumns,
+  ProductService,
+} from "./productservice-columns";
+import { DataTable } from "../../ui/data-table";
 
-export default function ProductTable({
-  products,
+export default function ProductServiceTable({
+  productService,
 }: {
-  products: Product[];
+  productService: ProductService[];
 }) {
-  console.log(products);
   const { currency } = useCurrency();
-  const columns = getProductColumns(currency);
-
+  const columns =
+    getProductServiceColumns(currency);
   return (
     <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 py-8 px-4">
       <h1 className="font-semibold text-xl">
-        Products
+        Products & Services
       </h1>
       <p className="text-gray-400">
-        All your products
+        All the products & services you buy
       </p>
       <DataTable
         columns={columns}
-        data={products}
+        data={productService}
         searchColumn="name"
         searchPlaceholder="Search Product"
       />

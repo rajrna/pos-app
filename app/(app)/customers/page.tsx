@@ -1,9 +1,9 @@
 import Link from "next/link";
+import { UserPlus } from "lucide-react";
+
+import { fetchCustomers } from "@/services/apiCustomer.server";
 
 import { Button } from "@/components/ui/button";
-// import CustomerTable from "@/components/customer/CustomerTable";
-import { UserPlus } from "lucide-react";
-import { fetchCustomers } from "@/services/apiCustomer.server";
 import CustomerTable from "@/components/customer/CustomerTable";
 
 export default async function Page() {

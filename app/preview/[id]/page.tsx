@@ -4,12 +4,13 @@ import {
   useParams,
   useSearchParams,
 } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+
+import { Loader2 } from "lucide-react";
 
 import { useBusiness } from "@/hooks/useBusiness";
-import InvoicePreview from "@/components/invoice/InvoicePreview";
-import { Loader2 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { getTicketByInvoice } from "@/services/apiTicket.client";
+import InvoicePreview from "@/components/invoice/InvoicePreview";
 
 export default function PublicPreviewPage() {
   const { id } = useParams();

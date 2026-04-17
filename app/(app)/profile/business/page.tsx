@@ -95,9 +95,6 @@ export default function Page() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-blue-50/30">
       <div className="max-w-3xl mx-auto px-8 py-8">
-        {/* <h1 className="text-red-500">
-          PAGE UNDER CONSTRUCTION
-        </h1> */}
         {/* Header */}
         <div className="py-2 border-b-2 border-gray-400">
           <h1 className="text-2xl font-bold text-blue-700  tracking-tight">

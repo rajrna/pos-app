@@ -3,7 +3,10 @@ import {
   Geist,
   Geist_Mono,
 } from "next/font/google";
-import "@/app/globals.css";
+// import "@/app/globals.css";
+
+import { cookies } from "next/headers";
+import { Toaster } from "react-hot-toast";
 
 import { QueryProvider } from "@/providers/QueryProvider";
 import { SidebarProvider } from "@/providers/SidebarProvider";
@@ -12,10 +15,8 @@ import { CurrencyProvider } from "@/lib/context/CurrencyContext";
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
 import MainContent from "@/components/layout/MainContent";
-import MobileSidebarOverlay from "@/components/layout/MobileSidebarOverlay";
-import { cookies } from "next/headers";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "react-hot-toast";
+import MobileSidebarOverlay from "@/components/layout/MobileSidebarOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
