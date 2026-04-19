@@ -1,6 +1,6 @@
 import { CurrencyConfig } from "@/lib/config/store";
 import {
-  Bill,
+  BillView,
   //   statusStyles,
 } from "@/lib/types/expenses";
 import { formatDatetime } from "@/utils/helper";
@@ -32,7 +32,7 @@ const statusStyles: Record<string, string> = {
     "bg-orange-100 text-orange-700 hover:bg-orange-100",
 };
 
-const multiSelectFilter: FilterFn<Bill> = (
+const multiSelectFilter: FilterFn<BillView> = (
   row,
   columnId,
   value,
@@ -43,7 +43,7 @@ const multiSelectFilter: FilterFn<Bill> = (
 
 export const getBillColumns = (
   currency: CurrencyConfig,
-): ColumnDef<Bill>[] => [
+): ColumnDef<BillView>[] => [
   {
     accessorKey: "status",
     header: "Status",
@@ -65,11 +65,11 @@ export const getBillColumns = (
     },
   },
   {
-    accessorKey: "bill",
+    accessorKey: "bill_no",
     header: "Bill #",
     cell: ({ row }) => (
       <span className="font-medium text-gray-900">
-        BILL-{row.getValue("invoice")}
+        BILL-{row.getValue("bill_no")}
       </span>
     ),
   },
@@ -84,7 +84,7 @@ export const getBillColumns = (
           )
         }
       >
-        Date
+        Created at
         <ArrowUpDown className="h-4 w-4" />
       </button>
     ),
@@ -106,7 +106,7 @@ export const getBillColumns = (
     ),
   },
   {
-    accessorKey: "amount",
+    accessorKey: "subtotal",
     header: ({ column }) => (
       <button
         className="flex items-center gap-1 font-semibold text-gray-900 hover:text-blue-600 transition-colors"
@@ -123,15 +123,38 @@ export const getBillColumns = (
     cell: ({ row }) => (
       <span className="font-medium text-gray-900">
         {formatCurrency(
-          Number(row.getValue("amount")),
+          Number(row.getValue("subtotal")),
           currency,
         )}
       </span>
     ),
   },
   {
+    accessorKey: "due_date",
+    header: ({ column }) => (
+      <button
+        className="flex items-center gap-1 font-semibold text-gray-900 hover:text-blue-600 transition-colors"
+        onClick={() =>
+          column.toggleSorting(
+            column.getIsSorted() === "asc",
+          )
+        }
+      >
+        Due at
+        <ArrowUpDown className="h-4 w-4" />
+      </button>
+    ),
+    cell: ({ row }) => (
+      <span className="text-gray-600">
+        {formatDatetime(
+          row.getValue("created_at"),
+        )}
+      </span>
+    ),
+  },
+  {
     id: "actions",
-    header: "Actions",
+    header: "",
     cell: () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

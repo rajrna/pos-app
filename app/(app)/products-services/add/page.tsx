@@ -1,4 +1,3 @@
-// app/products/new/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -59,7 +58,7 @@ export default function Page() {
                 onChange={(e) =>
                   setName(e.target.value)
                 }
-                className="h-10 bg-slate-50 border-slate-200 focus:bg-white focus:border-blue-400 placeholder:text-slate-400 text-slate-800 transition-colors"
+                className="h-10  border-slate-200 focus:bg-white focus:border-blue-400 placeholder:text-slate-400 text-slate-800 transition-colors"
               />
             </div>
             <div className="space-y-1.5 flex gap-2">
@@ -107,7 +106,7 @@ export default function Page() {
                   setDescription(e.target.value)
                 }
                 rows={3}
-                className="bg-slate-50 border-slate-200 focus:bg-white focus:border-blue-400 placeholder:text-slate-400 text-slate-800 resize-none text-sm transition-colors"
+                className=" border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-600 placeholder:text-slate-400 text-slate-800 resize-none text-sm transition-colors"
               />
             </div>
 
@@ -138,7 +137,7 @@ export default function Page() {
                   onChange={(e) =>
                     setPrice(e.target.value)
                   }
-                  className="pl-7 h-10 bg-slate-50 border-slate-200 focus:bg-white focus:border-blue-400 placeholder:text-slate-400 text-slate-800 transition-colors"
+                  className="pl-7 h-10  border-slate-200 focus:bg-white focus:border-blue-400 placeholder:text-slate-400 text-slate-800 transition-colors"
                 />
               </div>
             </div>
@@ -156,7 +155,7 @@ export default function Page() {
             </Button>
             <Button
               disabled={!name.trim()}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-6 shadow-sm disabled:opacity-40"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-6 shadow-sm disabled:opacity-40 cursor-pointer"
             >
               Save
             </Button>

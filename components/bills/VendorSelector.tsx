@@ -1,13 +1,11 @@
-import { Customer } from "@/lib/types/customer";
-
-import { useState } from "react";
-import { Check } from "lucide-react";
-
+import { useVendors } from "@/hooks/expenses/useVendors";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "../ui/popover";
+import { Vendor } from "./vendors/vendor-columns";
+import { useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -15,41 +13,35 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-} from "@/components/ui/command";
+} from "../ui/command";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { useCustomerNames } from "@/hooks/useCustomersList";
-
-interface CustomerSelectorProps {
-  // customers: Customer[];
-
-  onCustomerSelect: (customer: Customer) => void;
+interface VendorSelectorProps {
+  onVendorSelect: (vendor: Vendor) => void;
   onCreateNew?: () => void;
-  value?: Customer | null;
+  value?: Vendor | null;
 }
 
-export default function CustomerSelector({
-  onCustomerSelect,
+export default function VendorSelector({
+  onVendorSelect,
   onCreateNew,
   value,
-}: CustomerSelectorProps) {
-  const { data: customers = [], isLoading } =
-    useCustomerNames();
+}: VendorSelectorProps) {
+  const { data: vendors = [], isLoading } =
+    useVendors();
   const [open, setOpen] = useState(false);
-
-  const hasSelectedCustomer =
+  const hasSelectedVendor =
     value && (value.name || value.id);
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover>
       <PopoverTrigger asChild>
         <div className="p-5 m-4 w-62.5 h-35 font-semibold text-blue-700 rounded-lg flex items-center justify-center border border-gray-300 cursor-pointer hover:bg-blue-50 transition-colors">
           {isLoading ? (
             <span className="text-gray-400">
               Loading...
             </span>
-          ) : hasSelectedCustomer ? (
+          ) : hasSelectedVendor ? (
             <div className="text-center">
               <p className="font-semibold text-gray-900">
                 {value.name}
@@ -59,7 +51,7 @@ export default function CustomerSelector({
               </p>
             </div>
           ) : (
-            <span>+ Add a customer</span>
+            <span>+ Add a vendor</span>
           )}
         </div>
       </PopoverTrigger>
@@ -69,20 +61,18 @@ export default function CustomerSelector({
         align="start"
       >
         <Command>
-          <CommandInput placeholder="Type a customer name" />
+          <CommandInput placeholder="Type a vendor name" />
           <CommandList>
             <CommandEmpty>
-              No customer found.
+              No vendor found.
             </CommandEmpty>
             <CommandGroup>
-              {customers.map((customer) => (
+              {vendors.map((vendor) => (
                 <CommandItem
-                  key={customer.id}
-                  // Command uses 'value' for filtering; ensure it's a string
-                  value={customer.name}
+                  key={vendor.id}
+                  value={vendor.name}
                   onSelect={() => {
-                    // Update the parent's state
-                    onCustomerSelect(customer);
+                    onVendorSelect(vendor);
                     setOpen(false);
                   }}
                 >
@@ -90,16 +80,15 @@ export default function CustomerSelector({
                     className={cn(
                       "mr-2 h-4 w-4",
                       // Check against the prop ID
-                      value?.id === customer.id
+                      value?.id === vendor.id
                         ? "opacity-100"
                         : "opacity-0",
                     )}
                   />
-                  {customer.name}
+                  {vendor.name}
                 </CommandItem>
               ))}
             </CommandGroup>
-            <CommandSeparator />
           </CommandList>
         </Command>
       </PopoverContent>

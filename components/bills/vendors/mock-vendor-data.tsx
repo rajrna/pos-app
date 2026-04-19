@@ -6,5 +6,6 @@ export const mockVendorData: Vendor[] = [
     type: "Vendor",
     name: "Bean Shop",
     owner: "John",
+    address: "Pokhara, Nepal",
   },
 ];

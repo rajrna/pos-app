@@ -1,0 +1,8 @@
+import { mockBillData } from "@/components/bills/bill-mock-data";
+import { BillView } from "@/lib/types/expenses";
+
+export async function fetchBills(): Promise<
+  BillView[]
+> {
+  return mockBillData;
+}
