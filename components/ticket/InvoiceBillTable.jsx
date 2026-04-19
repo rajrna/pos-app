@@ -56,7 +56,6 @@ export default function InvoiceBillTable({
         </TableBody> */}
         <TableBody>
           {invoices.map((group) =>
-            // Map through the items array inside each invoice group
             group.item.map((product, index) => (
               <TableRow
                 key={`${group._id}-${index}`}

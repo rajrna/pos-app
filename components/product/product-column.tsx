@@ -1,9 +1,12 @@
-import { CurrencyConfig } from "@/lib/config/store";
-import { Product } from "@/lib/types/product";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "../ui/button";
+
 import { ArrowUpDown } from "lucide-react";
+
+import { Product } from "@/lib/types/product";
 import { formatCurrency } from "@/lib/utils";
+import { CurrencyConfig } from "@/lib/config/store";
+
+import { Button } from "../ui/button";
 
 export const getProductColumns = (
   currency: CurrencyConfig,

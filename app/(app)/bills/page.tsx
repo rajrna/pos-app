@@ -1,9 +1,9 @@
+import BillHeader from "@/components/bills/BillHeader";
+
 export default function Page() {
   return (
-    <div className="flex items-center  justify-center w-full">
-      <h1 className="text-5xl ">
-        PAGE UNDER CONSTRUCTION
-      </h1>
+    <div className="min-h-screen p-8">
+      <BillHeader />
     </div>
   );
 }

@@ -120,6 +120,10 @@ export const navigationConfig: NavigationItem[] =
           label: "Vendors",
           href: "/vendors",
         },
+        {
+          label: "Products & Services",
+          href: "/products-services",
+        },
       ],
     },
     {
