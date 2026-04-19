@@ -286,7 +286,7 @@ export default function Page() {
     });
   };
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen  p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="md:text-4xl text-3xl font-bold text-gray-900">
           New Invoice

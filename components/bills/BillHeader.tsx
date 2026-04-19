@@ -10,7 +10,7 @@ export default function BillHeader() {
       </h1>
       <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl">
         <Plus className="mt-0.5" />
-        <Link href="/invoices/add">
+        <Link href="/bills/add">
           Create a bill
         </Link>
       </Button>

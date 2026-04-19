@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { fetchCustomersClient } from "@/services/apiCustomer.client";
 
 export const customerKeys = {
