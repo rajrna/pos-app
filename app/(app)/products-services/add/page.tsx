@@ -7,9 +7,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Page() {
   const [name, setName] = useState("");
+  // const [type, setType] = useState("Product");
   const [description, setDescription] =
     useState("");
   const [price, setPrice] = useState("");
@@ -52,6 +61,29 @@ export default function Page() {
                 }
                 className="h-10 bg-slate-50 border-slate-200 focus:bg-white focus:border-blue-400 placeholder:text-slate-400 text-slate-800 transition-colors"
               />
+            </div>
+            <div className="space-y-1.5 flex gap-2">
+              <Label
+                htmlFor="type"
+                className="text-sm font-medium text-gray-700"
+              >
+                Type {"  "}
+              </Label>
+              <Select defaultValue="product">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="product">
+                      Product
+                    </SelectItem>
+                    <SelectItem value="service">
+                      Service
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Description */}

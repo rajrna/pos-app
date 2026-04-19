@@ -44,14 +44,12 @@ export const useInvoiceStore =
       const { invoices, filters } = get();
 
       return invoices.filter((ticket) => {
-        // Status filter — maps to paidStatus
         if (
           filters.status !== "all" &&
           ticket.status !== filters.status
         )
           return false;
 
-        // Date range filter — maps to createdAt
         if (filters.dateRange === "today") {
           const date = new Date(
             ticket.created_at,
@@ -64,7 +62,6 @@ export const useInvoiceStore =
             return false;
         }
 
-        // Search filter — maps to customerEmail or ticketName (no customer_name on RawTicket)
         if (filters.searchTerm) {
           const term =
             filters.searchTerm.toLowerCase();
