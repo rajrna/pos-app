@@ -3,7 +3,7 @@ import {
   Geist,
   Geist_Mono,
 } from "next/font/google";
-// import "@/app/globals.css";
+import "@/app/globals.css";
 
 import { cookies } from "next/headers";
 import { Toaster } from "react-hot-toast";
