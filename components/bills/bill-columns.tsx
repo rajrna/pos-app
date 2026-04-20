@@ -1,7 +1,7 @@
 import { CurrencyConfig } from "@/lib/config/store";
 import {
+  Bill,
   BillView,
-  //   statusStyles,
 } from "@/lib/types/expenses";
 import { formatDatetime } from "@/utils/helper";
 import {
@@ -21,15 +21,58 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import {
+  endOfDay,
+  isWithinInterval,
+  startOfDay,
+} from "date-fns";
 
-const statusStyles: Record<string, string> = {
-  Paid: "bg-green-100 text-green-700 hover:bg-green-100",
-  unpaid:
-    "bg-red-100 text-red-700 hover:bg-red-100",
-  Draft:
-    "bg-gray-100 text-gray-700 hover:bg-gray-100",
-  Overdue:
-    "bg-orange-100 text-orange-700 hover:bg-orange-100",
+type BillStatus =
+  | "Paid"
+  | "Unpaid"
+  | "Partial"
+  | "Overdue";
+
+const statusStyles: Record<
+  BillStatus,
+  { style: string }
+> = {
+  Paid: {
+    style:
+      "bg-green-100 text-green-700 hover:bg-green-100",
+  },
+  Unpaid: {
+    style:
+      "bg-gray-100 text-gray-700 hover:bg-gray-100",
+  },
+  Partial: {
+    style:
+      "bg-gray-100 text-gray-700 hover:bg-gray-100",
+  },
+  Overdue: {
+    style:
+      "bg-orange-100 text-orange-700 hover:bg-orange-100",
+  },
+};
+
+const dateRangeFilter: FilterFn<BillView> = (
+  row,
+  columnId,
+  value,
+) => {
+  const { from, to } = value as {
+    from: Date | undefined;
+    to: Date | undefined;
+  };
+  if (!from && !to) return true;
+  const rowDate = row.getValue(columnId) as Date;
+  if (from && !to)
+    return rowDate >= startOfDay(from);
+  if (!from && to) return rowDate <= endOfDay(to);
+  return isWithinInterval(rowDate, {
+    start: startOfDay(from!),
+    end: endOfDay(to!),
+  });
 };
 
 const multiSelectFilter: FilterFn<BillView> = (
@@ -49,16 +92,11 @@ export const getBillColumns = (
     header: "Status",
     filterFn: multiSelectFilter,
     cell: ({ row }) => {
-      const status = row.getValue(
-        "status",
-      ) as string;
+      const status: BillStatus =
+        row.getValue("status");
+      const s = statusStyles[status];
       return (
-        <Badge
-          className={
-            statusStyles[status] ??
-            "bg-gray-100 text-gray-700"
-          }
-        >
+        <Badge className={`${s.style}`}>
           {status}
         </Badge>
       );
@@ -74,7 +112,9 @@ export const getBillColumns = (
     ),
   },
   {
+    id: "date",
     accessorKey: "created_at",
+    filterFn: dateRangeFilter,
     header: ({ column }) => (
       <button
         className="flex items-center gap-1 font-semibold text-gray-900 hover:text-blue-600 transition-colors"
@@ -146,9 +186,7 @@ export const getBillColumns = (
     ),
     cell: ({ row }) => (
       <span className="text-gray-600">
-        {formatDatetime(
-          row.getValue("created_at"),
-        )}
+        {formatDatetime(row.getValue("due_date"))}
       </span>
     ),
   },
