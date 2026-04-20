@@ -50,7 +50,6 @@ export type Transaction = {
   billNo?: number;
 };
 
-// Checks if the row's date falls within a [from, to] range
 export const dateRangeFilter: FilterFn<
   Transaction
 > = (row, columnId, value) => {

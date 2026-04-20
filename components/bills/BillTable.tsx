@@ -17,7 +17,9 @@ export default function BillTable({
         columns={columns}
         data={bills}
         searchColumn="vendor_name"
-        searchPlaceholder="Seach Vendor"
+        searchPlaceholder="Seach Vendor..."
+        showDateFilter={true}
+        pageSize={10}
       />
     </div>
   );

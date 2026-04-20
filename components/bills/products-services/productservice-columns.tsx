@@ -11,6 +11,24 @@ import { CurrencyConfig } from "@/lib/config/store";
 import { formatCurrency } from "@/lib/utils";
 
 import { Button } from "../../ui/button";
+import { Badge } from "@/components/ui/badge";
+
+type ProductServiceType = "Product" | "Service";
+
+const productServiceTypeStyles: Record<
+  ProductServiceType,
+  { style: string }
+> = {
+  Product: {
+    style:
+      "bg-blue-100 text-blue-700 hover:bg-blue-200",
+  },
+  Service: {
+    style:
+      "bg-purple-100 text-purple-700 hover:bg-purple-200",
+  },
+};
+
 export type ProductService = {
   type: "Product" | "Service";
   id: string;
@@ -24,11 +42,19 @@ export const getProductServiceColumns = (
   {
     accessorKey: "type",
     header: "Type",
-    cell: ({ row }) => (
-      <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
-        {row.getValue("type")}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const types: ProductServiceType =
+        row.getValue("type");
+      const s = productServiceTypeStyles[types];
+      return (
+        // <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+        //   {row.getValue("type")}
+        // </span>
+        <Badge className={`${s.style}`}>
+          {types}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "name",
