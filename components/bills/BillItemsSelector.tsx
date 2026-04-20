@@ -1,27 +1,20 @@
 import { useState } from "react";
-
-import { cn } from "@/lib/utils";
+import { TableCell, TableRow } from "../ui/table";
 import {
-  InvoiceItem,
-  InvoiceItemsSelectorProps,
-} from "@/lib/types/invoice";
-
-import { useCreateProduct } from "@/hooks/useProducts";
-
-import {
-  Trash2,
-  CirclePlus,
-  GripVertical,
   Check,
   ChevronsUpDown,
+  CirclePlus,
+  GripVertical,
   Plus,
-  X,
+  Trash2,
 } from "lucide-react";
-
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../ui/popover";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 import {
   Command,
   CommandEmpty,
@@ -29,40 +22,38 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+} from "../ui/command";
+import { ProductService } from "./products-services/productservice-columns";
+import { Input } from "../ui/input";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  TableCell,
-  TableRow,
-} from "@/components/ui/table";
+} from "../ui/dialog";
+import { Label } from "../ui/label";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "../ui/select";
+export interface BillItem {
+  id: string;
+  productId: string;
+  name: string;
+  description?: string;
+  quantity: number;
+  price: number;
+}
 
-export default function InvoiceItemsSelector({
-  products,
+export interface BillItemsSelectorProps {
+  products: ProductService[];
+  items: BillItem[];
+  onItemsChange: (items: BillItem[]) => void;
+}
+
+export default function BillItemsSelector({
   items,
+  products,
   onItemsChange,
-  masterDiscounts,
-  onAddDiscount,
-  onRemoveDiscount,
-  refetchProducts,
-}: InvoiceItemsSelectorProps) {
+}: BillItemsSelectorProps) {
   const [isModalOpen, setIsModalOpen] =
     useState(false);
   const [isLoading, setIsLoading] =
@@ -71,25 +62,20 @@ export default function InvoiceItemsSelector({
   const [activeRowId, setActiveRowId] = useState<
     string | null
   >(null);
-  const { mutateAsync: createProductMutation } =
-    useCreateProduct();
 
-  // Consolidated Product State
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: 0,
-    costPrice: 0,
     description: "",
-    discounts: [],
+    type: "Product",
   });
 
   const resetModalFields = () => {
     setNewProduct({
       name: "",
       price: 0,
-      costPrice: 0,
       description: "",
-      discounts: [],
+      type: "Product",
     });
     setSearch("");
   };
@@ -101,60 +87,6 @@ export default function InvoiceItemsSelector({
     setActiveRowId(rowId);
     setNewProduct((prev) => ({ ...prev, name }));
     setIsModalOpen(true);
-  };
-
-  const handleSaveProduct = async () => {
-    try {
-      const result =
-        await createProductMutation(newProduct);
-      const savedProduct = result;
-
-      onItemsChange(
-        items.map((item) =>
-          item.id === activeRowId
-            ? {
-                ...item,
-                name: savedProduct.name,
-                productId: savedProduct.id,
-                price: savedProduct.price,
-                description:
-                  savedProduct.description,
-              }
-            : item,
-        ),
-      );
-      setIsModalOpen(false);
-      resetModalFields();
-    } catch (err) {
-      console.error("Mutation failed", err);
-    }
-  };
-  const addItem = () => {
-    onItemsChange([
-      ...items,
-      {
-        id: crypto.randomUUID(),
-        productId: "",
-        name: "",
-        description: "",
-        quantity: 1,
-        price: 0,
-        discounts: [],
-      },
-    ]);
-  };
-
-  const updateItem = (
-    id: string,
-    field: keyof InvoiceItem,
-    value: string | number,
-  ) => {
-    onItemsChange(
-      items.map((item) => {
-        if (item.id !== id) return item;
-        return { ...item, [field]: value };
-      }),
-    );
   };
 
   const handleProductSelect = (
@@ -174,18 +106,41 @@ export default function InvoiceItemsSelector({
           productId: product?.id ?? "",
           price: product?.price ?? 0,
           description: product?.description ?? "",
-          // AUTO-POPULATE: If product has discounts in the DB, add them here
-          discounts: product?.discounts || [],
         };
       }),
     );
   };
 
+  const addItem = () => {
+    onItemsChange([
+      ...items,
+      {
+        id: crypto.randomUUID(),
+        productId: "",
+        name: "",
+        description: "",
+        quantity: 1,
+        price: 0,
+      },
+    ]);
+  };
+
+  const updateItem = (
+    id: string,
+    field: keyof BillItem,
+    value: string | number,
+  ) => {
+    onItemsChange(
+      items.map((item) => {
+        if (item.id !== id) return item;
+        return { ...item, [field]: value };
+      }),
+    );
+  };
   return (
     <>
       {items.map((item, idx) => (
         <TableRow
-          // key={item.id}
           key={idx}
           className="border-b-0"
         >
@@ -294,7 +249,6 @@ export default function InvoiceItemsSelector({
               placeholder="Description"
             />
           </TableCell>
-
           <TableCell className="w-24">
             <Input
               type="number"
@@ -309,7 +263,6 @@ export default function InvoiceItemsSelector({
               className="text-right"
             />
           </TableCell>
-
           <TableCell className="w-24">
             <Input
               type="number"
@@ -324,112 +277,14 @@ export default function InvoiceItemsSelector({
               className="text-right"
             />
           </TableCell>
-
-          {/* <TableCell className="w-24 text-right font-medium">
-            $
-            {(item.quantity * item.price).toFixed(
-              2,
-            )}
-          </TableCell> */}
           <TableCell className="w-24 text-right font-medium">
             $
             {(() => {
               const rowSubtotal =
                 item.quantity * item.price;
-              const rowDiscount =
-                item.discounts.reduce(
-                  (sum, dId) => {
-                    const d =
-                      masterDiscounts.find(
-                        (m) => m._id === dId,
-                      );
-                    if (!d) return sum;
-                    return (
-                      sum +
-                      (d.type === "percentage"
-                        ? (rowSubtotal * d.rate) /
-                          100
-                        : d.rate)
-                    );
-                  },
-                  0,
-                );
-              return (
-                rowSubtotal - rowDiscount
-              ).toFixed(2);
+              return rowSubtotal.toFixed(2);
             })()}
           </TableCell>
-          <TableCell>
-            <div className="flex  gap-1">
-              {/* List applied discounts for this item */}
-              {item.discounts.map((dId) => {
-                const d = masterDiscounts.find(
-                  (m) => m._id === dId,
-                );
-                if (!d) return null;
-                return (
-                  <Badge
-                    key={dId}
-                    className="flex justify-between gap-1 items-center bg-blue-100 text-blue-700 hover:bg-blue-200"
-                  >
-                    {d.name}
-                    <button
-                      type="button" // Critical to prevent form submission
-                      className="ml-1 rounded-full outline-none hover:bg-blue-300 p-0.5 transition-colors"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onRemoveDiscount(
-                          item.id,
-                          dId,
-                        );
-                      }}
-                    >
-                      <X className="w-3 h-3 cursor-pointer hover:text-red-500" />
-                      <span className="sr-only">
-                        Remove discount
-                      </span>
-                    </button>
-                  </Badge>
-                );
-              })}
-
-              {/* Selector for this specific row */}
-              <Select
-                value=""
-                onValueChange={(dId) => {
-                  if (dId) {
-                    onAddDiscount(item.id, dId);
-                  }
-                }}
-              >
-                <SelectTrigger className="h-7 w-full border-dashed">
-                  {/* <Plus className="w-3 h-3 mr-1" />{" "} */}
-                  Discount
-                </SelectTrigger>
-
-                <SelectContent
-                  position="popper"
-                  side="bottom"
-                  className="z-150"
-                >
-                  {masterDiscounts.map((d) => (
-                    <SelectItem
-                      key={d._id}
-                      value={d._id}
-                    >
-                      {d.name} (
-                      {d.type === "percentage"
-                        ? `${d.rate}%`
-                        : `$${d.rate}`}
-                      )
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </TableCell>
-
           <TableCell className="w-8">
             <Button
               variant="ghost"
@@ -447,7 +302,6 @@ export default function InvoiceItemsSelector({
           </TableCell>
         </TableRow>
       ))}
-
       <TableRow className="bg-blue-50/30 hover:bg-blue-50/50">
         <TableCell colSpan={7}>
           <button
@@ -460,7 +314,7 @@ export default function InvoiceItemsSelector({
         </TableCell>
       </TableRow>
 
-      {/* PRODUCT CREATION DIALOG */}
+      {/* Modal for creating new product */}
       <Dialog
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
@@ -468,7 +322,7 @@ export default function InvoiceItemsSelector({
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-blue-600">
-              Create New Product
+              Create New Product or Service
             </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -487,28 +341,9 @@ export default function InvoiceItemsSelector({
                 }
               />
             </div>
+
             <div className="grid gap-2">
-              <Label htmlFor="costPrice">
-                Cost Price
-              </Label>
-              <Input
-                id="costPrice"
-                type="number"
-                value={newProduct.costPrice}
-                onChange={(e) =>
-                  setNewProduct({
-                    ...newProduct,
-                    costPrice: Number(
-                      e.target.value,
-                    ),
-                  })
-                }
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="price">
-                Selling Price
-              </Label>
+              <Label htmlFor="price">Price</Label>
               <Input
                 id="price"
                 type="number"
@@ -548,7 +383,7 @@ export default function InvoiceItemsSelector({
               Cancel
             </Button>
             <Button
-              onClick={handleSaveProduct}
+              //   onClick={handleSaveProduct}
               disabled={isLoading}
             >
               {isLoading
