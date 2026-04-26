@@ -19,7 +19,7 @@ export default async function Page() {
           <Button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 text-white rounded-2xl">
             <PackagePlus />
             <Link href="/products/add">
-              Add new products
+              Add new product
             </Link>
           </Button>
         </div>

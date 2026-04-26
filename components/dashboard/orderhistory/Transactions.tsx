@@ -53,9 +53,6 @@ export default function Transactions({
     }
   }
 
-  // function parseInvoiceNo(id: string): number {
-  //   return parseInt(id.replace("INV-", ""), 10);
-  // }
   return (
     <>
       <div className="flex-2 min-w-95 bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100 py-8 px-4">
