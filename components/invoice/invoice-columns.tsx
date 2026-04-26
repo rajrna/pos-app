@@ -8,6 +8,9 @@ import {
 import {
   ChevronDown,
   ArrowUpDown,
+  Trash2,
+  Wallet,
+  Pencil,
 } from "lucide-react";
 
 import { formatDatetime } from "@/utils/helper";
@@ -148,12 +151,15 @@ export const getInvoiceColumns = (
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
+            <Wallet className="w-3.5 h-3.5" />
             Make Payment
           </DropdownMenuItem>
           <DropdownMenuItem>
+            <Pencil className="w-3.5 h-3.5" />
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem className="bg-red-500 text-gray-100 hover:bg-red-600">
+            <Trash2 className="w-3.5 h-3.5 text-gray-100" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -3,7 +3,8 @@ import {
   Product,
   RawProductListResponse,
 } from "@/lib/types/product";
-import { authHeaders } from "./auth/login/session";
+
+import { authHeaders } from "../auth/login/session";
 
 const BASE = "https://api.beta.rebuzzpos.com/api";
 

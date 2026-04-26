@@ -198,8 +198,8 @@ export const getVendorColumns: ColumnDef<Vendor>[] =
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem className="gap-2 text-red-500 focus:text-red-600 focus:bg-red-50 cursor-pointer">
-                  <Trash2 className="w-3.5 h-3.5" />
+                <DropdownMenuItem className="gap-2 bg-red-500 focus:text-gray-100 text-gray-100 focus:bg-red-500 cursor-pointer">
+                  <Trash2 className="w-3.5 h-3.5 text-gray-100" />
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuGroup>

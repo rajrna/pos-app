@@ -98,6 +98,11 @@ export const mockSlowProducts: SlowProduct[] = [
     days: 4,
     stockAmount: 9,
   },
+  {
+    name: "Masala Tea",
+    days: 2,
+    stockAmount: 1,
+  },
 ];
 
 export const mockTopProducts: TopProduct[] = [
@@ -171,7 +176,7 @@ export const mockTopProducts: TopProduct[] = [
     name: "Irish Coffee",
     category: "Coffee",
     revenue: "300",
-    percent: 1,
+    percent: 2,
   },
 ];
 export const mockSalesTrendData: SalesTrendsData =
@@ -179,7 +184,7 @@ export const mockSalesTrendData: SalesTrendsData =
     daily: [
       { label: "Mon", revenue: 4200 },
       { label: "Tue", revenue: 3800 },
-      { label: "Wed", revenue: 5100 },
+      { label: "Wed", revenue: 5200 },
       { label: "Thu", revenue: 4700 },
       { label: "Fri", revenue: 6200 },
       { label: "Sat", revenue: 7800 },

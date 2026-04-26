@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 
-// Use the NEXT_PUBLIC_ prefix so the browser can see it
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey =

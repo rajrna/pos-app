@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ProductTable from "@/components/product/ProductTable";
 import { PackagePlus } from "lucide-react";
-import { fetchProducts } from "@/services/apiProduct.server";
-
+// import { fetchProducts } from "@/services/apiProduct.server";
+import { fetchProducts } from "@/services/product/apiProduct.server";
 export default async function Page() {
   const [products] = await Promise.all([
     fetchProducts(),
@@ -19,7 +19,7 @@ export default async function Page() {
           <Button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 text-white rounded-2xl">
             <PackagePlus />
             <Link href="/products/add">
-              Add new products
+              Add new product
             </Link>
           </Button>
         </div>
