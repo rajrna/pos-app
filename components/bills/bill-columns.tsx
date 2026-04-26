@@ -1,8 +1,5 @@
 import { CurrencyConfig } from "@/lib/config/store";
-import {
-  Bill,
-  BillView,
-} from "@/lib/types/expenses";
+import { BillView } from "@/lib/types/expenses";
 import { formatDatetime } from "@/utils/helper";
 import {
   ColumnDef,
@@ -11,6 +8,9 @@ import {
 import {
   ArrowUpDown,
   ChevronDown,
+  Pencil,
+  Trash2,
+  Wallet,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { formatCurrency } from "@/lib/utils";
@@ -130,9 +130,7 @@ export const getBillColumns = (
     ),
     cell: ({ row }) => (
       <span className="text-gray-600">
-        {formatDatetime(
-          row.getValue("created_at"),
-        )}
+        {formatDatetime(row.getValue("date"))}
       </span>
     ),
   },
@@ -198,20 +196,23 @@ export const getBillColumns = (
         <DropdownMenuTrigger asChild>
           <Button
             variant="link"
-            className="text-blue-600 hover:text-blue-700 p-0"
+            className="text-blue-600 hover:text-blue-700 cursor-pointer p-0"
           >
             Actions
             <ChevronDown className="ml-1 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            <Wallet className="w-3.5 h-3.5" />
             Make Payment
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            <Pencil className="w-3.5 h-3.5" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem className="bg-red-500 text-gray-100 hover:bg-red-600">
+          <DropdownMenuItem className="bg-red-500 text-gray-100 focus:bg-red-700 focus:text-gray-100 cursor-pointer">
+            <Trash2 className="w-3.5 h-3.5 text-gray-100" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

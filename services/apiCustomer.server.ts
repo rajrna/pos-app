@@ -24,11 +24,7 @@ export async function fetchCustomers(): Promise<
 
   const data: RawCustomerListResponse =
     await res.json();
-  // return mapRawCustomerToCustomer(data);
-  // console.log(
-  //   "API Response:",
-  //   JSON.stringify(data, null, 2),
-  // );
+
   return data.data.users.map((rawItem) =>
     mapRawCustomerToCustomer(rawItem),
   );

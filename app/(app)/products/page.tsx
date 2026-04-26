@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ProductTable from "@/components/product/ProductTable";
 import { PackagePlus } from "lucide-react";
-import { fetchProducts } from "@/services/apiProduct.server";
-
+// import { fetchProducts } from "@/services/apiProduct.server";
+import { fetchProducts } from "@/services/product/apiProduct.server";
 export default async function Page() {
   const [products] = await Promise.all([
     fetchProducts(),
